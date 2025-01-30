@@ -1,0 +1,26 @@
+.adminCategory .mainDivDirection{
+    margin-right: 50px;
+    margin-top: 100px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.adminCategory .categorySelect
+{
+    width: 300px;
+}
+
+.adminCategory .currentCategory
+{
+    width: 300px;
+    margin-top: 50px;
+}
+
+.adminCategory .save
+{
+    width: 300px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    justify-content: center;
+}

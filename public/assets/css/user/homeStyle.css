@@ -1,0 +1,19 @@
+.userHome .mainDivDirection .btn
+{
+    width: 22%;
+    height: 200px;
+    margin-bottom: 20px;
+    font-size: 25px;
+    display: flex;
+    font-weight: bold;
+    color: yellow;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+}
+.userHome .mainDivDirection
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}

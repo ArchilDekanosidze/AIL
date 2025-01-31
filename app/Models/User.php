@@ -46,8 +46,37 @@ class User extends Authenticatable
 
     public function categoryQuestions()
     {
-        return $this->belongsToMany(CategoryQuestion::class, "user_category_question");
+        return $this->belongsToMany(CategoryQuestion::class, "user_category_question")
+        ->withPivot('is_active','level','target_level', 'level_history')
+        ->where('user_category_question.is_active', true)
+        ->withTimestamps();
     }
+
+    public function add_category_to_user($categoryId)
+    {
+        $categoriesId = CategoryQuestion::descendantsAndSelf($categoryId)->pluck('id');
+        
+        $data = $categoriesId->mapWithKeys(function($id){
+            return [$id => ['is_active' => true]];
+        })->toArray();
+
+        $this->categoryQuestions()->syncWithoutDetaching($data);
+        
+        return true;
+    }
+    public function remove_category_from_user($categoryId)
+    {
+        $categoriesId = CategoryQuestion::descendantsAndSelf($categoryId)->pluck('id');
+       
+        $data = $categoriesId->mapWithKeys(function($id){
+            return [$id => ['is_active' => false]];
+        })->toArray();
+
+        $this->categoryQuestions()->syncWithoutDetaching($data);
+
+        return true;
+    }
+
 
     public function userCategoryStatus($categoryId)
     {
@@ -72,11 +101,14 @@ class User extends Authenticatable
     public function UserCheckedCategory()
     {
         $user = $this;
+
         $selectedCategories = $user->categoryQuestions;
         $ancestorCategories = CategoryQuestion::whereHas('descendants', function ($query) use($selectedCategories){
             $query->whereIn('id', $selectedCategories->pluck('id'));
         })->get();
+        
         $categories = $ancestorCategories->merge($selectedCategories)->unique('id')->sortBy('lft');
+
         return $categories;
     }
 

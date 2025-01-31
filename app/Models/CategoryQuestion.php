@@ -20,7 +20,7 @@ class CategoryQuestion extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, "user_category_question");
+        return $this->belongsToMany(User::class, "user_category_question")->withPivot('is_active','level', 'target_level', 'level_history')->withTimestamps();
     }
 
     public function allQuestion()

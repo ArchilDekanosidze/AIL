@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\SeedController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\User\UserLearningController;
 use App\Http\Controllers\User\UserQuestionController;
@@ -51,9 +52,13 @@ Route::post('/admin/question/create', [AdminCategoryQuestionController::class, '
 
 
 //Seeder
+Route::get('/seeder/index', [SeedController::class, 'index']);
 Route::get('/seeder/User', [SeedController::class, 'createUser']);
 Route::get('/seeder/CategoryQuestion', [SeedController::class, 'createCategoryQuestion']);
 Route::get('/seeder/Question', [SeedController::class, 'createQuestion']);
+Route::get('/seeder/assignCategoryToUser', [SeedController::class, 'assignCategoryToUser']);
 
 
+//Test
+Route::get('/test/index', [TestController::class, 'index']);
 

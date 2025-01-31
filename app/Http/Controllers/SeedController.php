@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Hash;
 
 class SeedController extends Controller
 {
+    public function index()
+    {
+        $this->createUser();
+        $this->createCategoryQuestion();
+        $this->createQuestion();
+    }
     public function createUser()
     {
         $user1  = User::create(['name' => 'حامد میرشکار' , 
@@ -43,10 +49,33 @@ class SeedController extends Controller
     public function createQuestion()
     {
         $i = 0;
-        $i++;
-        for ($i=1; $i < 14; $i++) {            
-            $cat = CategoryQuestion::find($i); 
-            $q = Question::create(["category_question_id" => $cat->id  , "front"=> "f". $i, "back" => "b". $i, "p1" => "p1" . $i, "p2" => "p2" . $i,  "p3" => "p3" . $i,  "p4" => "p4" . $i, "answer" => 2  , "percentage" => 70.28, "count" => 102]);
+        $categoryQuestions = CategoryQuestion::all();
+        foreach ($categoryQuestions as $categoryQuestion) { 
+            $i++;
+            $jMax= rand(1,3);
+            for ($j=0; $j < $jMax; $j++) { 
+                $q = Question::create(["category_question_id" => $categoryQuestion->id  , "front"=> "f". $i, "back" => "b". $i, "p1" => "p1" . $i, "p2" => "p2" . $i,  "p3" => "p3" . $i,  "p4" => "p4" . $i, "answer" => 2  , "percentage" => rand(1,100), "count" => 102]);                
+            }                 
+        }
+    }
+
+    public function assignCategoryToUser()
+    {
+        $categoryQuestions = CategoryQuestion::all();
+        $users = User::all();
+        foreach ($users as $user) {
+            foreach ($categoryQuestions as $categoryQuestion) {
+                if(rand(1,10) > 9)
+                {
+                    $currentCategoryId = $categoryQuestion->id;
+                    $categoriesId = CategoryQuestion::descendantsAndSelf($currentCategoryId)->pluck('id');
+                    $data = $categoriesId->mapWithKeys(function($id){
+                        return [$id => ['is_active' => true]];
+                    })->toArray();
+                    $user->categoryQuestions()->syncWithoutDetaching($data);
+                }             
+               
+            }
         }
     }
 }

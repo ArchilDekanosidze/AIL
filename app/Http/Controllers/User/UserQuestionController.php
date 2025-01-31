@@ -22,17 +22,15 @@ class UserQuestionController extends Controller
     {
         $user = auth()->user();
         $currentCategoryId = $request->currentCategoryId;
-        $categoriesId = CategoryQuestion::descendantsAndSelf($currentCategoryId)->pluck('id');
-        $user->categoryQuestions()->attach($categoriesId);
-        return $currentCategoryId;
+        $user->add_category_to_user($currentCategoryId);
+        return true;
     }
 
     public function remove_category_from_user(Request $request)
     {
         $user = auth()->user();
         $currentCategoryId = $request->currentCategoryId;
-        $categoriesId = CategoryQuestion::descendantsAndSelf($currentCategoryId)->pluck('id');
-        $user->categoryQuestions()->detach($categoriesId);
-        return $currentCategoryId;
+        $user->remove_category_from_user($currentCategoryId);       
+        return true;
     }
 }

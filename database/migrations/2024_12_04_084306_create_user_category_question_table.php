@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_question_id')->constrained()->onDelete('cascade');
+            $table->boolean('is_active')->default(true);
+            $table->float('level')->default(0);
+            $table->float('target_level')->default(100);
+            $table->json('level_history')->nullable();
             $table->timestamps();
         });
     }

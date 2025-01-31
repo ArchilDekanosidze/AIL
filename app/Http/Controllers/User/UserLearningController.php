@@ -19,4 +19,9 @@ class UserLearningController extends Controller
         // dd($allCategories->sortBy('_lft')->pluck('name'));
        return view('user.learning.chooseCategory', compact('userCategories', 'allCategories'));
     }
+
+    public function setting()
+    {
+        
+    }
 }

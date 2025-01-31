@@ -28,6 +28,7 @@ Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.i
 
 //user learning
 Route::get('/learning/chooseCategory', [UserLearningController::class, 'chooseCategory'])->name('user.learning.chooseCategory');
+Route::get('/learning/setting', [UserLearningController::class, 'setting'])->name('user.learning.setting');
 
 
 

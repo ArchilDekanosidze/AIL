@@ -32,7 +32,7 @@
                         <div class="toggleCategoryUserPartial">
                             <button class="toggleCategoryUserBtn" data-catid = "{{$directCat->id}}">افزودن زیردسته های انتخاب نشده به لیست یادگیری</button>
                             <button class="toggleCategoryUserBtn" data-catid = "{{$directCat->id}}">حذف زیر دسته های انتخاب شده از لیست یادگیری</button>
-                        <div>
+                        </div>
                     @endif   
                     
                 @endauth

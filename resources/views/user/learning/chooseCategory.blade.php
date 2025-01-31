@@ -24,10 +24,6 @@
 
 
 
-
-
-
-
 @section('scripts')
     <script>
         $(document).ready(function() {
@@ -66,15 +62,15 @@
                     $(this).find('.toggle-icon').html("&#9660")
                     while(true)
                     {
-                        nextElmMargin = nextElm.css("marginRight").toNum()
-                        nextElm.find('.toggle-icon').html("&#9660")
-                        nextElm.find(".triangelForCategory").addClass("open");
+                        nextElmMargin = nextElm.css("marginRight").toNum()                       
                         if(nextElmMargin <= mainMargin)
                         {
                             return;
                         }
                         else
                         {
+                            nextElm.find('.toggle-icon').html("&#9660")
+                            nextElm.find(".triangelForCategory").addClass("open");
                             nextElm.show()
                         }
                         nextElm = nextElm.next()

@@ -1,0 +1,88 @@
+.userLearningChooseCategory ul
+{
+    list-style: none;
+    font-size: 24px;
+    width: fit-content;
+}
+.userLearningChooseCategory ul li
+{
+   cursor: pointer;
+   display: flex;
+}
+.userLearningChooseCategory ul li:hover
+{
+    background: rgb(241, 171, 171);
+}
+
+.userLearningChooseCategory ul li .catCheckBox
+{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.toggle-icon
+{
+    margin-right: 10px;
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transition: transform 0.3s ease;
+    -webkit-transition: transform 0.3s ease;
+    -moz-transition: transform 0.3s ease;
+    -ms-transition: transform 0.3s ease;
+    -o-transition: transform 0.3s ease;
+}
+.triangelForCategory.open .toggle-icon
+{
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+}
+.advancedSettingDiv
+{
+    display: none;
+}
+.userLearningChooseCategory ul li .targetLevelDiv,
+.userLearningChooseCategory ul li .currentLevelDiv,
+.userLearningChooseCategory ul li .number_to_change_levelDiv
+{
+    font-size: 16px;
+    margin-right: 20px;
+}
+.userLearningChooseCategory ul li .targetLevelDiv .targetLevel,
+.userLearningChooseCategory ul li .currentLevelDiv .currentLevel,
+.userLearningChooseCategory ul li .number_to_change_levelDiv .number_to_change_level
+
+{
+    width: 70px;
+}
+.userLearningChooseCategory  .mainButton
+{
+    display: flex;
+    margin-top: 40px;
+}
+.userLearningChooseCategory  .btn
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    background: #ba84f0;
+    border-radius: 30px;
+}
+.userLearningChooseCategory  .learningSetting
+{
+    margin-right: 20px;
+    margin-left: 20px;
+}
+.learningSettingDiv
+{
+    display: none;
+}

@@ -47,7 +47,7 @@ class User extends Authenticatable
     public function categoryQuestions()
     {
         return $this->belongsToMany(CategoryQuestion::class, "user_category_question")
-        ->withPivot('is_active','level','target_level', 'level_history')
+        ->withPivot('is_active','level','target_level', 'level_history', 'answer_history', 'number_to_change_level')
         ->where('user_category_question.is_active', true)
         ->withTimestamps();
     }
@@ -100,14 +100,26 @@ class User extends Authenticatable
 
     public function UserCheckedCategory()
     {
-        $user = $this;
 
-        $selectedCategories = $user->categoryQuestions;
-        $ancestorCategories = CategoryQuestion::whereHas('descendants', function ($query) use($selectedCategories){
-            $query->whereIn('id', $selectedCategories->pluck('id'));
-        })->get();
+        // $selectedCategories = $user->categoryQuestions;
+        // $ancestorCategories = CategoryQuestion::whereHas('descendants', function ($query) use($selectedCategories){
+        //     $query->whereIn('id', $selectedCategories->pluck('id'));
+        // })->get();
         
-        $categories = $ancestorCategories->merge($selectedCategories)->unique('id')->sortBy('lft');
+        // $categories = $ancestorCategories->merge($selectedCategories)->unique('id')->sortBy('lft');
+        
+        // $userId = $user->id;
+        // $chosenCategoryQuestion = CategoryQuestion::whereHas('users', function ($query) use($userId){
+        //         $query->where('user_id', $userId);
+        //     })->with(["users" => function($query) use($userId){
+        //         $query->where('user_id', $userId)->select('users.id')->withPivot('level');
+        //     }])
+        //     ->get();
+        // dd($user->categoryQuestions()->get()->pluck('id'));
+        // dd($chosenCategoryQuestion->first()->users()->first()->level);
+        
+        $categories = $this->categoryQuestions()->get()->sortBy('lft');
+        
 
         return $categories;
     }

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserHomeController;
-use App\Http\Controllers\User\UserLearningController;
+use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\User\UserQuestionController;
 use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\User\Profile\UserProfileController;
@@ -28,8 +28,9 @@ Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.i
 
 
 //user learning
-Route::get('/learning/chooseCategory', [UserLearningController::class, 'chooseCategory'])->name('user.learning.chooseCategory');
-Route::get('/learning/setting', [UserLearningController::class, 'setting'])->name('user.learning.setting');
+Route::get('/learning/chooseCategory', [UserLearningNewController::class, 'chooseCategory'])->name('user.learning.new.chooseCategory');
+Route::post('/learning/start', [UserLearningNewController::class, 'start'])->name('user.learning.new.start');
+Route::get('/learning/setting', [UserLearningNewController::class, 'setting'])->name('user.learning.new.setting');
 
 
 

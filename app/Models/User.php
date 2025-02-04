@@ -118,10 +118,10 @@ class User extends Authenticatable
         // dd($user->categoryQuestions()->get()->pluck('id'));
         // dd($chosenCategoryQuestion->first()->users()->first()->level);
         
-        $categories = $this->categoryQuestions()->get()->sortBy('lft');
+        // $categories = $this->categoryQuestions()->get()->sortBy('lft');
         
 
-        return $categories;
+        // return $categories;
     }
 
     

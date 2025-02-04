@@ -42,6 +42,8 @@ class CategoryQuestion extends Model
         return $randomQuestion;        
     }
 
+
+
     public function path()
     {         
         $ancestorName =  $this->ancestors()->get()->pluck("name");
@@ -53,6 +55,17 @@ class CategoryQuestion extends Model
     {
         $categoriesId = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id')->toArray();
         return $categoriesId;
+    }
+
+    public function updateTargetLevel($targetLevel)
+    {
+    //     $data = $categoriesId->mapWithKeys(function($id){
+    //         return [$id => ['is_active' => false]];
+    //     })->toArray();
+
+    //     $this->categoryQuestions()->syncWithoutDetaching($data);
+
+    //     return true;
     }
 
 }

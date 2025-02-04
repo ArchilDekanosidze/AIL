@@ -5,6 +5,9 @@
 @endsection
 @section('content')
 <div class="userLearningChooseCategory main-body">
+    @if($errors->any())
+        <h4 class="errorFromController">{{$errors->first()}}</h4>
+    @endif
     <form action="{{ route('user.learning.new.start') }}" method="post" >
         @csrf
         <ul>
@@ -19,15 +22,15 @@
                         <input type="checkbox" name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
                         <div class="targetLevelDiv advancedSettingDiv">
                             <lable for="targetLevel"> درصد هدف:</lable>
-                            <input class="targetLevel" id="targetLevel" name="targetLevel[{{$category->id}}]" type="number" value="{{$userCategories->find($category)->pivot->target_level}}">
+                            <input class="targetLevel" id="targetLevel" name="targetLevels[{{$category->id}}]" type="number" min="0" max="100" value="{{$userCategories->find($category)->pivot->target_level}}">
                         </div>
                         <div class="currentLevelDiv advancedSettingDiv">
                             <lable for="currentLevel"> درصد فعلی:</lable>
                             <span class="currentLevel" id="currentLevel" name="currentLevel" >{{$userCategories->find($category)->pivot->level}}</span>
                         </div>
                         <div class="number_to_change_levelDiv advancedSettingDiv">
-                            <lable for="number_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
-                            <input class="number_to_change_level" id="number_to_change_level" name="number_to_change_level[{{$category->id}}]" type="number" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
+                            <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
+                            <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="5" max="100" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
                         </div>
                     </li>
                 @endif
@@ -35,7 +38,8 @@
         </ul>
 
         <div class="mainButton">
-            <button class="startLearning btn">شروع یادگیری</button>
+            <button class="startOnlineLearning btn" name="action" value="online">شروع آزمون آنلاین</button>
+            <button class="startPaperLearning btn" name="action" value="paper">پرینت آزمون کتبی</button>
             <a class="learningSetting btn">تنظیمات آزمون</a>
             <a class="advanceSetting btn">تنظیمات حرفه ای</a>
         </div>
@@ -43,15 +47,11 @@
         <div class="learningSettingDiv">
             <div class="testCountDiv">
                 <lable for="testCount"> تعداد سوالات آزمون:</lable>
-                <input id="testCount" name="testCount" type="number" value="40">
+                <input id="testCount" name="testCount" type="number" min="0" max="150" value="40">
             </div>
             <div class="testTimeDiv">
                 <lable for="testTime"> مدت زمان آزمون بر حسب دقیقه:</lable>
-                <input id="testTime" name="testTime" type="number" value="60">
-            </div>
-            <div class="shufflePercentageDiv">
-                <lable for="shufflePercentage"> درصد بر زدن سوالات:</lable>
-                <input id="shufflePercentage" name="shufflePercentage" type="number" value="0" min="0" max="100">
+                <input id="testTime" name="testTime" type="number" min="0" max="300" value="60">
             </div>
         </div>
     </form>

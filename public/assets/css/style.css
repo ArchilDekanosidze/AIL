@@ -308,3 +308,11 @@
 {
     display: flex;
 }
+
+.errorFromController
+{
+    background: #ec5454;
+    width: fit-content;
+    padding: 10px 30px;
+    border-radius: 30px;
+}

@@ -30,7 +30,9 @@ Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.i
 //user learning
 Route::get('/learning/chooseCategory', [UserLearningNewController::class, 'chooseCategory'])->name('user.learning.new.chooseCategory');
 Route::post('/learning/start', [UserLearningNewController::class, 'start'])->name('user.learning.new.start');
-Route::get('/learning/setting', [UserLearningNewController::class, 'setting'])->name('user.learning.new.setting');
+
+Route::get('/learning/onlineQuizInProgress', [UserLearningNewController::class, 'onlineQuizInProgress'])->name('user.learning.onlineQuizInProgress');
+
 
 
 

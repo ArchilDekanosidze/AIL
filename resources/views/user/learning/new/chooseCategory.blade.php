@@ -20,18 +20,21 @@
                         </span>
                         @endif
                         <input type="checkbox" name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
-                        <div class="targetLevelDiv advancedSettingDiv">
-                            <lable for="targetLevel"> درصد هدف:</lable>
-                            <input class="targetLevel" id="targetLevel" name="targetLevels[{{$category->id}}]" type="number" min="0" max="100" value="{{$userCategories->find($category)->pivot->target_level}}">
-                        </div>
-                        <div class="currentLevelDiv advancedSettingDiv">
-                            <lable for="currentLevel"> درصد فعلی:</lable>
-                            <span class="currentLevel" id="currentLevel" name="currentLevel" >{{$userCategories->find($category)->pivot->level}}</span>
-                        </div>
-                        <div class="number_to_change_levelDiv advancedSettingDiv">
-                            <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
-                            <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="5" max="100" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
-                        </div>
+                        @if($category->descendants()->count() == 0)
+                            <div class="targetLevelDiv advancedSettingDiv">
+                                <lable for="targetLevel"> درصد هدف:</lable>
+                                <input class="targetLevel" id="targetLevel" name="targetLevels[{{$category->id}}]" type="number" min="0" max="100" value="{{$userCategories->find($category)->pivot->target_level}}">
+                            </div>
+                            <div class="currentLevelDiv advancedSettingDiv">
+                                <lable for="currentLevel"> درصد فعلی:</lable>
+                                <span class="currentLevel" id="currentLevel"  >{{$userCategories->find($category)->pivot->level}}</span>
+                            </div>
+                            <input type="hidden" name="currentLevels[{{$category->id}}]" min="0" max="100" value="{{$userCategories->find($category)->pivot->level}}">
+                            <div class="number_to_change_levelDiv advancedSettingDiv">
+                                <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
+                                <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="5" max="100" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
+                            </div>
+                        @endif
                     </li>
                 @endif
             @endforeach
@@ -45,6 +48,10 @@
         </div>
 
         <div class="learningSettingDiv">
+            <div class="quizNameDiv">
+                <lable for="quizName"> نام آزمون:</lable>
+                <input id="quizName" name="quizName" type="text">
+            </div>
             <div class="testCountDiv">
                 <lable for="testCount"> تعداد سوالات آزمون:</lable>
                 <input id="testCount" name="testCount" type="number" min="0" max="150" value="40">

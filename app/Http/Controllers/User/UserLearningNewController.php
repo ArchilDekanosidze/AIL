@@ -6,6 +6,7 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
 use App\Http\Controllers\Controller;
+use App\Models\Quiz;
 use Illuminate\Support\Facades\Redirect;
 
 class UserLearningNewController extends Controller
@@ -26,7 +27,9 @@ class UserLearningNewController extends Controller
 
     public function start(Request $request)
     {
+
         $user = auth()->user();
+        $currentLevels = $request->currentLevels;
         $targetLevels = $request->targetLevels;
         $numbers_to_change_level = $request->numbers_to_change_level;
         $data = [];
@@ -42,11 +45,66 @@ class UserLearningNewController extends Controller
         }
      
         $categoriesId = $request->categorySelected;
+        $categoryPercentage = [];
+        $totalPercentage = 0;
+        foreach ($categoriesId as  $categoryId) {
+            $category = CategoryQuestion::find($categoryId);
+            if($category->descendants()->count() == 0)
+            {
+                $percentage = $targetLevels[$categoryId] - $currentLevels[$categoryId];
+                $categoryPercentage[$categoryId] = $percentage;
+                $totalPercentage += $percentage;
+            }
+        }
+        $totalQuestions = $request->testCount;
+        $selectedQuestions = collect();
+        foreach ($categoryPercentage as $categoryId => $percentage) {
+            $category = CategoryQuestion::find($categoryId);
+            if(!$categoryId) continue;
+            $numQuestions = floor($percentage/$totalPercentage) * $totalQuestions;
+            $questions =$category->questions()
+            ->inRandomOrder()->limit($numQuestions)->get()->shuffle();
+            $selectedQuestions = $selectedQuestions->merge($questions);
+        }
+
+
         $questions = Question::whereIn("category_question_id", $categoriesId)
-            ->inRandomOrder()->limit($request->testCount)->get()->shuffle();
-        dd($questions);
+            ->inRandomOrder()->limit($totalQuestions-$selectedQuestions->count())->get()->shuffle();
+
+        $selectedQuestions = $selectedQuestions->merge($questions);
+
+            
 
 
-        dd($request->all());
+        $quiz = new Quiz();
+        if($request->quizName != "")
+        {
+            $quiz->quiz_name =  $request->quizName;
+        }
+        else
+        {
+            $quiz->quiz_name =  $user->name . "-" . now();
+        }
+        $quiz->quiz_type =  $request->action;
+        $quiz->count = $request->testCount;
+        $quiz->time = $request->testTime;
+        $selectedQuestions = $selectedQuestions->map(function ($question){
+            $question["user_answer"] = "0";
+            $question["answer_status"] = "0";
+            return $question;
+        });
+
+        $quiz->data = $selectedQuestions;
+        
+        $user->quizzes()->save($quiz);
+        
+        return redirect()->route('user.learning.onlineQuizInProgress');
     }
+
+    public function onlineQuizInProgress()
+    {
+        return view('user.learning.onlineQuizInProgress.onlineQuizInProgress');
+    }
+
+
 }

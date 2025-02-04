@@ -54,7 +54,7 @@
 }
 .userLearningChooseCategory ul li .targetLevelDiv .targetLevel,
 .userLearningChooseCategory ul li .currentLevelDiv .currentLevel,
-.userLearningChooseCategory ul li .number_to_change_levelDiv .number_to_change_level
+.userLearningChooseCategory ul li .number_to_change_levelDiv .numbers_to_change_level
 
 {
     width: 70px;

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->float('level')->default(0);
             $table->float('target_level')->default(100);
-            $table->json('level_history')->nullable();
+            $table->text('level_history')->nullable();
             $table->text('answer_history')->nullable();
             $table->int('number_to_change_level')->default(10);
 

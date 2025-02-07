@@ -19,7 +19,7 @@ return new class extends Migration
             $table->int("count")->default(0);
             $table->int("time")->default(0);
             $table->string("status")->default("start");
-            $table->json('data')->nullable();
+            $table->json('questions')->nullable();
             $table->timestamps();
         });
     }

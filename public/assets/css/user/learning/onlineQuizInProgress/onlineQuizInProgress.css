@@ -1,0 +1,59 @@
+.onlineQuizInProgress .buttons
+{
+    display: flex;
+    justify-content: space-between;
+    width: inherit;
+}
+.onlineQuizInProgress  .btn
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    background: #ba84f0;
+    border-radius: 30px;
+}
+
+.answerDiv
+{
+    display: none;
+}
+
+.questionFront
+{
+    padding: 20px;
+}
+.questionDataDiv .pdiv
+{
+    margin-bottom: 20px;
+    border: 3px solid gray;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.questionDataDiv .pdiv:hover
+{
+    background-color: rgb(185, 245, 185);
+}
+.pCheckBox
+{
+    cursor: pointer;
+}
+.answerDiv
+{
+    padding: 20px;
+}
+.quizInfo
+{
+    margin-bottom: 20px;
+    display: flex;
+}
+.quizInfo .timerMainDiv
+{
+    margin-right: 20px;
+    display: flex;
+}

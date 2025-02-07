@@ -42,7 +42,7 @@
 
         <div class="mainButton">
             <button class="startOnlineLearning btn" name="action" value="online">شروع آزمون آنلاین</button>
-            <button class="startPaperLearning btn" name="action" value="paper">پرینت آزمون کتبی</button>
+            <button class="startPaperLearning btn disabled" name="action" value="paper">پرینت آزمون کتبی</button>
             <a class="learningSetting btn">تنظیمات آزمون</a>
             <a class="advanceSetting btn">تنظیمات حرفه ای</a>
         </div>

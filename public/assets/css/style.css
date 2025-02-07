@@ -216,10 +216,11 @@
 
 
 .main-body {
-    width: 100%;
-    padding: 1rem;
+    width: 95%;
     min-height: calc(100vh - 3.5rem);
     background-color: #f3f3f3;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 @media only screen and (max-width: 767.98px) {
@@ -292,6 +293,7 @@
     justify-content: space-between;
     background-color: #01a9ac;
     padding: 20px 40px;
+    margin-bottom: 20px;
 }
 .breadcrump
 {
@@ -315,4 +317,17 @@
     width: fit-content;
     padding: 10px 30px;
     border-radius: 30px;
+}
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+.disabled
+{
+    pointer-events: none;
+    opacity: 0.5;
 }

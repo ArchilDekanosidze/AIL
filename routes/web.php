@@ -31,8 +31,12 @@ Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.i
 Route::get('/learning/chooseCategory', [UserLearningNewController::class, 'chooseCategory'])->name('user.learning.new.chooseCategory');
 Route::post('/learning/start', [UserLearningNewController::class, 'start'])->name('user.learning.new.start');
 
-Route::get('/learning/onlineQuizInProgress', [UserLearningNewController::class, 'onlineQuizInProgress'])->name('user.learning.onlineQuizInProgress');
+Route::get('/learning/onlineQuizInProgress/{quiz}', [UserLearningNewController::class, 'onlineQuizInProgress'])->name('user.learning.onlineQuizInProgress');
+Route::post('/learning/quizInProgress/showAnswer', [UserLearningNewController::class, 'showAnswer'])->name('user.learning.quizInProgress.showAnswer');
+Route::post('/learning/quizInProgress/nextQuestion', [UserLearningNewController::class, 'nextQuestion'])->name('user.learning.quizInProgress.nextQuestion');
+Route::post('/learning/quizInProgress/prevQuestion', [UserLearningNewController::class, 'prevQuestion'])->name('user.learning.quizInProgress.prevQuestion');
 
+Route::get('/learning/test/{userAnswer}/{questionId}', [UserLearningNewController::class, 'changeQuestionAndUserCategoryQuestion']);
 
 
 

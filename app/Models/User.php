@@ -99,31 +99,7 @@ class User extends Authenticatable
         return $result;
     }
 
-    public function UserCheckedCategory()
-    {
 
-        // $selectedCategories = $user->categoryQuestions;
-        // $ancestorCategories = CategoryQuestion::whereHas('descendants', function ($query) use($selectedCategories){
-        //     $query->whereIn('id', $selectedCategories->pluck('id'));
-        // })->get();
-        
-        // $categories = $ancestorCategories->merge($selectedCategories)->unique('id')->sortBy('lft');
-        
-        // $userId = $user->id;
-        // $chosenCategoryQuestion = CategoryQuestion::whereHas('users', function ($query) use($userId){
-        //         $query->where('user_id', $userId);
-        //     })->with(["users" => function($query) use($userId){
-        //         $query->where('user_id', $userId)->select('users.id')->withPivot('level');
-        //     }])
-        //     ->get();
-        // dd($user->categoryQuestions()->get()->pluck('id'));
-        // dd($chosenCategoryQuestion->first()->users()->first()->level);
-        
-        // $categories = $this->categoryQuestions()->get()->sortBy('lft');
-        
-
-        // return $categories;
-    }
 
     public function quizzes()
     {

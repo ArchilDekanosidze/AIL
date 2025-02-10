@@ -5,19 +5,17 @@
 @endsection
 @section('content')
 <div class="userLearningChooseCategory main-body">
-    @if($errors->any())
-        <h4 class="errorFromController">{{$errors->first()}}</h4>
-    @endif
-    <form action="{{ route('user.learning.new.start') }}" method="post" >
+
+    <form  action="{{ route('user.learning.new.start') }}" method="post" >
         @csrf
         <ul>
             @foreach($allCategories as $category)
                 @if($userCategories->contains($category)) 
                     <li class="catCheckBoxLi" style="margin-right : {{$category->depth *50}}px; @php  if($category->depth >1) echo 'display:none' @endphp" >                      
                         @if($category->descendants()->count() > 0 )
-                        <span class="triangelForCategory">
-                            <span class="toggle-icon">&#9664</span>
-                        </span>
+                            <span class="triangelForCategory">
+                                <span class="toggle-icon">&#9664</span>
+                            </span>
                         @endif
                         <input type="checkbox" name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
                         @if($category->descendants()->count() == 0)
@@ -25,16 +23,17 @@
                                 <lable for="targetLevel"> درصد هدف:</lable>
                                 <input class="targetLevel" id="targetLevel" name="targetLevels[{{$category->id}}]" type="number" min="0" max="100" value="{{$userCategories->find($category)->pivot->target_level}}">
                             </div>
-                            <div class="currentLevelDiv advancedSettingDiv">
-                                <lable for="currentLevel"> درصد فعلی:</lable>
-                                <span class="currentLevel" id="currentLevel"  >{{$userCategories->find($category)->pivot->level}}</span>
-                            </div>
-                            <input type="hidden" name="currentLevels[{{$category->id}}]" min="0" max="100" value="{{$userCategories->find($category)->pivot->level}}">
-                            <div class="number_to_change_levelDiv advancedSettingDiv">
-                                <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
-                                <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="5" max="100" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
-                            </div>
                         @endif
+                        <div class="currentLevelDiv advancedSettingDiv">
+                            <lable for="currentLevel"> درصد فعلی:</lable>
+                            <span class="currentLevel" id="currentLevel"  >{{$userCategories->find($category)->pivot->level}}</span>
+                        </div>
+                        <input type="hidden" name="currentLevels[{{$category->id}}]" min="0" max="100" value="{{$userCategories->find($category)->pivot->level}}">
+                        <div class="number_to_change_levelDiv advancedSettingDiv">
+                            <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
+                            <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="{{(4-$category->depth) * 25}}" max="1000" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
+                        </div>
+                        
                     </li>
                 @endif
             @endforeach
@@ -42,7 +41,7 @@
 
         <div class="mainButton">
             <button class="startOnlineLearning btn" name="action" value="online">شروع آزمون آنلاین</button>
-            <button class="startPaperLearning btn disabled" name="action" value="paper">پرینت آزمون کتبی</button>
+            <button  class="startPaperLearning btn disabled" name="action" value="paper">پرینت آزمون کتبی</button>
             <a class="learningSetting btn">تنظیمات آزمون</a>
             <a class="advanceSetting btn">تنظیمات حرفه ای</a>
         </div>
@@ -74,7 +73,7 @@
                 return parseInt(this, 10);
             }
 
-           
+
 
             $('.catCheckBox').click(function(){
                 mainElm = $(this).parent()

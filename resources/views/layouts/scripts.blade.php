@@ -22,6 +22,8 @@
             return Myresult
         }
         $(document).ready(function() {
+            $('.errorFromController').delay(5000).fadeOut('slow');
+            $('.successFromController').delay(5000).fadeOut('slow');
 
 
         })

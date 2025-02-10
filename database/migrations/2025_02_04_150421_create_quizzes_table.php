@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string("quiz_type")->default("online");
             $table->int("count")->default(0);
             $table->int("time")->default(0);
-            $table->string("status")->default("start");
-            $table->json('questions')->nullable();
+            $table->string("status")->default("created");
+            $table->timestamp("started_at");
             $table->timestamps();
         });
     }

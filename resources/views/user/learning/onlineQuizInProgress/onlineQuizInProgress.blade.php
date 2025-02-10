@@ -5,11 +5,11 @@
 @endsection
 @section('content')
 <div class="onlineQuizInProgress main-body">
-    @if($errors->any())
-        <h4 class="errorFromController">{{$errors->first()}}</h4>
-    @endif
+
     <input type="hidden" class="questionId" value="{{$question->id}}">
     <input type="hidden" class="quizId" value="{{$quiz->id}}">
+    <input type="hidden" class="answerRetrived" value="0">
+
 
     <div class="questionDataDiv">
         <div class="questionFront">{{$question->front}}</div>
@@ -60,19 +60,25 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            let timeLeft = {{$quiz->time}};
-            let timerInterval = setInterval(function(){
-                timeLeft--;
-                minutes = Math.floor(timeLeft/60);
-                seconds = timeLeft % 60;
-                seconds = seconds <10 ? "0" + seconds : seconds ;
-                $("#timer").text("  " +  minutes + " دقیقه و " + seconds + " ثانیه")
-                if(timeLeft <= 0)
-                {
-                    clearInterval(timerInterval)
-                    alert("times Up")   
-                }
-            }, 1000)
+            let timeLeft = {{$timeLeft}};
+            @if($timeLeft>0)
+                let timerInterval = setInterval(function(){
+                    timeLeft--;
+                    minutes = Math.floor(timeLeft/60);
+                    seconds = timeLeft % 60;
+                    seconds = seconds <10 ? "0" + seconds : seconds ;
+                    $("#timer").text("  " +  minutes + " دقیقه و " + seconds + " ثانیه")
+                    if(timeLeft <= 0)
+                    {
+                        clearInterval(timerInterval)
+                        $(".failed-message").html("زمان آزمون به اتمام رسید")   
+                        $('.failed-message').show().delay(5000).fadeOut('slow');
+                        $(".questionDataDiv").addClass("quizDisabled");
+                    }
+                }, 1000)
+            @else
+                $(".questionDataDiv").addClass("quizDisabled");
+            @endif
 
             $(".pdiv").click(function() {
                 if($(this).find('.pCheckBox').is(":checked"))
@@ -96,18 +102,23 @@
                 if($(this).text() == "مشاهده پاسخ")     
                 {        
                     $(this).text("مشاهده سوال");
-                    var url = "{{route('user.learning.quizInProgress.showAnswer')}}";        
-                    data = {quizId:$(".quizId").val(),
-                      questionId: $('.questionId').val(),
-                      p1CheckBox : $(".p1CheckBox").is(":checked"),  
-                      p2CheckBox : $(".p2CheckBox").is(":checked"),  
-                      p3CheckBox : $(".p3CheckBox").is(":checked"),  
-                      p4CheckBox : $(".p4CheckBox").is(":checked"),                      
-                    }       
-                    result = Ajax(url, data)
+                    if($(".answerRetrived").val() == 0)
+                    {                        
+                        var url = "{{route('user.learning.quizInProgress.showAnswer')}}";        
+                        data = {quizId:$(".quizId").val(),
+                          questionId: $('.questionId').val(),
+                          p1CheckBox : $(".p1CheckBox").is(":checked"),  
+                          p2CheckBox : $(".p2CheckBox").is(":checked"),  
+                          p3CheckBox : $(".p3CheckBox").is(":checked"),  
+                          p4CheckBox : $(".p4CheckBox").is(":checked"),                      
+                        }       
+                        result = Ajax(url, data)
+                        $(".answerDiv").text(result)
+                        console.log(result)
+                    }
+                    $(".answerRetrived").val(1);
                     $(".questionDataDiv").hide();
                     $(".answerDiv").show();
-                    $(".answerDiv").text(result)
                     $(".questionDataDiv .pdiv").addClass('disabled');
                 }
                 else if($(this).text() == "مشاهده سوال")     

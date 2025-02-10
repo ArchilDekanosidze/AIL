@@ -52,9 +52,10 @@ class SeedController extends Controller
         $categoryQuestions = CategoryQuestion::all();
         foreach ($categoryQuestions as $categoryQuestion) { 
             $i++;
-            $jMax= rand(1,3);
+            $jMax= rand(1,300);
             for ($j=0; $j < $jMax; $j++) { 
-                $q = Question::create(["category_question_id" => $categoryQuestion->id  , "front"=> "f". $i, "back" => "b". $i, "p1" => "p1" . $i, "p2" => "p2" . $i,  "p3" => "p3" . $i,  "p4" => "p4" . $i, "answer" => 2  , "percentage" => rand(1,100), "count" => 102]);                
+                $percentage = rand(1,100);
+                $q = Question::create(["category_question_id" => $categoryQuestion->id  , "front"=> "f". $categoryQuestion->name. "-".  $i . "-percentage = " . $percentage, "back" => "b". $i, "p1" => "p1" . $i, "p2" => "p2" . $i,  "p3" => "p3" . $i,  "p4" => "p4" . $i, "answer" => 2  , "percentage" =>$percentage, "count" => 102]);                
             }                 
         }
     }

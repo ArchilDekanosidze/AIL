@@ -16,11 +16,15 @@ use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 
 
 Route::get('/', [UserHomeController::class, 'index']);
-Route::get('/category/question/{category}', [UserCategoryQuestionController::class, 'index'])->name('category.question.index');
+Route::get('/categoryQuestion/randomFreeQuestion', [UserCategoryQuestionController::class, 'getRandomFreeQuestion'])->name('user.categoryQuestion.randomFreeQuestion.get');
 
-Route::get('/question/random', [UserQuestionController::class, 'getRandomQuestion'])->name('question.random.get');
-Route::get('/question/add_category_to_user', [UserQuestionController::class, 'add_category_to_user'])->name('question.add_category_to_user');
-Route::get('/question/remove_category_from_user', [UserQuestionController::class, 'remove_category_from_user'])->name('question.remove_category_from_user');
+
+
+
+
+Route::get('/categoryQuestion/index/{currentCategory}', [UserCategoryQuestionController::class, 'index'])->name('user.categoryQuestion.index');
+Route::get('/categoryQuestion/add_category_to_user', [UserCategoryQuestionController::class, 'add_category_to_user'])->name('user.categoryQuestion.add_category_to_user');
+Route::get('/categoryQuestion/remove_category_from_user', [UserCategoryQuestionController::class, 'remove_category_from_user'])->name('user.categoryQuestion.remove_category_from_user');
 
 
 // user profile
@@ -36,7 +40,6 @@ Route::post('/learning/quizInProgress/showAnswer', [UserLearningNewController::c
 Route::post('/learning/quizInProgress/nextQuestion', [UserLearningNewController::class, 'nextQuestion'])->name('user.learning.quizInProgress.nextQuestion');
 Route::post('/learning/quizInProgress/prevQuestion', [UserLearningNewController::class, 'prevQuestion'])->name('user.learning.quizInProgress.prevQuestion');
 
-Route::get('/learning/test/{userAnswer}/{questionId}', [UserLearningNewController::class, 'changeQuestionAndUserCategoryQuestion']);
 
 
 
@@ -68,4 +71,5 @@ Route::get('/seeder/assignCategoryToUser', [SeedController::class, 'assignCatego
 
 //Test
 Route::get('/test/index', [TestController::class, 'index']);
+Route::get('/learning/test/{userAnswer}/{questionId}', [UserLearningNewController::class, 'changeQuestionAndUserCategoryQuestion']);
 

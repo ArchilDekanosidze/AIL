@@ -35,12 +35,7 @@ class CategoryQuestion extends Model
         return $allQuestion;        
     }
 
-    public function randomQuestion()
-    {
-        $categoriesId = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id')->toArray();
-        $randomQuestion = Question::whereIn('category_question_id', $categoriesId)->inRandomOrder()->first();
-        return $randomQuestion;        
-    }
+
 
 
 
@@ -67,5 +62,14 @@ class CategoryQuestion extends Model
 
     //     return true;
     }
+
+
+    public function randomFreeQuestion()
+    {
+        $categoriesId = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id')->toArray();
+        $randomQuestion = Question::whereIn('category_question_id', $categoriesId)->inRandomOrder()->first();
+        return $randomQuestion;        
+    }
+
 
 }

@@ -4,13 +4,13 @@
 <link rel="stylesheet" href="{{asset('assets/css/user/category/question/index.css')}}">
 @endsection
 @section('content')
-<div class="userCategory main-body"> 
+<div class="userCategory main-body">    
     <input type="hidden" value="{{$currentCategory->id}}" class="currentCategoryId">
     <div class="breadCrump">
         @php
             for($i=0 ; $i <$ancestor->count() ; $i++) { 
                 $currentAncestor = $ancestor[$i];
-                echo "<a class='breadCrumpLink' href='" .  route('category.question.index', $currentAncestor->id) . "'>" . $currentAncestor->name . "</a>";
+                echo "<a class='breadCrumpLink' href='" .  route('user.categoryQuestion.index', $currentAncestor->id) . "'>" . $currentAncestor->name . "</a>";
                 if($i < $ancestor->count()-1)
                 {
                     echo " -> ";
@@ -21,7 +21,7 @@
     <div class="mainDivDirection">
         @foreach($directCats as $directCat)
             <div class="categoryCard">
-                <a class="btn btn-primary" href="{{route('category.question.index', $directCat->id)}}">{{$directCat->name}}</a> 
+                <a class="btn btn-primary" href="{{route('user.categoryQuestion.index', $directCat->id)}}">{{$directCat->name}}</a> 
                 
                 @auth         
                     @if(auth()->user()->userCategoryStatus($directCat->id) == "all")
@@ -60,7 +60,7 @@
     <script>
         function getNextQuestion()
         {
-            var url = "{{ route('question.random.get') }}"   
+            var url = "{{ route('user.categoryQuestion.randomFreeQuestion.get') }}"   
             var data =  { currentCategoryId : $('.currentCategoryId').val()};          
             $.ajax({
                 url: url,
@@ -121,11 +121,11 @@
                 elm = $(this);                  
                 if(elm.text() =="افزودن به لیست یادگیری" || elm.text() =="افزودن زیردسته های انتخاب نشده به لیست یادگیری")
                 {
-                    var url = "{{ route('question.add_category_to_user') }}"   
+                    var url = "{{ route('user.categoryQuestion.add_category_to_user') }}"   
                 }
                 else
                 {
-                    var url = "{{ route('question.remove_category_from_user') }}" 
+                    var url = "{{ route('user.categoryQuestion.remove_category_from_user') }}" 
                 }
                 var data =  { currentCategoryId :  $(this).data("catid")};                                     
                 $.ajax({

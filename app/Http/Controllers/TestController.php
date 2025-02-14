@@ -12,13 +12,11 @@ class TestController extends Controller
 {
     public function index()
     {
-        $user = User::find(1);
-        $selectedCategories = $user->categoryQuestions;
-        $ancestorCategories = CategoryQuestion::whereHas('descendants', function ($query) use($selectedCategories){
-            $query->whereIn('id', $selectedCategories->pluck('id'));
-        })->get();
-        $categories = $ancestorCategories->merge($selectedCategories)->unique('id')->sortBy('lft');
-        dd($categories);
+        $Questions = Question::all()->shuffle()->take(300);
+        foreach ($Questions as $Question) {
+            $Question->isfree = 1;
+            $Question->save();
+        }
     }
  
 }

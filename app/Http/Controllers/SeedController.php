@@ -53,9 +53,14 @@ class SeedController extends Controller
         foreach ($categoryQuestions as $categoryQuestion) { 
             $i++;
             $jMax= rand(1,300);
+            $isfree = rand(1, 10);
+            if($isfree >= 1)
+            {
+                $$isfree = 0;
+            }
             for ($j=0; $j < $jMax; $j++) { 
                 $percentage = rand(1,100);
-                $q = Question::create(["category_question_id" => $categoryQuestion->id  , "front"=> "f". $categoryQuestion->name. "-".  $i . "-percentage = " . $percentage, "back" => "b". $i, "p1" => "p1" . $i, "p2" => "p2" . $i,  "p3" => "p3" . $i,  "p4" => "p4" . $i, "answer" => 2  , "percentage" =>$percentage, "count" => 102]);                
+                $q = Question::create(["category_question_id" => $categoryQuestion->id  , "front"=> "f". $categoryQuestion->name. "-".  $i . "-percentage = " . $percentage, "back" => "b". $i, "p1" => "p1" . $i, "p2" => "p2" . $i,  "p3" => "p3" . $i,  "p4" => "p4" . $i, "answer" => 2  , "percentage" =>$percentage, "count" => 102, "isfree" => $$isfree]);                
             }                 
         }
     }

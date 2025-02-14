@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger("quiz_id");
             $table->unsignedBigInteger("question_id");
             $table->string("user_answer")->nullable();
+            $table->integer("palce");
             $table->timestamps();
         });
     }

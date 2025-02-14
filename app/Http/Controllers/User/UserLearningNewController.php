@@ -18,12 +18,7 @@ class UserLearningNewController extends Controller
     {       
         $user = auth()->user();
         $userCategories = $user->categoryQuestions()->get()->sortBy('lft');
-        // dd($userCategories->first()->pivot->level);
         $allCategories = CategoryQuestion::withDepth()->get()->sortBy('_lft')->skip(1);
-        // dd($userCategories);
-        // dd($allCategories);
-        // dd($mainCategory->children()->get());
-        // dd($allCategories->sortBy('_lft')->pluck('name'));
        return view('user.learning.new.chooseCategory', compact('userCategories', 'allCategories'));
     }
 
@@ -102,10 +97,11 @@ class UserLearningNewController extends Controller
         //     $quizQuestion->question_id = $selectedQuestion->id;
         //     $quizQuestion->save();
         // }
-        $quizQuestionsForInsert = $selectedQuestions->map(function($item) use($quiz){
+        $quizQuestionsForInsert = $selectedQuestions->map(function($item, $index) use($quiz){
             return[
                 'quiz_id' => $quiz->id,
                 'question_id' => $item->id,
+                'place' => $index +1 ,
                 'created_at' => now(),
                 'updated_at'  => now()
             ];
@@ -135,11 +131,24 @@ class UserLearningNewController extends Controller
        {
         $errorMessages[] = 'زمان این آزمون به اتمام رسیده است';
        }
+        $quizQuestionsNotAnswered = $quiz->quizQuestions->whereNull("user_answer");   
         $quizQuestions = $quiz->quizQuestions;
-        $quizQuestion = $quizQuestions->first();
-        $question = $quizQuestion->question;
 
-        return view('user.learning.onlineQuizInProgress.onlineQuizInProgress', compact('quiz', 'question', 'quizQuestion', "errorMessages", "timeLeft"));
+        $allQuestionAnswered = 0;
+        if($quizQuestionsNotAnswered->count() == 0)
+        {
+         $errorMessages[] = 'به تمام سوالات این آزمون پاسخ داده اید';
+         $allQuestionAnswered = 1;   
+         $quizQuestion = $quizQuestions->first();
+        }
+        else
+        {
+            $quizQuestion = $quizQuestionsNotAnswered->first();
+        }
+
+
+        $question = $quizQuestion->question;
+        return view('user.learning.onlineQuizInProgress.onlineQuizInProgress', compact('quiz', 'question', 'quizQuestion', "errorMessages", "timeLeft", "allQuestionAnswered"));
     }
 
     public function showAnswer(Request $request)
@@ -149,7 +158,7 @@ class UserLearningNewController extends Controller
         $quiz = Quiz::find($quizId);
         $questionId =  $request->questionId;
         $question = Question::find($questionId);
-        $userAnswerStatus =  $quiz->quizQuestions->where("question_id", $questionId)->first();
+        $userAnswerStatus =  $quiz->quizQuestions->where("question_id", $questionId)->first()->user_answer;
         $answer = $question->back;
 
         if($userAnswerStatus != null)
@@ -274,6 +283,36 @@ class UserLearningNewController extends Controller
             }
 
         $user->categoryQuestions()->syncWithoutDetaching($data);
+    }
+
+    public function nextQuestion(Request $request)
+    {
+        $quizId =  $request->quizId;
+        $quiz = Quiz::find($quizId);
+        $quizQuestionId =  $request->quizQuestionId;
+        
+        
+        $quizQuestion = QuizQuestion::where("quiz_id", $quiz->id)->where("id",">", $quizQuestionId)
+        ->orderBy("id")->first();
+        
+        if(is_null($quizQuestion))
+        {
+            $errorMessages = 'سوالات آزمون به اتمام رسیده است';
+            return ['errorMessages' => $errorMessages];
+        }
+
+        $question = $quizQuestion->question;
+
+
+
+
+        // $quizQuestion = QuizQuestion::where("quiz_id", $quiz->id)->where("question_id","<", $questionId)
+        // ->orderBy("id", "desc")->first();
+
+
+
+
+        return ["question" => $question, "quizQuestion" => $quizQuestion];
     }
 
 

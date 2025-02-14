@@ -6,28 +6,32 @@
 @section('content')
 <div class="onlineQuizInProgress main-body">
 
-    <input type="hidden" class="questionId" value="{{$question->id}}">
+    <input  class="questionId" value="{{$question->id}}">
+    <input type="hidden" class="quizQuestionId" value="{{$quizQuestion->id}}">
     <input type="hidden" class="quizId" value="{{$quiz->id}}">
     <input type="hidden" class="answerRetrived" value="0">
+    <input type="hidden" class="allQuestionAnswered" value="{{$allQuestionAnswered}}">
+    <input type="hidden" class="userAnswer" value="{{$quizQuestion->user_answer}}">
+    <input type="hidden" class="questionAswer" value="{{$question->answer}}">
 
 
     <div class="questionDataDiv">
         <div class="questionFront">{{$question->front}}</div>
         <div class="pdiv p1">
             <input type="checkbox" class="pCheckBox p1CheckBox">
-            {{$question->p1}}
+            <span class="p1Text">{{$question->p1}}</span>
         </div>
         <div class="pdiv p2">
             <input type="checkbox" class="pCheckBox p2CheckBox">
-            {{$question->p2}}
+            <span class="p2Text">{{$question->p2}}</span>
         </div>
         <div class="pdiv p3">
             <input type="checkbox" class="pCheckBox p3CheckBox">
-            {{$question->p3}}
+            <span class="p3Text">{{$question->p3}}</span>
         </div>
         <div class="pdiv p4">
             <input type="checkbox" class="pCheckBox p4CheckBox">
-            {{$question->p4}}
+            <span class="p4Text">{{$question->p4}}</span>
         </div>
     </div>
     <div class="answerDiv">
@@ -36,7 +40,7 @@
     
     <div class="quizInfo">
         <div class="questionCount">
-            1/{{$quiz->count}}
+            <span class="questionsPlace">{{$quizQuestion->place}}</span>/{{$quiz->count}}
         </div>
         <div class="timerMainDiv">
             مدت زمان باقیمانده: 
@@ -60,6 +64,37 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+            function changeColorBaseOnAnswer() {
+                userAnswer = $(".userAnswer").val()
+                questionAswer = $(".questionAswer").val()
+                if(!userAnswer)
+                {
+                    return
+                }          
+                console.log(userAnswer)
+                $(".p" + userAnswer).find(".pCheckBox").prop("checked", "checked")
+                if(userAnswer == questionAswer)
+                {
+                    $(".p" + userAnswer).addClass("correctAnswer")   
+                }
+                else
+                {
+                    $(".p" + userAnswer).addClass("wrongAnswer")   
+                    $(".p" + questionAswer).addClass("correctAnswer")   
+                }
+            }
+            if($(".allQuestionAnswered").val() == 1)
+            {
+                $(".questionDataDiv").addClass("quizDisabled");
+            }
+            changeColorBaseOnAnswer()
+
+            if(userAnswer)
+            {
+                $(".questionDataDiv .pdiv").addClass('disabled');
+
+            }   
+
             let timeLeft = {{$timeLeft}};
             @if($timeLeft>0)
                 let timerInterval = setInterval(function(){
@@ -130,7 +165,45 @@
                 
             })
 
+            $(".next").click(function () {
+                var url = "{{route('user.learning.quizInProgress.nextQuestion')}}";        
+                        data = {quizId:$(".quizId").val(),
+                        quizQuestionId: $('.quizQuestionId').val(),                                             
+                        }       
+                result = Ajax(url, data)
+                console.log(result);
+                if(result.errorMessages)
+                {
+                    alert(result.errorMessages);
+                    return;
+                }
 
+                $(".questionToggle").text("مشاهده پاسخ")
+                $(".questionDataDiv").show();
+                $(".answerDiv").hide();
+                $(".questionDataDiv .pdiv").removeClass('disabled');
+                
+                $(".questionFront").html(result.question.front)
+                $(".p1Text").html(result.question.p1)
+                $(".p2Text").html(result.question.p2)
+                $(".p3Text").html(result.question.p3)
+                $(".p4Text").html(result.question.p4)
+                $(".questionDataDiv .pCheckBox").prop('checked', false);
+                $(".pdiv").removeClass("wrongAnswer")   
+                $(".pdiv").removeClass("correctAnswer")  
+
+                $(".quizQuestionId").val(result.quizQuestion.id)
+                $(".questionId").val(result.question.id)
+                $(".answerRetrived").val(0)
+                $(".userAnswer").val(result.quizQuestion.user_answer)
+                $(".questionAswer").val(null)
+                $(".questionsPlace").text(result.quizQuestion.place)
+
+
+
+
+                
+            })
 
 
 

@@ -57,3 +57,12 @@
     margin-right: 20px;
     display: flex;
 }
+.correctAnswer
+{
+    background-color: #32e832;
+}
+
+.wrongAnswer
+{
+    background-color: #f39c55;
+}

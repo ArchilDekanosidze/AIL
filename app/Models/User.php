@@ -4,11 +4,13 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Quiz;
+use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class User extends Authenticatable
 {
@@ -45,6 +47,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+
     public function categoryQuestions()
     {
         return $this->belongsToMany(CategoryQuestion::class, "user_category_question")
@@ -53,60 +57,10 @@ class User extends Authenticatable
         ->withTimestamps();
     }
 
-    public function add_category_to_user($categoryId)
-    {
-        $categoriesId = CategoryQuestion::descendantsAndSelf($categoryId)->pluck('id');
-        
-        $data = $categoriesId->mapWithKeys(function($id){
-            return [$id => ['is_active' => true]];
-        })->toArray();
-
-        $this->categoryQuestions()->syncWithoutDetaching($data);
-        
-        return true;
-    }
-    public function remove_category_from_user($categoryId)
-    {
-        $categoriesId = CategoryQuestion::descendantsAndSelf($categoryId)->pluck('id');
-       
-        $data = $categoriesId->mapWithKeys(function($id){
-            return [$id => ['is_active' => false]];
-        })->toArray();
-
-        $this->categoryQuestions()->syncWithoutDetaching($data);
-
-        return true;
-    }
-
-
-    public function userCategoryStatus($categoryId)
-    {
-        $category = CategoryQuestion::find($categoryId);
-        $allcategoriesId = $category->getAllSubcatWithSelf();
-        $userSelectedCategoryIds = $this->categoryQuestions()->pluck('category_question_id')->toArray();
-        $selectedCategoriesId = array_intersect($allcategoriesId, $userSelectedCategoryIds);
-        if(empty(array_diff($allcategoriesId, $selectedCategoriesId)))
-        {
-            $result = "all";
-        }
-        elseif (empty($selectedCategoriesId)) {
-            $result = "none";
-        }
-        else
-        {
-            $result = "some";
-        }
-        return $result;
-    }
-
-
-
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
     }
-
-    
 
     
 }

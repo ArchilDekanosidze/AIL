@@ -46,11 +46,11 @@ class CategoryQuestion extends Model
         return implode(" -> ", $ancestorName->toArray());
     }
 
-    public function getAllSubcatWithSelf()
-    {
-        $categoriesId = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id')->toArray();
-        return $categoriesId;
-    }
+    // public function getAllSubcatWithSelf()
+    // {
+    //     $categoriesId = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id')->toArray();
+    //     return $categoriesId;
+    // }
 
     public function updateTargetLevel($targetLevel)
     {
@@ -64,12 +64,7 @@ class CategoryQuestion extends Model
     }
 
 
-    public function randomFreeQuestion()
-    {
-        $categoriesId = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id')->toArray();
-        $randomQuestion = Question::whereIn('category_question_id', $categoriesId)->inRandomOrder()->first();
-        return $randomQuestion;        
-    }
+
 
 
 }

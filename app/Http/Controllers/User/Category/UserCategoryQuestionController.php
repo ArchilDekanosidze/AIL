@@ -19,34 +19,27 @@ class UserCategoryQuestionController extends Controller
     }
     public function index(CategoryQuestion $currentCategory)
     {                   
-        Auth::loginUsingId(1, TRUE);        
+   
         $directCats = $this->categoriesQuestionService->getDirectcats($currentCategory);   
         $ancestor = $this->categoriesQuestionService->getAncestor($currentCategory);   
 
         return view('user.category.question.index', compact('currentCategory', 'directCats', 'ancestor'));
     }
 
-    public function getRandomFreeQuestion(Request $request)
+    public function getRandomFreeQuestion()
     {       
-        $currentCategoryId = $request->currentCategoryId;
-        $category = CategoryQuestion::find($currentCategoryId); 
-        $randomQuestion = $category->randomFreeQuestion();              
-        return $randomQuestion;
+        return $this->categoriesQuestionService->getRandomFreeQuestion();
     }
 
-    public function add_category_to_user(Request $request)
+    public function addCategoryToUser()
     {
-        $user = auth()->user();
-        $currentCategoryId = $request->currentCategoryId;
-        $user->add_category_to_user($currentCategoryId);
+        $this->categoriesQuestionService->addCategoryToUser();
         return true;
     }
 
-    public function remove_category_from_user(Request $request)
+    public function removeCategoryFromUser()
     {
-        $user = auth()->user();
-        $currentCategoryId = $request->currentCategoryId;
-        $user->remove_category_from_user($currentCategoryId);       
+        $this->categoriesQuestionService->removeCategoryFromUser();
         return true;
     }
 }

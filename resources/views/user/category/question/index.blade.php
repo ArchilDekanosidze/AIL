@@ -24,9 +24,9 @@
                 <a class="btn btn-primary" href="{{route('user.categoryQuestion.index', $directCat->id)}}">{{$directCat->name}}</a> 
                 
                 @auth         
-                    @if(auth()->user()->userCategoryStatus($directCat->id) == "all")
+                    @if(userCategoryStatus($directCat->id) == "all")
                         <button class="toggleCategoryUser toggleCategoryUserBtn" data-catid = "{{$directCat->id}}">حذف از لیست یادگیری</button>                      
-                    @elseif(auth()->user()->userCategoryStatus($directCat->id) == "none")
+                    @elseif(userCategoryStatus($directCat->id) == "none")
                         <button class="toggleCategoryUser toggleCategoryUserBtn" data-catid = "{{$directCat->id}}">افزودن به لیست یادگیری</button>      
                     @else
                         <div class="toggleCategoryUserPartial">
@@ -61,28 +61,17 @@
         function getNextQuestion()
         {
             var url = "{{ route('user.categoryQuestion.randomFreeQuestion.get') }}"   
-            var data =  { currentCategoryId : $('.currentCategoryId').val()};          
-            $.ajax({
-                url: url,
-                data:data,
-                success: function(result) {
-                    console.log(result)
-                    if(result["error"])
-                    {
-                        alert(result["error"])
-                    }
-                    else
-                    {
-                        $(".Questiondiv .front").html(result["front"])
-                        $(".Questiondiv .back").html(result["back"])
-                        $(".Questiondiv .front").addClass("show");
-                        $(".Questiondiv .front").removeClass("hidden");
-                        $(".Questiondiv .back").addClass("hidden");
-                        $(".Questiondiv .back").removeClass("show");
-                        $(".toggleFrontAndBack").text("مشاهده پاسخ")
-                    }
-                }
-            })
+            var data =  { currentCategoryId : $('.currentCategoryId').val()};    
+   
+            result = Ajax(url, data)
+            $(".Questiondiv .front").html(result["front"])
+            $(".Questiondiv .back").html(result["back"])
+            $(".Questiondiv .front").addClass("show");
+            $(".Questiondiv .front").removeClass("hidden");
+            $(".Questiondiv .back").addClass("hidden");
+            $(".Questiondiv .back").removeClass("show");
+            $(".toggleFrontAndBack").text("مشاهده پاسخ")
+
         }      
         
         function toggleCategoryUser(action, url, data)
@@ -127,38 +116,28 @@
                 {
                     var url = "{{ route('user.categoryQuestion.remove_category_from_user') }}" 
                 }
-                var data =  { currentCategoryId :  $(this).data("catid")};                                     
-                $.ajax({
-                    url: url,
-                    data:data,
-                    success: function(result) {
-                        console.log(result)
-                        if(result["error"])
-                        {
-                            alert(result["error"])
-                        }
-                        else
-                        {
-                            if(elm.text() =="افزودن به لیست یادگیری"){
-                                elm.text("حذف از لیست یادگیری")
-                            }
-                            else if(elm.text() =="حذف از لیست یادگیری")
-                            {
-                                elm.text("افزودن به لیست یادگیری")
-                            }
-                            else if(elm.text() =="افزودن زیردسته های انتخاب نشده به لیست یادگیری")
-                            {
-                                elm.text("حذف از لیست یادگیری")
-                                elm.next().hide()
-                            }
-                            else if(elm.text() =="حذف زیر دسته های انتخاب شده از لیست یادگیری")
-                            {
-                                elm.text("افزودن به لیست یادگیری")
-                                elm.prev().hide()
-                            }
-                        }
-                    }
-                })
+                var data =  { currentCategoryId :  $(this).data("catid")};     
+                
+                
+                result = Ajax(url, data)
+
+                if(elm.text() =="افزودن به لیست یادگیری"){
+                    elm.text("حذف از لیست یادگیری")
+                }
+                else if(elm.text() =="حذف از لیست یادگیری")
+                {
+                    elm.text("افزودن به لیست یادگیری")
+                }
+                else if(elm.text() =="افزودن زیردسته های انتخاب نشده به لیست یادگیری")
+                {
+                    elm.text("حذف از لیست یادگیری")
+                    elm.next().hide()
+                }
+                else if(elm.text() =="حذف زیر دسته های انتخاب شده از لیست یادگیری")
+                {
+                    elm.text("افزودن به لیست یادگیری")
+                    elm.prev().hide()
+                }
             })
 
             $(".remove_category_from_user").click(function(){                

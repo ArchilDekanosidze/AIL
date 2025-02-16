@@ -8,14 +8,17 @@ use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
 use App\Services\Quiz\QuizService;
 use App\Http\Controllers\Controller;
+use App\Services\Desktop\DesktopService;
 
 class UserProfileController extends Controller
 {
     private $quizService;
+    private $desktopService;
 
-    public function __construct(QuizService $quizService)
+    public function __construct(QuizService $quizService, DesktopService $desktopService)
     {
         $this->quizService = $quizService;
+        $this->desktopService = $desktopService;
 
     }
 
@@ -25,7 +28,7 @@ class UserProfileController extends Controller
        return view("user.profile.profile");
     }
 
-    public function chooseCategory()
+    public function chooseCategoryForLearning()
     {       
         $this->quizService->checkForEndedQuiz();
         $user = auth()->user();
@@ -41,5 +44,16 @@ class UserProfileController extends Controller
         $quizzes =  $user->quizzes;
         // dd($quizzes->first()->persianStatus);
         return view('user.learning.Quiz.QuizList', compact('quizzes'));
+    }
+
+    public function myProgress()
+    {
+
+        return view('user.profile.myProgress');
+    }
+
+    public function getChartResult()
+    {
+        return $this->desktopService->getProgressData();
     }
 }

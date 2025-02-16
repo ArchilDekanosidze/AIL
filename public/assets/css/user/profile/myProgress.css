@@ -1,0 +1,35 @@
+#myChart
+{
+    width: 60% !important;
+    height: 60% !important;
+    margin: auto;
+}
+.chartHeader
+{
+    display: flex;
+    justify-content: space-around;
+}
+.parentBtn
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    background: #ba84f0;
+    border-radius: 30px;
+    padding: 20px 50px;
+}
+.chartHeader .parentCategoryName
+{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#HistoryChart
+{
+    margin-top: 20px;
+}

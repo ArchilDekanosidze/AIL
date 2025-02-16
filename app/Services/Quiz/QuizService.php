@@ -380,10 +380,13 @@ class QuizService
                       
             $newAnswerHistory = $this->newAnswerHistory($categoryQuestion, $isCorrect, $question);
             $newLevel = $this->newlevel($categoryQuestion, $newAnswerHistory);
-            $levelHistory = $this->newLevelHistory($categoryQuestion, $newLevel);           
+            $levelHistory = $this->newLevelHistory($categoryQuestion, $newLevel);     
+            $levelHistoryTime = $this->newLevelHistoryTime($categoryQuestion, $newLevel);           
+      
             
             $this->pivotDataForUpdatingCategory[$categoryQuestion->id] = ['answer_history' => $newAnswerHistory ,
             'level_history' => $levelHistory,
+            'level_history_time' => $levelHistoryTime,
             'level' =>     $newLevel          ];            
         }
     }
@@ -397,6 +400,7 @@ class QuizService
         }
         $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['answer_history'] = $categoryQuestion->pivot->answer_history ;
         $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level_history'] = $categoryQuestion->pivot->level_history ;
+        $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level_history_time'] = $categoryQuestion->pivot->level_history_time ;
         $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level'] = $categoryQuestion->pivot->level ;
 
     }
@@ -452,6 +456,7 @@ class QuizService
         if(is_null($levelHistory))
         {
             $levelHistoryArray[0] = $newLevel;
+            
         }
         else
         {
@@ -459,10 +464,35 @@ class QuizService
 
             $levelHistoryArray =explode(",", $levelHistory);
             $levelHistoryArray[] = $newLevel;
+
         }
 
         $levelHistory =implode(",", $levelHistoryArray);
         return $levelHistory;
+    }
+
+    public function newLevelHistoryTime($categoryQuestion, $newLevel)
+    {
+        $this->setInitialPivotData($categoryQuestion);
+
+        $levelHistoryTime = $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level_history_time'];
+
+
+        if(is_null($levelHistoryTime))
+        {
+            $levelHistoryTimeArray[0] = now();            
+        }
+        else
+        {
+            $levelHistoryTime = $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level_history_time'];
+
+            $levelHistoryTimeArray =explode(",", $levelHistoryTime);
+            $levelHistoryTimeArray[] = now();
+
+        }
+
+        $levelHistoryTime = implode(",", $levelHistoryTimeArray);
+        return $levelHistoryTime;
     }
 
     public function nextQuestionOfQuiz()

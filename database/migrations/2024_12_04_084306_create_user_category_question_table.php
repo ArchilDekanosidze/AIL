@@ -16,10 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_question_id')->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(true);
-            $table->float('level')->default(0);
+            $table->float('level')->default(1);
             $table->float('target_level')->default(100);
             $table->text('level_history')->nullable();
-            $table->text('answer_history')->nullable();
+            $table->time("level_history_time")->nullable();
+            $table->text('answer_history')->nullable();            
             $table->int('number_to_change_level')->default(10);
 
             $table->timestamps();

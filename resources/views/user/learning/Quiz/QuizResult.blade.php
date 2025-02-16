@@ -10,7 +10,7 @@
         <span>{{$quiz->finalPercentage}}</span>
     <div>
         <canvas id="myChart"></canvas>
-      </div>
+    </div>
 
 </div>
 @endsection
@@ -18,8 +18,8 @@
 
 
 @section('scripts')
-    {{-- <script src="{{asset('assets/js/chart.js')}}"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{asset('assets/js/chart.js')}}"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
     <script>
         $(document).ready(function() {
         

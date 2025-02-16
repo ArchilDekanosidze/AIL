@@ -23,6 +23,8 @@ class QuizService
     private $selectedQuestions ;
     public $quiz;
     public $allQuestionAnswered  = 0;
+    public $isCurrentQuestionShowedAnswer = 0;
+    public $pivotDataForUpdatingCategory;
 
 
 
@@ -221,25 +223,11 @@ class QuizService
         $quiz = Quiz::find($quizId);
         $questionId =  $this->request->questionId;
         $question = Question::find($questionId);
-        $userAnswerStatus =  $quiz->quizQuestions->where("question_id", $questionId)->first()->user_answer;
         $answer = $question->back;
 
-        if($userAnswerStatus != null)
-        {
-            return $answer;
-        }
-
-        $userAnswer = $this->getUserAnswer();
-      
-        $timeLeft = $this->getTimeleft($quiz);
-
-        if($timeLeft> 0)
-        {
-            $this->changeQuizData($userAnswer,  $quiz,  $question);
-            $this->changeQuestionAndUserCategoryQuestion($userAnswer, $question);
-        }
-      
+        $this->checkForUpdateQuizData($quiz, $question);
         return $answer;
+
     }
 
     public function getUserAnswer()
@@ -248,7 +236,7 @@ class QuizService
         $p2CheckBox = $this->request->p2CheckBox;
         $p3CheckBox = $this->request->p3CheckBox;
         $p4CheckBox = $this->request->p4CheckBox;
-        $userAnswer = 0;
+        $userAnswer = null;
         if($p1CheckBox == "true")
         {
             $userAnswer = 1;
@@ -265,9 +253,34 @@ class QuizService
         {
             $userAnswer = 4;
         }
+        if(is_null($userAnswer) && $this->isCurrentQuestionShowedAnswer)
+        {
+            $userAnswer = 0;
+        }
         return $userAnswer;
     }
 
+    public function checkForUpdateQuizData($quiz, $question)
+    {
+        $userAnswerStatus =  $quiz->quizQuestions->where("question_id", $question->id)->first()->user_answer;
+        if($userAnswerStatus != null)
+        {
+            return;
+        }
+        $userAnswer = $this->getUserAnswer();
+
+      
+        $timeLeft = $this->getTimeleft($quiz);
+
+        if($timeLeft> 0)
+        {
+            $this->changeQuizData($userAnswer,  $quiz,  $question);
+        }
+        else
+        {
+            $this->saveQuizData($quiz);   
+        }
+    }
     public function changeQuizData($userAnswer,  $quiz,  $question)
     {
         $quizQuestion = QuizQuestion::where("quiz_id", $quiz->id)->where("question_id", $question->id)->first();
@@ -275,21 +288,67 @@ class QuizService
         $quizQuestion->save();
     }
 
-    public function changeQuestionAndUserCategoryQuestion($userAnswer, $question)
+
+    public function saveQuizData(Quiz $quiz)
     {
-        $this->changeQuestion($userAnswer, $question);
-        $isCorrect = $userAnswer == $question->answer;
+        if($quiz->status == "ended")
+        {
+            return;
+        }
+        $rightAnswers = 0;
+        $wrongAnswers = 0;
+        $notAnswers = 0;
+        $quizQuestions = $quiz->quizQuestions;
+        foreach ($quizQuestions as $quizQuestion) 
+        {
+            if($quizQuestion->user_answer == 0 || $quizQuestion->user_answer == null)
+            {
+                $notAnswers++;
+            } 
+            else
+            {
+                $question = Question::find($quizQuestion->question_id);
+                if($quizQuestion->user_answer == $question->answer)
+                {
+                    $rightAnswers++;
+                    $this->changeQuestionAndUserCategoryQuestion(1, $question);
+                }
+                else
+                {
+                    $wrongAnswers++;     
+                    $this->changeQuestionAndUserCategoryQuestion(0, $question);
+                }
+            }
+        }
+        $this->user->categoryQuestions()->syncWithoutDetaching($this->pivotDataForUpdatingCategory);
+        
+        $quiz->rightAnswers = $rightAnswers;
+        $quiz->wrongAnswers = $wrongAnswers;
+        $quiz->notAnswers = $notAnswers;
+        $quiz->finalPercentage =floor(($rightAnswers*3 - $wrongAnswers)*100 /($quiz->count*3));
+        $quiz->status = 'ended';
+
+        $quiz->save();
+        
+    }
+
+    public function changeQuestionAndUserCategoryQuestion($isCorrect, $question)
+    {
+        $this->changeQuestion($isCorrect, $question);
 
         $categoriesId = $this->questionAncestorsAndSelfId($question);
 
         $categoriesQuestion = $this->user->categoryQuestions->whereIn("id", $categoriesId);
 
-        $this->updatecategoriesQuestion($categoriesQuestion, $userAnswer, $question);       
+
+        $this->updatecategoriesQuestion($categoriesQuestion, $isCorrect, $question);  
+
     }
 
-    public function changeQuestion($userAnswer, $question)
+ 
+
+    public function changeQuestion($isCorrect, $question)
     {
-        $isCorrect = $userAnswer == $question->answer;
         if($isCorrect)
         {
             $question->percentage =min(($question->percentage * $question->count + 3)/$question->count , 100);
@@ -310,37 +369,46 @@ class QuizService
         return $categoriesId;
     }
 
-    public function updatecategoriesQuestion($categoriesQuestion, $userAnswer, $question)
+    public function updatecategoriesQuestion($categoriesQuestion, $isCorrect, $question)
     {
-        $data = [];
         foreach ($categoriesQuestion as $categoryQuestion)
-         {        
+        {        
                       
-            $newAnswerHistory = $this->newAnswerHistory($categoryQuestion, $userAnswer, $question);
+            $newAnswerHistory = $this->newAnswerHistory($categoryQuestion, $isCorrect, $question);
             $newLevel = $this->newlevel($categoryQuestion, $newAnswerHistory);
             $levelHistory = $this->newLevelHistory($categoryQuestion, $newLevel);           
-    
-            $data[$categoryQuestion->id] = ['answer_history' => $newAnswerHistory ,
-                'level_history' => $levelHistory,
-                'level' =>     $newLevel          ];
-    
-            }
-    
-        $this->user->categoryQuestions()->syncWithoutDetaching($data);
+            
+            $this->pivotDataForUpdatingCategory[$categoryQuestion->id] = ['answer_history' => $newAnswerHistory ,
+            'level_history' => $levelHistory,
+            'level' =>     $newLevel          ];            
+        }
     }
 
-
-    public function newAnswerHistory($categoryQuestion, $userAnswer, $question)
+    public function setInitialPivotData($categoryQuestion)
     {
-        $isCorrect = $userAnswer == $question->answer;
+        $isSetcategoryInPivotData = isset($this->pivotDataForUpdatingCategory[$categoryQuestion->id]);
+        if($isSetcategoryInPivotData)
+        {
+            return;
+        }
+        $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['answer_history'] = $categoryQuestion->pivot->answer_history ;
+        $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level_history'] = $categoryQuestion->pivot->level_history ;
+        $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level'] = $categoryQuestion->pivot->level ;
 
-        $answerHistory = $categoryQuestion->pivot->answer_history;
-        if($answerHistory == "")
+    }
+
+    public function newAnswerHistory($categoryQuestion, $isCorrect)
+    {
+
+        $this->setInitialPivotData($categoryQuestion);
+        $answer_history = $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['answer_history'];
+        if(is_null($answer_history))
         {
             $answerHistoryArray[0] = $isCorrect ? 1 : 0;
         }
         else
         {
+            $answerHistory = $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['answer_history'];
             $answerHistoryArray =explode(",", $answerHistory);
             $answerHistoryArray[] = $isCorrect ? 1 : 0;
         }
@@ -372,14 +440,19 @@ class QuizService
 
     public function newLevelHistory($categoryQuestion, $newLevel)
     {
-        $levelHistory = $categoryQuestion->pivot->level_history;
+        $this->setInitialPivotData($categoryQuestion);
 
-        if($levelHistory == "")
+        $levelHistory = $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level_history'];
+
+
+        if(is_null($levelHistory))
         {
             $levelHistoryArray[0] = $newLevel;
         }
         else
         {
+            $levelHistory = $this->pivotDataForUpdatingCategory[$categoryQuestion->id]['level_history'];
+
             $levelHistoryArray =explode(",", $levelHistory);
             $levelHistoryArray[] = $newLevel;
         }
@@ -393,6 +466,12 @@ class QuizService
         $quizId =  $this->request->quizId;
         $quiz = Quiz::find($quizId);
         $quizQuestionId =  $this->request->quizQuestionId;
+
+        $questionId =  $this->request->questionId;
+        $question = Question::find($questionId);
+
+
+        $this->checkForUpdateQuizData($quiz, $question);
         
         
         $quizQuestion = QuizQuestion::where("quiz_id", $quiz->id)->where("id",">", $quizQuestionId)
@@ -406,12 +485,19 @@ class QuizService
         $quizId =  $this->request->quizId;
         $quiz = Quiz::find($quizId);
         $quizQuestionId =  $this->request->quizQuestionId;
+
+        $questionId =  $this->request->questionId;
+        $question = Question::find($questionId);
+
+        
+        $this->checkForUpdateQuizData($quiz, $question);
             
         $quizQuestion = QuizQuestion::where("quiz_id", $quiz->id)->where("id","<", $quizQuestionId)
         ->orderBy("id", "desc")->first();
 
         return $quizQuestion;
     }
+
 
 
 

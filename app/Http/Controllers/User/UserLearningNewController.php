@@ -69,12 +69,12 @@ class UserLearningNewController extends Controller
 
         $question = $quizQuestion->question;
 
-        return view('user.learning.onlineQuizInProgress.onlineQuizInProgress', compact('quiz', 'question', 'quizQuestion', "errorMessages", "timeLeft", "allQuestionAnswered"));
+        return view('user.learning.Quiz.onlineQuizInProgress', compact('quiz', 'question', 'quizQuestion', "errorMessages", "timeLeft", "allQuestionAnswered"));
     }
 
     public function showAnswer(Request $request)
     {
-
+        $this->quizService->isCurrentQuestionShowedAnswer = 1;
         $answer = $this->quizService->showAnswer();
         return $answer;
     }
@@ -84,6 +84,7 @@ class UserLearningNewController extends Controller
     public function nextQuestion()
     {
         $quizQuestion = $this->quizService->nextQuestionOfQuiz();
+
 
         if(is_null($quizQuestion))
         {
@@ -109,6 +110,13 @@ class UserLearningNewController extends Controller
         $question = $quizQuestion->question;
 
         return ["question" => $question, "quizQuestion" => $quizQuestion];
+    }
+
+    public function saveQuizDataAndShowResult(Quiz $quiz)
+    {
+        $this->quizService->saveQuizData($quiz);
+        return view('user.learning.Quiz.QuizResult', compact('quiz'));
+ 
     }
 
 

@@ -90,3 +90,12 @@
 {
     display: none;
 }
+.learningSettingDirectDiv
+{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 600px;
+    font-size: 20px;
+    font-weight: bold;
+}

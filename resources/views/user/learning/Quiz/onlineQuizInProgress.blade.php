@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{asset('assets/css/user/learning/onlineQuizInProgress/onlineQuizInProgress.css')}}">
+<link rel="stylesheet" href="{{asset('assets/css/user/learning/Quiz/onlineQuizInProgress.css')}}">
 @endsection
 @section('content')
 <div class="onlineQuizInProgress main-body">
@@ -51,10 +51,16 @@
     
     
     <div class="buttons">
-        <button class="prev btn disabled">قبلی</button>
-        <button class="questionToggle btn">ثبت و مشاهده پاسخ</button>
-        <button class="next btn @if($quiz->count == 1) disabled @endif" >بعدی</button>
+        <div class="nextPrevAnswer">
+            <button class="prev btn disabled">قبلی</button>
+            <button class="questionToggle btn">مشاهده پاسخ</button>
+            <button class="next btn @if($quiz->count == 1) disabled @endif" >بعدی</button>
+        </div>
+        <div class="endQuizbuttons">
+            <a href="{{route('learning.saveQuizDataAndShowResult', $quiz->id)}}" class="endQuiz">ثبت و مشاهده نتیجه آزمون</a>
+        </div>
     </div>
+
 
 </div>
 @endsection
@@ -84,7 +90,7 @@
             }
 
             function newQuestion(result) {
-                $(".questionToggle").text("ثبت و مشاهده پاسخ")
+                $(".questionToggle").text("مشاهده پاسخ")
                 $(".questionDataDiv").show();
                 $(".answerDiv").hide();
                 $(".questionDataDiv .pdiv").removeClass('disabled');
@@ -102,7 +108,17 @@
                 $(".questionId").val(result.question.id)
                 $(".answerRetrived").val(0)
                 $(".userAnswer").val(result.quizQuestion.user_answer)
-                $(".questionAswer").val(null)
+                if(result.quizQuestion.user_answer)
+                {
+                    $(".questionAswer").val(result.question.answer)
+                    $(".answerDiv").text(result.question.back)
+                    $(".answerRetrived").val(1);
+                    $(".questionDataDiv .pdiv").addClass('disabled');
+                }
+                else
+                {
+                    $(".questionAswer").val(null)
+                }
                 $(".questionsPlace").text(result.quizQuestion.place)
 
                 if(parseInt(result.quizQuestion.place) >1 )
@@ -123,6 +139,20 @@
                     $(".buttons .next").addClass("disabled")
                 }
 
+                changeColorBaseOnAnswer()
+
+            }
+
+            function createDataForAjax() {
+                data = {quizId:$(".quizId").val(),
+                    questionId: $('.questionId').val(),
+                    quizQuestionId: $('.quizQuestionId').val(),
+                    p1CheckBox : $(".p1CheckBox").is(":checked"),  
+                    p2CheckBox : $(".p2CheckBox").is(":checked"),  
+                    p3CheckBox : $(".p3CheckBox").is(":checked"),  
+                    p4CheckBox : $(".p4CheckBox").is(":checked"),                      
+                }       
+                return data;
             }
 
 
@@ -173,19 +203,13 @@
             })
 
             $(".questionToggle").click(function(){  
-                if($(this).text() == "ثبت و مشاهده پاسخ")     
+                if($(this).text() == "مشاهده پاسخ")     
                 {        
                     $(this).text("مشاهده سوال");
                     if($(".answerRetrived").val() == 0)
                     {                        
                         var url = "{{route('user.learning.quizInProgress.showAnswer')}}";        
-                        data = {quizId:$(".quizId").val(),
-                          questionId: $('.questionId').val(),
-                          p1CheckBox : $(".p1CheckBox").is(":checked"),  
-                          p2CheckBox : $(".p2CheckBox").is(":checked"),  
-                          p3CheckBox : $(".p3CheckBox").is(":checked"),  
-                          p4CheckBox : $(".p4CheckBox").is(":checked"),                      
-                        }       
+                        data = createDataForAjax();
                         result = Ajax(url, data)
                         $(".answerDiv").text(result)
                         console.log(result)
@@ -197,7 +221,7 @@
                 }
                 else if($(this).text() == "مشاهده سوال")     
                 {  
-                    $(this).text("ثبت و مشاهده پاسخ")
+                    $(this).text("مشاهده پاسخ")
                     $(".questionDataDiv").show();
                     $(".answerDiv").hide();
                 }
@@ -206,9 +230,7 @@
 
             $(".prev").click(function () {
                 var url = "{{route('user.learning.quizInProgress.prevQuestion')}}";        
-                        data = {quizId:$(".quizId").val(),
-                        quizQuestionId: $('.quizQuestionId').val(),                                             
-                        }       
+                data = createDataForAjax();  
                 result = Ajax(url, data)
                 if(result.errorMessages)
                 {
@@ -221,9 +243,7 @@
 
             $(".next").click(function () {
                 var url = "{{route('user.learning.quizInProgress.nextQuestion')}}";        
-                        data = {quizId:$(".quizId").val(),
-                        quizQuestionId: $('.quizQuestionId').val(),                                             
-                        }       
+                data = createDataForAjax();    
                 result = Ajax(url, data)
                 if(result.errorMessages)
                 {

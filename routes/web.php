@@ -39,6 +39,7 @@ Route::get('/learning/onlineQuizInProgress/{quiz}', [UserLearningNewController::
 Route::post('/learning/quizInProgress/showAnswer', [UserLearningNewController::class, 'showAnswer'])->name('user.learning.quizInProgress.showAnswer');
 Route::post('/learning/quizInProgress/nextQuestion', [UserLearningNewController::class, 'nextQuestion'])->name('user.learning.quizInProgress.nextQuestion');
 Route::post('/learning/quizInProgress/prevQuestion', [UserLearningNewController::class, 'prevQuestion'])->name('user.learning.quizInProgress.prevQuestion');
+Route::get('/learning/saveQuizDataAndShowResult/{quiz}', [UserLearningNewController::class, 'saveQuizDataAndShowResult'])->name('learning.saveQuizDataAndShowResult');
 
 
 

@@ -4,6 +4,21 @@
     justify-content: space-between;
     width: inherit;
 }
+.onlineQuizInProgress .buttons .nextPrevAnswer
+{
+    display: flex;
+    justify-content: space-between;
+}
+.onlineQuizInProgress .buttons .nextPrevAnswer .questionToggle
+{
+    margin-right: 50px;
+    margin-left: 50px;
+}
+.endQuizbuttons
+{
+    display: flex;
+    justify-content: end;
+}
 .onlineQuizInProgress  .btn
 {
     margin-bottom: 20px;
@@ -13,9 +28,24 @@
     display: flex;    
     justify-content: center;
     align-items: center;
-    width: 300px;
+    width: fit-content;
     background: #ba84f0;
     border-radius: 30px;
+    padding: 20px 50px;
+}
+.endQuizbuttons .endQuiz
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    background: #a7f54f;
+    border-radius: 30px;
+    padding: 10px;
 }
 
 .answerDiv

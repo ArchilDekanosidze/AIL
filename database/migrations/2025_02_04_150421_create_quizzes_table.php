@@ -19,6 +19,13 @@ return new class extends Migration
             $table->int("count")->default(0);
             $table->int("time")->default(0);
             $table->string("status")->default("created");
+            $table->int("rightAnswers")->nullable();
+            $table->int("wrongAnswers")->nullable();
+            $table->int("notAnswers")->nullable();
+            $table->int("finalPercentage")->nullable();
+
+            
+
             $table->timestamp("started_at");
             $table->timestamps();
         });

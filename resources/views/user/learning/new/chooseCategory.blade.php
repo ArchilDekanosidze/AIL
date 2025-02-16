@@ -48,15 +48,15 @@
         </div>
 
         <div class="learningSettingDiv">
-            <div class="quizNameDiv">
+            <div class="quizNameDiv learningSettingDirectDiv">
                 <lable for="quizName"> نام آزمون:</lable>
                 <input id="quizName" name="quizName" type="text">
             </div>
-            <div class="testCountDiv">
+            <div class="testCountDiv learningSettingDirectDiv">
                 <lable for="testCount"> تعداد سوالات آزمون:</lable>
                 <input id="testCount" name="testCount" type="number" min="0" max="150" value="40">
             </div>
-            <div class="testTimeDiv">
+            <div class="testTimeDiv learningSettingDirectDiv">
                 <lable for="testTime"> مدت زمان آزمون بر حسب دقیقه:</lable>
                 <input id="testTime" name="testTime" type="number" min="0" max="300" value="60">
             </div>

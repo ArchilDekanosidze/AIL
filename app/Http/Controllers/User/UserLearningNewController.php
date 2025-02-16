@@ -23,13 +23,6 @@ class UserLearningNewController extends Controller
 
     }
 
-    public function chooseCategory()
-    {       
-        $user = auth()->user();
-        $userCategories = $user->categoryQuestions()->get()->sortBy('lft');
-        $allCategories = CategoryQuestion::withDepth()->get()->sortBy('_lft')->skip(1);
-       return view('user.learning.new.chooseCategory', compact('userCategories', 'allCategories'));
-    }
 
     public function start(Request $request)
     {                    

@@ -29,10 +29,11 @@ Route::post('/categoryQuestion/remove_category_from_user', [UserCategoryQuestion
 
 // user profile
 Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.index');
+Route::get('/learning/chooseCategory', [UserProfileController::class, 'chooseCategory'])->name('user.learning.new.chooseCategory');
+Route::get('/learning/quizList', [UserProfileController::class, 'quizList'])->name('user.learning.quizList');
 
 
 //user learning
-Route::get('/learning/chooseCategory', [UserLearningNewController::class, 'chooseCategory'])->name('user.learning.new.chooseCategory');
 Route::post('/learning/start', [UserLearningNewController::class, 'start'])->name('user.learning.new.start');
 
 Route::get('/learning/onlineQuizInProgress/{quiz}', [UserLearningNewController::class, 'onlineQuizInProgress'])->name('user.learning.onlineQuizInProgress');

@@ -1,3 +1,9 @@
+.userProfile
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
 .userProfile .profileCard
 {
     width: 22%;

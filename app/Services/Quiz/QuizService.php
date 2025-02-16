@@ -107,6 +107,10 @@ class QuizService
         foreach ($this->categoryPercentage as  $categoryId => $percentage) {
             $this->totalPercentage += $percentage;
         }
+        if($this->totalPercentage == 0)
+        {
+            $this->totalPercentage = 100;
+        }
     }
 
     public function NormilizeCatgoryPercentage()

@@ -1,0 +1,9 @@
+.quizTable
+{
+    font-size: 20px !important;
+    width: 100%;
+}
+.quizTable td
+{
+    padding: 0px 10px;
+}

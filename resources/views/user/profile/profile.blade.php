@@ -8,6 +8,10 @@
     <div class="profileCard">        
         <a class="btn btn-primary" href="{{route('user.learning.new.chooseCategory')}}">ساخت آزمون جدید</a>
     </div>
+
+    <div class="profileCard">        
+        <a class="btn btn-primary" href="{{route('user.learning.quizList')}}">لیست آزمون های من</a>
+    </div>
 </div>
 @endsection
 

@@ -502,7 +502,17 @@ class QuizService
         return $quizQuestion;
     }
 
-
+    public function checkForEndedQuiz()
+    {
+        $quizzes = $this->user->quizzes()->where("status" , "!=" , "ended")->get();
+        foreach ($quizzes as $quiz) {
+            $timeLeft = $this->getTimeleft($quiz);
+            if($timeLeft == 0)
+            {
+                $this->saveQuizData($quiz);  
+            }
+        }
+    }
 
 
 

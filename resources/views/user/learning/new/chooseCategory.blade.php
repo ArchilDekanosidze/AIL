@@ -9,14 +9,15 @@
     <form  action="{{ route('user.learning.new.start') }}" method="post" >
         @csrf
         <ul>
-            @foreach($allCategories as $category)
-                @if($userCategories->contains($category)) 
+            @foreach($allCategories as $category)            
+                @if($userCategories->contains($category))                        
                     <li class="catCheckBoxLi" style="margin-right : {{$category->depth *50}}px; @php  if($category->depth >1) echo 'display:none' @endphp" >                      
                         @if($category->descendants()->count() > 0 )
                             <span class="triangelForCategory">
                                 <span class="toggle-icon">&#9664</span>
                             </span>
                         @endif
+
                         <input type="checkbox" name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
                         @if($category->descendants()->count() == 0)
                             <div class="targetLevelDiv advancedSettingDiv">

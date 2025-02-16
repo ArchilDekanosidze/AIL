@@ -40,7 +40,7 @@
     
     <div class="quizInfo">
         <div class="questionCount">
-            <span class="questionsPlace">{{$quizQuestion->place}}</span>/{{$quiz->count}}
+            <span class="questionsPlace">{{$quizQuestion->place}}</span>/<span class="totalQuizQuestionCount">{{$quiz->count}}</span>
         </div>
         <div class="timerMainDiv">
             مدت زمان باقیمانده: 
@@ -52,7 +52,7 @@
     
     <div class="buttons">
         <button class="prev btn disabled">قبلی</button>
-        <button class="questionToggle btn">مشاهده پاسخ</button>
+        <button class="questionToggle btn">ثبت و مشاهده پاسخ</button>
         <button class="next btn @if($quiz->count == 1) disabled @endif" >بعدی</button>
     </div>
 
@@ -71,7 +71,6 @@
                 {
                     return
                 }          
-                console.log(userAnswer)
                 $(".p" + userAnswer).find(".pCheckBox").prop("checked", "checked")
                 if(userAnswer == questionAswer)
                 {
@@ -83,17 +82,57 @@
                     $(".p" + questionAswer).addClass("correctAnswer")   
                 }
             }
+
+            function newQuestion(result) {
+                $(".questionToggle").text("ثبت و مشاهده پاسخ")
+                $(".questionDataDiv").show();
+                $(".answerDiv").hide();
+                $(".questionDataDiv .pdiv").removeClass('disabled');
+                
+                $(".questionFront").html(result.question.front)
+                $(".p1Text").html(result.question.p1)
+                $(".p2Text").html(result.question.p2)
+                $(".p3Text").html(result.question.p3)
+                $(".p4Text").html(result.question.p4)
+                $(".questionDataDiv .pCheckBox").prop('checked', false);
+                $(".pdiv").removeClass("wrongAnswer")   
+                $(".pdiv").removeClass("correctAnswer")  
+
+                $(".quizQuestionId").val(result.quizQuestion.id)
+                $(".questionId").val(result.question.id)
+                $(".answerRetrived").val(0)
+                $(".userAnswer").val(result.quizQuestion.user_answer)
+                $(".questionAswer").val(null)
+                $(".questionsPlace").text(result.quizQuestion.place)
+
+                if(parseInt(result.quizQuestion.place) >1 )
+                {
+                    $(".buttons .prev").removeClass("disabled")
+                }
+                else
+                {
+                    $(".buttons .prev").addClass("disabled")
+                }
+
+                if(parseInt(result.quizQuestion.place) < parseInt($('.totalQuizQuestionCount').text()) )
+                {
+                    $(".buttons .next").removeClass("disabled")
+                }
+                else
+                {
+                    $(".buttons .next").addClass("disabled")
+                }
+
+            }
+
+
             if($(".allQuestionAnswered").val() == 1)
             {
                 $(".questionDataDiv").addClass("quizDisabled");
             }
             changeColorBaseOnAnswer()
 
-            if(userAnswer)
-            {
-                $(".questionDataDiv .pdiv").addClass('disabled');
-
-            }   
+ 
 
             let timeLeft = {{$timeLeft}};
             @if($timeLeft>0)
@@ -134,7 +173,7 @@
             })
 
             $(".questionToggle").click(function(){  
-                if($(this).text() == "مشاهده پاسخ")     
+                if($(this).text() == "ثبت و مشاهده پاسخ")     
                 {        
                     $(this).text("مشاهده سوال");
                     if($(".answerRetrived").val() == 0)
@@ -158,11 +197,26 @@
                 }
                 else if($(this).text() == "مشاهده سوال")     
                 {  
-                    $(this).text("مشاهده پاسخ")
+                    $(this).text("ثبت و مشاهده پاسخ")
                     $(".questionDataDiv").show();
                     $(".answerDiv").hide();
                 }
                 
+            })
+
+            $(".prev").click(function () {
+                var url = "{{route('user.learning.quizInProgress.prevQuestion')}}";        
+                        data = {quizId:$(".quizId").val(),
+                        quizQuestionId: $('.quizQuestionId').val(),                                             
+                        }       
+                result = Ajax(url, data)
+                if(result.errorMessages)
+                {
+                    alert(result.errorMessages);
+                    return;
+                }
+
+                newQuestion(result)                
             })
 
             $(".next").click(function () {
@@ -171,38 +225,13 @@
                         quizQuestionId: $('.quizQuestionId').val(),                                             
                         }       
                 result = Ajax(url, data)
-                console.log(result);
                 if(result.errorMessages)
                 {
                     alert(result.errorMessages);
                     return;
                 }
 
-                $(".questionToggle").text("مشاهده پاسخ")
-                $(".questionDataDiv").show();
-                $(".answerDiv").hide();
-                $(".questionDataDiv .pdiv").removeClass('disabled');
-                
-                $(".questionFront").html(result.question.front)
-                $(".p1Text").html(result.question.p1)
-                $(".p2Text").html(result.question.p2)
-                $(".p3Text").html(result.question.p3)
-                $(".p4Text").html(result.question.p4)
-                $(".questionDataDiv .pCheckBox").prop('checked', false);
-                $(".pdiv").removeClass("wrongAnswer")   
-                $(".pdiv").removeClass("correctAnswer")  
-
-                $(".quizQuestionId").val(result.quizQuestion.id)
-                $(".questionId").val(result.question.id)
-                $(".answerRetrived").val(0)
-                $(".userAnswer").val(result.quizQuestion.user_answer)
-                $(".questionAswer").val(null)
-                $(".questionsPlace").text(result.quizQuestion.place)
-
-
-
-
-                
+                newQuestion(result)                
             })
 
 

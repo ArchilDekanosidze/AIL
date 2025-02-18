@@ -31,11 +31,32 @@
             let myChart = null;
             let HistoryChart = null;
             let result;
+            let index;
             function showChart(parentCategoryId, childerensOrParent) {
-
+                getDataForChart(parentCategoryId, childerensOrParent)
+                console.log(result)             
+                showPieChart()
+                showLineChart()                               
+            }
+            function getDataForChart(parentCategoryId, childerensOrParent) {
                 var url = "{{route('user.profile.getChartResult')}}";        
                 data =  {parentCategoryId : parentCategoryId, childerensOrParent: childerensOrParent} ;
-                result = Ajax(url, data)
+                result = Ajax(url, data)  
+            }
+            function showPieChart() 
+            {
+                labels = result.labels
+                levels = result.levels
+                if(result.ids.length == 1)
+                {
+                    $("#myChart").hide()
+                    return;   
+                }
+                else
+                {
+                    $("#myChart").show()
+                }
+                // console.log(result);
 
                 $(".parentCategoryName").html(result.ParentCategoryName)
                 if(result.OriginalParentCategoryId == null)
@@ -46,9 +67,6 @@
                 {
                     $(".parentBtn").removeClass("disabled")
                 }
-
-                labels = result.labels
-                levels = result.levels
 
                 const ctx = document.getElementById('myChart');
                 if(myChart)
@@ -70,74 +88,80 @@
                             if(elements.length > 0 )
                             {
                                 index = elements[0].index;
-                                showChart(result.ids[index], "child")
+                                showChart(result.ids[index])
                             }
                         }
                     }
                 });
+            }
+            function showLineChart() {
+                labels = result.labels
+                levels = result.levels
 
+                
                 const ctxHistory = document.getElementById('HistoryChart');
                 if(HistoryChart)
                 {
                     HistoryChart.destroy()   
                 }
-            
+                    
                 level_history = result.level_history
                 level_history_times = result.level_history_times
 
-                let allLabels = new Set();
+                if(result.ids.length > 1)
+                {
 
-                level_history_times.forEach(elements => {
-                    elements.forEach(element => {
-                        allLabels.add(element)
+
+                    datasets = []
+                    for (i = 0; i < level_history.length; i++) {                   
+                        datasets.push({
+                            label: labels[i],
+                            data: level_history[i],
+                            pointRadius : 10, 
+                        })
+                    }
+
+                    console.log(result)
+
+                    HistoryChart = new Chart(ctxHistory, {
+                        type: 'line',
+                        data: {
+                            labels: level_history_times,
+                            datasets: datasets,
+                        },
+                        options: {
+
+                        }
                     });
-                });
-                allLabels = Array.from(allLabels).sort();
-                console.log(allLabels)
-                datasets = []
-                for (i = 0; i < level_history.length; i++) {
-                    newLevelHistory = [];
-                    for(j = 0; j<level_history_times[i].length; j++)
-                    {
-                        newLevelHistory = level_history
-                        console.log(level_history)
-                        // console.log(level_history_times[i][j])
-                        // console.log(allLabels)
-                        // console.log(jQuery.inArray(level_history_times[j][j], allLabels))
-                    }
-                    datasets.push({
-                        label: labels[i],
-                        data: data,
-                        pointRadius : 10, 
-                    })
                 }
+                else
+                {
+                    alert(level_history);
+                    HistoryChart = new Chart(ctxHistory, {
+                        type: 'line',
+                        data: {
+                            labels: level_history_times,
+                            datasets: [
+                                {
+                                    label : result.labels,
+                                    data : level_history,
+                                    pointRadius : 10, 
+                                }
+                            ],
+                        },
+                        options: {
 
-
-                HistoryChart = new Chart(ctxHistory, {
-                    type: 'line',
-                    data: {
-                        labels: allLabels,
-                        datasets: datasets,
-                    },
-                    options: {
-
-                    }
-                });
-
-
-
-
-
-
-
+                        }
+                    });
+                }
             }
 
             $(".parentBtn").click(function () {
-                showChart(result.OriginalParentCategoryId, "child")
+                showChart(result.OriginalParentCategoryId)
             })
 
                       
-            showChart(6, "child")
+            showChart(6)
 
             
 

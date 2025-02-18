@@ -52,7 +52,7 @@ class User extends Authenticatable
     public function categoryQuestions()
     {
         return $this->belongsToMany(CategoryQuestion::class, "user_category_question")
-        ->withPivot('is_active','level','target_level', 'level_history', 'level_history_time', 'answer_history', 'number_to_change_level')
+        ->withPivot('is_active','level','target_level', 'history', 'number_to_change_level')
         ->where('user_category_question.is_active', true)
         ->withTimestamps();
     }
@@ -61,6 +61,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Quiz::class);
     }
+
+
 
     
 }

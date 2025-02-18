@@ -18,11 +18,8 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->float('level')->default(1);
             $table->float('target_level')->default(100);
-            $table->text('level_history')->nullable();
-            $table->time("level_history_time")->nullable();
-            $table->text('answer_history')->nullable();            
+            $table->text('history')->nullable();
             $table->int('number_to_change_level')->default(10);
-
             $table->timestamps();
         });
     }

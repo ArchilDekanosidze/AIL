@@ -39,4 +39,8 @@ class Quiz extends Model
 
     }
 
+    protected $casts = [
+        'history' => 'array',
+    ];
+
 }

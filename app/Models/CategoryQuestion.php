@@ -21,8 +21,8 @@ class CategoryQuestion extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, "user_category_question")
-        ->withPivot('is_active','level','target_level', 'level_history', 'level_history_time', 'answer_history', 'number_to_change_level')
-        ->where('user_category_question.is_active', true)
+        ->withPivot('is_active','level','target_level', 'history', 'number_to_change_level')
+        // ->where('user_category_question.is_active', true)
         ->withTimestamps();
     }
 
@@ -46,22 +46,7 @@ class CategoryQuestion extends Model
         return implode(" -> ", $ancestorName->toArray());
     }
 
-    // public function getAllSubcatWithSelf()
-    // {
-    //     $categoriesId = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id')->toArray();
-    //     return $categoriesId;
-    // }
 
-    public function updateTargetLevel($targetLevel)
-    {
-    //     $data = $categoriesId->mapWithKeys(function($id){
-    //         return [$id => ['is_active' => false]];
-    //     })->toArray();
-
-    //     $this->categoryQuestions()->syncWithoutDetaching($data);
-
-    //     return true;
-    }
 
 
 

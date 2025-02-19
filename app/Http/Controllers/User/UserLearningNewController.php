@@ -31,12 +31,13 @@ class UserLearningNewController extends Controller
             return Redirect::back()->withErrors(['msg' => 'لطفا حداقل یک دسته بندی انتخاب کنید']);
         }
         
-        $this->quizService->updateUserCategoriesData();            
+        $this->quizService->UpdateUserCategorieslevelAndNumber();    
+              
 
         $selectedQuestions = $this->quizService->createQuestionsForQuiz();
-        $this->quizService->createQuiz($selectedQuestions);
+        $quizId = $this->quizService->createQuiz($selectedQuestions);
           
-        return redirect()->route('user.learning.onlineQuizInProgress', $this->quizService->quiz->id);
+        return redirect()->route('user.learning.onlineQuizInProgress', $quizId);
     }
 
     public function onlineQuizInProgress(Quiz $quiz)

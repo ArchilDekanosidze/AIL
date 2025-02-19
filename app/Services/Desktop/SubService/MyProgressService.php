@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Desktop;
+namespace App\Services\Desktop\SubService;
 
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;

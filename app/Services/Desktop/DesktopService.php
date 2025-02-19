@@ -1,7 +1,8 @@
 <?php
 namespace App\Services\Desktop;
 
-use App\Services\Desktop\MyProgressService;
+use App\Services\Desktop\SubService\MyProgressService;
+
 
 
 

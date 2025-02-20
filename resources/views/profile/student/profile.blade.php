@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{asset('assets/css/user/profile/profile.css')}}">
+<link rel="stylesheet" href="{{asset('assets/css/profile/student/profile.css')}}">
 @endsection
 @section('content')
-<div class="userProfile main-body">
+<div class="userProfile main-body"> 
     <div class="profileCard">        
-        <a class="btn btn-primary" href="{{route('user.profile.new.chooseCategoryForLearning')}}">ساخت آزمون جدید</a>
+        <a class="btn btn-primary" href="{{route('quiz.student.chooseCategories')}}">ساخت آزمون جدید</a>
     </div>
 
     <div class="profileCard">        

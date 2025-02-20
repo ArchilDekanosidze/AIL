@@ -6,12 +6,23 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserHomeController;
-use App\Http\Controllers\User\UserLearningNewController;
-use App\Http\Controllers\User\UserQuestionController;
 use App\Http\Controllers\Admin\AdminQuestionController;
+use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\User\Profile\UserProfileController;
 use App\Http\Controllers\User\Category\UserCategoryQuestionController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
+use App\Http\Controllers\Quiz\Choosecategory\QuizChooseCategoriesStudentController;
+
+
+
+
+//Quiz
+Route::get('/quiz/student/chooseCategories', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.student.chooseCategories');
+
+
+
+
+
 
 
 
@@ -29,7 +40,6 @@ Route::post('/categoryQuestion/remove_category_from_user', [UserCategoryQuestion
 
 // user profile
 Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.index');
-Route::get('/profile/chooseCategoryForLearning', [UserProfileController::class, 'chooseCategoryForLearning'])->name('user.profile.new.chooseCategoryForLearning');
 Route::get('/profile/quizList', [UserProfileController::class, 'quizList'])->name('user.profile.quizList');
 Route::get('/profile/myProgress', [UserProfileController::class, 'myProgress'])->name('user.profile.myProgress');
 Route::post('/profile/getChartResult', [UserProfileController::class, 'getChartResult'])->name('user.profile.getChartResult');

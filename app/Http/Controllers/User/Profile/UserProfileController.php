@@ -25,7 +25,7 @@ class UserProfileController extends Controller
     
     public function index()
     {
-       return view("user.profile.profile");
+       return view("profile.student.profile");
     }
 
     public function chooseCategoryForLearning()

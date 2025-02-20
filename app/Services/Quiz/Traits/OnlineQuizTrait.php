@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Quiz\Trait;
+namespace App\Services\Quiz\Traits;
 
 use App\Models\Quiz;
 use App\Models\Question;

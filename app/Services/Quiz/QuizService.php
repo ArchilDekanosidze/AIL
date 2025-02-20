@@ -3,8 +3,8 @@ namespace App\Services\Quiz;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Quiz\Trait\QuizTrait;
-use App\Services\Quiz\Trait\OnlineQuizTrait;
+use App\Services\Quiz\Traits\QuizTrait;
+use App\Services\Quiz\Traits\OnlineQuizTrait;
 use App\Services\Quiz\SubService\CreateQuizService;
 use App\Services\Quiz\SubService\SaveQuizDataService;
 use App\Services\Quiz\SubService\CreateQuizQuestionService;

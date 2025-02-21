@@ -13,6 +13,16 @@ class MyProgressService
 {
     use ActorTrait;
     private $request;
+    private $parentCategoryId;
+    private $OriginalParentCategory;
+    private $userCategories;
+    private $ids;
+    private $labels;
+    private $levels;
+    private $target_levels;
+    private $histories;
+    private $allTimes=[];
+    private $level_histories =[];
 
 
     public function __construct(Request $request)
@@ -24,98 +34,130 @@ class MyProgressService
 
     public function getProgressData()
     {
-        $parentCategoryId = 6;
-        $parentCategoryId = $this->request->parentCategoryId;
-        $OriginalParentCategory = CategoryQuestion::find($parentCategoryId);
-        $allCategoriesId = CategoryQuestion::withDepth()->where('parent_id', $parentCategoryId)->get()->sortBy('_lft')->pluck("id")->toArray();
-        $userCategories = $this->user->categoryQuestions()->whereIn("category_question_id", $allCategoriesId)->get()->sortBy('lft');
-        
-        $ids = $userCategories->pluck('id')->toArray();
-        $labels = $userCategories->pluck('name')->toArray();
-        $levels = $userCategories->pluck('pivot.level')->toArray();
-        $target_levels = $userCategories->pluck('pivot.target_level')->toArray();
-        $histories = $userCategories->pluck('pivot.history')->toArray();
+        $this->getUserCategories();
+        $this->setInitialData();
+        $this->setAllTimes();
+        $this->createEmptyLevelHistory();
+        $this->fillLevelHistory();
+        $this->fillNullValueInLevelHistory();
+        if($this->ids )
+        {
+            $data = $this->createDataArray();
+        }
+        else
+        {
+            $data = $this->createDataSingle();
+        }
+        return $data;
+    }
 
+    public function getUserCategories()
+    {
+        // $this->parentCategoryId = 7;
+        $this->parentCategoryId = $this->request->parentCategoryId;
+        $this->OriginalParentCategory = CategoryQuestion::find($this->parentCategoryId);
+        $allCategoriesId = CategoryQuestion::withDepth()->where('parent_id', $this->parentCategoryId)->get()->sortBy('_lft')->pluck("id")->toArray();
+        $this->userCategories = $this->user->categoryQuestions()->whereIn("category_question_id", $allCategoriesId)->get()->sortBy('lft');
+    }
 
-        $allTimes = [];
-        foreach ($histories as $history) {
+    public function setInitialData()
+    {
+        $this->ids = $this->userCategories->pluck('id')->toArray();
+        $this->labels = $this->userCategories->pluck('name')->toArray();
+        $this->levels = $this->userCategories->pluck('pivot.level')->toArray();
+        $this->target_levels = $this->userCategories->pluck('pivot.target_level')->toArray();
+        $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
+    }
+
+    public function setAllTimes() {
+        foreach ($this->histories as $history) {
             $history = json_decode($history, true);
             foreach ($history as $cell) {
                 $time = $cell['time'];
                 $time = (new Verta($time))->formatDate();
-                $allTimes[] = $time;
+                $this->allTimes[] = $time;
             }
         }
-        $allTimes = array_unique($allTimes);
-        sort($allTimes);
-        $level_histories = [];
-        foreach ($histories as $history) {
-            $level_histories[] = array_fill(0, count($allTimes), null);
+        $this->allTimes = array_unique($this->allTimes);
+        sort($this->allTimes);
+    }
+
+    public function createEmptyLevelHistory()
+    {
+        foreach ($this->histories as $history) {
+            $this->level_histories[] = array_fill(0, count($this->allTimes), null);
         }
-        for ($i=0; $i<count($histories) ; $i++) {
-            $history = $histories[$i];
+    }
+
+    public function fillLevelHistory()
+    {
+        for ($i=0; $i<count($this->histories) ; $i++) {
+            $history = $this->histories[$i];
             $history = json_decode($history, true);
             foreach ($history as $cell) {
                 $time = $cell['time'];
                 $time = (new Verta($time))->formatDate();
-                $index = array_search($time, $allTimes);
+                $index = array_search($time, $this->allTimes);
                 if($index>=0)
                 {
                     $level_histories[$i][$index] = $cell['level'];
                 }
             }
         }
-        for ($i=0; $i<count($level_histories) ; $i++) {
-            $level_histories_raw = $level_histories[$i];
+    }
+
+    public function fillNullValueInLevelHistory()
+    {
+        for ($i=0; $i<count($this->level_histories) ; $i++) {
+            $level_histories_raw = $this->level_histories[$i];
             for ($j=1; $j<count($level_histories_raw); $j++) {
-                if($level_histories[$i][$j] === null)
+                if($this->level_histories[$i][$j] === null)
                 {
-                    $level_histories[$i][$j] = $level_histories[$i][$j-1];
+                    $this->level_histories[$i][$j] = $this->level_histories[$i][$j-1];
                 }
             }
         }
-
-
-
-
-
+    }
+    public function createDataArray()
+    {
         $data = [
-            'ids' => $ids,
-            'labels' => $labels,
-            'levels' => $levels,
-            'target_levels' => $target_levels,
-            'level_history' => $level_histories,
-            'level_history_times' => $allTimes,
-            'OriginalParentCategoryId' => $OriginalParentCategory->parent_id,
-            "ParentCategoryName" => $OriginalParentCategory->name
+            'ids' => $this->ids,
+            'labels' => $this->labels,
+            'levels' => $this->levels,
+            'target_levels' => $this->target_levels,
+            'level_history' => $this->level_histories,
+            'level_history_times' => $this->allTimes,
+            'OriginalParentCategoryId' => $this->OriginalParentCategory->parent_id,
+            "ParentCategoryName" => $this->OriginalParentCategory->name
         ];
-        
-
-        if($ids == null)
-        {
-            $userCategory = $this->user->categoryQuestions()->where("category_question_id", $parentCategoryId)->first();
-
-            $new_level_history_time_array = [];
-            $level_history_time = $userCategory->pivot->level_history_time;
-            $level_history_time_array = explode(",", $level_history_time);
-            foreach ($level_history_time_array as $time) {
-                $time = (new Verta($time))->formatDate();
-                $new_level_history_time_array[] = $time;
-            } 
-            $level_history = explode("," , $userCategory->pivot->level_history);
-            $data = [
-                'ids' => [$userCategory->id],
-                'labels' => $userCategory->name,
-                'levels' => $userCategory->pivot->level,
-                'target_levels' => $userCategory->pivot->target_level,
-                'level_history' => $level_history,
-                'level_history_times' => $new_level_history_time_array,
-                'OriginalParentCategoryId' => $OriginalParentCategory->parent_id,
-                "ParentCategoryName" => $OriginalParentCategory->name
-            ];            
-        }
-        // dd($data);
         return $data;
     }
 
+    public function createDataSingle()
+    {
+        $userCategory = $this->user->categoryQuestions()->where("category_question_id", $this->parentCategoryId)->first();
+        $histories = $userCategory->pivot->history;
+        $histories = json_decode($histories, true);
+        $level_history = [];
+        $allTimes = [];
+        foreach ($histories as $history) {
+           $level_history[] = $history['level'];
+           $time = $history['time'];
+           $time = (new Verta($time))->formatDate();
+           $allTimes[] = $time;
+        }
+      
+        $data = [
+            'ids' => [$userCategory->id],
+            'labels' => $userCategory->name,
+            'levels' => $userCategory->pivot->level,
+            'target_levels' => $userCategory->pivot->target_level,
+            'level_history' => $level_history,
+            'level_history_times' => $allTimes,
+            'OriginalParentCategoryId' => $this->OriginalParentCategory->parent_id,
+            "ParentCategoryName" => $this->OriginalParentCategory->name
+        ];   
+
+        return $data;
+    }
 }

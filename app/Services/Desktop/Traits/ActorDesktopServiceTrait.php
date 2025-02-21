@@ -12,7 +12,7 @@ trait ActorDesktopServiceTrait
 
     public function setUser($user)
     {
-        $this->user =User::find($user);
+        $this->user =User::find($user)->first();
         $this->myProgressService->setUser($this->user);
     }
 

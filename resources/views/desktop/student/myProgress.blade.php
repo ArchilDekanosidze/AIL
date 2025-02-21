@@ -39,7 +39,7 @@
                 showLineChart()                               
             }
             function getDataForChart(parentCategoryId, childerensOrParent) {
-                var url = "{{route('user.profile.getChartResult')}}";        
+                var url = "{{route('desktop.student.getChartResult')}}";        
                 data =  {parentCategoryId : parentCategoryId, childerensOrParent: childerensOrParent} ;
                 result = Ajax(url, data)  
             }

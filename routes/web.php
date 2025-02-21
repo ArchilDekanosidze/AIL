@@ -9,7 +9,7 @@ use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\Quiz\Online\OnlineQuizController;
-use App\Http\Controllers\User\Profile\UserProfileController;
+use App\Http\Controllers\User\Desktop\DesktopStudentController;
 use App\Http\Controllers\Quiz\Create\CreateQuizStudentController;
 use App\Http\Controllers\User\Category\UserCategoryQuestionController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
@@ -22,15 +22,21 @@ use App\Http\Controllers\Quiz\Choosecategory\QuizChooseCategoriesStudentControll
 Route::get('/quiz/chooseCategories/student', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.chooseCategories.student');
 Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create'])->name('quiz.create.student');
 
-
-
 Route::get('/quiz/online/{quiz}', [OnlineQuizController::class, 'onlineQuizInProgress'])->name('quiz.online.onlineQuizInProgress');
 Route::post('/quiz/online/showAnswer', [OnlineQuizController::class, 'showAnswer'])->name('quiz.online.showAnswer');
 Route::post('/quiz/online/nextQuestion', [OnlineQuizController::class, 'nextQuestion'])->name('quiz.online.nextQuestion');
 Route::post('/quiz/online/prevQuestion', [OnlineQuizController::class, 'prevQuestion'])->name('quiz.online.prevQuestion');
 
-
 Route::get('/quiz/result/{quiz}', [OnlineQuizController::class, 'saveOnlineQuizDataAndShowResult'])->name('quiz.online.saveOnlineQuizDataAndShowResult');
+
+
+Route::get('/desktop/student/quizList', [DesktopStudentController::class, 'quizList'])->name('desktop.student.quizList');
+Route::get('/desktop/student/myProgress', [DesktopStudentController::class, 'myProgress'])->name('desktop.student.myProgress');
+Route::post('/desktop/student/getChartResult', [DesktopStudentController::class, 'getChartResult'])->name('desktop.student.getChartResult');
+
+
+
+
 
 
 
@@ -47,10 +53,7 @@ Route::post('/categoryQuestion/remove_category_from_user', [UserCategoryQuestion
 
 
 // user profile
-Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.index');
-Route::get('/profile/quizList', [UserProfileController::class, 'quizList'])->name('user.profile.quizList');
-Route::get('/profile/myProgress', [UserProfileController::class, 'myProgress'])->name('user.profile.myProgress');
-Route::post('/profile/getChartResult', [UserProfileController::class, 'getChartResult'])->name('user.profile.getChartResult');
+Route::get('/desktop', [DesktopStudentController::class, 'index'])->name('desktop.index');
 
 
 //user learning

@@ -10,11 +10,11 @@
     </div>
 
     <div class="profileCard">        
-        <a class="btn btn-primary" href="{{route('user.profile.quizList')}}">لیست آزمون های من</a>
+        <a class="btn btn-primary" href="{{route('desktop.student.quizList')}}">لیست آزمون های من</a>
     </div>
 
     <div class="profileCard">        
-        <a class="btn btn-primary" href="{{route('user.profile.myProgress')}}">مشاهده پیشرفته من </a>
+        <a class="btn btn-primary" href="{{route('desktop.student.myProgress')}}">مشاهده پیشرفته من </a>
     </div>
 
 </div>

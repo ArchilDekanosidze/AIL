@@ -5,10 +5,11 @@ use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Quiz\Traits\ActorTrait;
 
 class CreateQuizService
 {
-    private $user;
+    use ActorTrait;
     public $quiz;
     private $quizName;
     private $quiz_type;
@@ -18,8 +19,6 @@ class CreateQuizService
 
     public function __construct(Request $request)
     {
-        Auth::loginUsingId(1, TRUE);     
-        $this->user = auth()->user();
         $this->quizName = $request->quizName;
         $this->quiz_type = $request->action;
         $this->testCount = $request->testCount;

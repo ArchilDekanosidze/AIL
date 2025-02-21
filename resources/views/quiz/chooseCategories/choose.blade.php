@@ -6,7 +6,7 @@
 @section('content')
 <div class="userLearningChooseCategory main-body">
 
-    <form  action="{{ route('user.learning.new.start') }}" method="post" >
+    <form  action="{{ route('quiz.create.student') }}" method="post" >
         @csrf
         <ul>
             @foreach($allCategories as $category)            

@@ -10,7 +10,6 @@ use Illuminate\Support\Carbon;
 use App\Models\CategoryQuestion;
 use App\Services\Quiz\QuizService;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Redirect;
 
 class UserLearningNewController extends Controller
 {
@@ -24,21 +23,7 @@ class UserLearningNewController extends Controller
     }
 
 
-    public function start(Request $request)
-    {                    
-        if(!$request->has('categorySelected'))
-        {
-            return Redirect::back()->withErrors(['msg' => 'لطفا حداقل یک دسته بندی انتخاب کنید']);
-        }
-        
-        $this->quizService->UpdateUserCategorieslevelAndNumber();    
-              
 
-        $selectedQuestions = $this->quizService->createQuestionsForQuiz();
-        $quizId = $this->quizService->createQuiz($selectedQuestions);
-          
-        return redirect()->route('user.learning.onlineQuizInProgress', $quizId);
-    }
 
     public function onlineQuizInProgress(Quiz $quiz)
     {     

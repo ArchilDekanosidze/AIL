@@ -3,20 +3,19 @@ namespace App\Services\Quiz\SubService;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Quiz\Traits\ActorTrait;
 
 class UpdateUserCategorieslevelAndNumberService
 {
+    use ActorTrait;
     private $numbers_to_change_level;
     private $targetLevels;
-    private $user;
 
 
     public function __construct(Request $request)
     {
         $this->targetLevels = $request->targetLevels;
         $this->numbers_to_change_level = $request->numbers_to_change_level;
-        Auth::loginUsingId(1, TRUE);     
-        $this->user = auth()->user();
     }
 
 

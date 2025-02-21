@@ -9,6 +9,7 @@ use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\User\Profile\UserProfileController;
+use App\Http\Controllers\Quiz\Create\CreateQuizStudentController;
 use App\Http\Controllers\User\Category\UserCategoryQuestionController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 use App\Http\Controllers\Quiz\Choosecategory\QuizChooseCategoriesStudentController;
@@ -17,7 +18,8 @@ use App\Http\Controllers\Quiz\Choosecategory\QuizChooseCategoriesStudentControll
 
 
 //Quiz
-Route::get('/quiz/student/chooseCategories', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.student.chooseCategories');
+Route::get('/quiz/chooseCategories/student', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.chooseCategories.student');
+Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create'])->name('quiz.create.student');
 
 
 
@@ -46,7 +48,6 @@ Route::post('/profile/getChartResult', [UserProfileController::class, 'getChartR
 
 
 //user learning
-Route::post('/learning/start', [UserLearningNewController::class, 'start'])->name('user.learning.new.start');
 
 Route::get('/learning/onlineQuizInProgress/{quiz}', [UserLearningNewController::class, 'onlineQuizInProgress'])->name('user.learning.onlineQuizInProgress');
 Route::post('/learning/quizInProgress/showAnswer', [UserLearningNewController::class, 'showAnswer'])->name('user.learning.quizInProgress.showAnswer');

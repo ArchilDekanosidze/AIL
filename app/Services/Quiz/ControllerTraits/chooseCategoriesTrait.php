@@ -1,16 +1,18 @@
 <?php
-namespace App\Services\Quiz\ControllerTrits;
+namespace App\Services\Quiz\ControllerTraits;
 
 use App\Models\CategoryQuestion;
 use App\Services\Quiz\QuizService;
+use App\Services\Quiz\ControllerTraits\ActorControllerTrait;
 
 
 
 trait chooseCategoriesTrait
 {
 
+    use ActorControllerTrait;
+    
     private $quizService;
-    private $user;
 
     public function __construct(QuizService $quizService)
     {
@@ -23,33 +25,21 @@ trait chooseCategoriesTrait
         $this->PreCheck();
         $this->setUser();
         $user = $this->getUser();
-        return $this->returnView();
+        return $this->returnRedirect();
     }
     
 
-    public function setUser()
-    {
-        $this->user = auth()->user();
-    }
 
-    public function getUser()
-    {
-        return $this->user;
-    }
 
-    public function getRole()
-    {
-        return $this->user;
-    }
 
     public function PreCheck()
     {
         $this->quizService->checkForEndedQuiz();
     }
 
-    public function returnView()
+    public function returnRedirect()
     {
-        $userCategories = $this->user->categoryQuestions()->get()->sortBy('lft');
+        $userCategories = $this->quizService->getUser()->categoryQuestions()->get()->sortBy('lft');
         $allCategories = CategoryQuestion::withDepth()->get()->sortBy('_lft')->skip(1);
         return view('quiz.chooseCategories.choose', compact('userCategories', 'allCategories'));
     }

@@ -5,20 +5,17 @@ use App\Models\Quiz;
 use App\Models\Question;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Quiz\Traits\QuizTrait;
+use App\Services\Quiz\Traits\ActorTrait;
 
 
 class SaveQuizDataService
 {
-    use QuizTrait;
-    private $user;
+    use QuizTrait, ActorTrait;
     public $data;
 
 
     public function __construct()
     {
-        Auth::loginUsingId(1, TRUE);     
-
-        $this->user = auth()->user();
     }
 
     public function saveQuizData(Quiz $quiz)

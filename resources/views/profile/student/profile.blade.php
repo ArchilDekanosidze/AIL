@@ -6,7 +6,7 @@
 @section('content')
 <div class="userProfile main-body"> 
     <div class="profileCard">        
-        <a class="btn btn-primary" href="{{route('quiz.student.chooseCategories')}}">ساخت آزمون جدید</a>
+        <a class="btn btn-primary" href="{{route('quiz.chooseCategories.student')}}">ساخت آزمون جدید</a>
     </div>
 
     <div class="profileCard">        

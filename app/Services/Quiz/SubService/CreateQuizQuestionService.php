@@ -5,14 +5,15 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Quiz\Traits\ActorTrait;
 
 class CreateQuizQuestionService
 {
+    use ActorTrait;
     private $currentLevels;
     private $categoryPercentage = [];
     private $totalPercentage;
     private $categoriesId;
-    private $user;
     private $selectedQuestions ;
     private $targetLevels;
     private $testCount ;
@@ -20,9 +21,7 @@ class CreateQuizQuestionService
 
     public function __construct(Request $request)
     {
-        Auth::loginUsingId(1, TRUE);     
 
-        $this->user = auth()->user();
 
         $this->currentLevels = $request->currentLevels;
         $this->targetLevels = $request->targetLevels;

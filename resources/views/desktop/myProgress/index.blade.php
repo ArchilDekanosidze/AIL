@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{asset('assets/css/user/profile/myProgress.css')}}">
+<link rel="stylesheet" href="{{asset('assets/css/desktop/myProgress/myProgress.css')}}">
 @endsection
 @section('content')
 <div class="QuizResult main-body">
@@ -39,9 +39,10 @@
                 showLineChart()                               
             }
             function getDataForChart(parentCategoryId, childerensOrParent) {
-                var url = "{{route('desktop.student.getChartResult')}}";        
-                data =  {parentCategoryId : parentCategoryId, childerensOrParent: childerensOrParent} ;
+                var url = "{{route('desktop.getChartResult')}}";        
+                data =  {parentCategoryId : parentCategoryId, childerensOrParent: childerensOrParent, userId: {{$userId}}} ;
                 result = Ajax(url, data)  
+                console.log(result)
             }
             function showPieChart() 
             {

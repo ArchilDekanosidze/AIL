@@ -1,17 +1,19 @@
 <?php
-namespace App\Services\Quiz\Traits;
+namespace App\Services\Desktop\Traits;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
-trait ActorTrait
+trait ActorDesktopServiceTrait
 {
     private $user;
     private $role;
 
     public function setUser($user)
     {
-        $this->user = $user;
+        $this->user =User::find($user);
+        $this->myProgressService->setUser($this->user);
     }
 
     public function getUser()

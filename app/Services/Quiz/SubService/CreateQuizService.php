@@ -4,8 +4,8 @@ namespace App\Services\Quiz\SubService;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
+use App\Services\Traits\ActorTrait;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Quiz\Traits\ActorTrait;
 
 class CreateQuizService
 {

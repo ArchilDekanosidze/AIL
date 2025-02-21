@@ -34,14 +34,5 @@ class DesktopStudentController extends Controller
 
 
 
-    public function myProgress()
-    {
 
-        return view('desktop.student.myProgress');
-    }
-
-    public function getChartResult()
-    {
-        return $this->desktopService->getProgressData();
-    }
 }

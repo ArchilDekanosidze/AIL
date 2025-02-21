@@ -2,8 +2,8 @@
 namespace App\Services\Quiz\SubService;
 
 use Illuminate\Http\Request;
+use App\Services\Traits\ActorTrait;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Quiz\Traits\ActorTrait;
 
 class UpdateUserCategorieslevelAndNumberService
 {

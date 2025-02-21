@@ -8,6 +8,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
 use App\Http\Controllers\Desktop\QuizListController;
+use App\Http\Controllers\Desktop\myProgressController;
 use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\Desktop\DesktopStudentController;
@@ -36,10 +37,8 @@ Route::get('/desktop/student', [DesktopStudentController::class, 'index'])->name
 
 
 Route::get('/desktop/quizList/{user}', [QuizListController::class, 'quizList'])->name('desktop.quizList');
-
-Route::get('/desktop/myProgress/{user}', [DesktopStudentController::class, 'myProgress'])->name('desktop.myProgress');
-
-Route::post('/desktop/getChartResult/{user}', [DesktopStudentController::class, 'getChartResult'])->name('desktop.getChartResult');
+Route::get('/desktop/myProgress/{user}', [myProgressController::class, 'myProgress'])->name('desktop.myProgress');
+Route::post('/desktop/getChartResult', [myProgressController::class, 'getChartResult'])->name('desktop.getChartResult');
 
 
 

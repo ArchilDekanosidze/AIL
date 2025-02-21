@@ -1,21 +1,22 @@
 <?php
 namespace App\Services\Quiz\Traits;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
-trait ActorMainTrait
+trait ActorQuizServiceTrait
 {
     private $user;
     private $role;
 
     public function setUser($user)
     {
-        $this->user = $user;
-        $this->saveQuizDataService->setUser($user);
-        $this->updateUserCategorieslevelAndNumberService->setUser($user);
-        $this->createQuizQuestionService->setUser($user);
-        $this->createQuizService->setUser($user);
+        $this->user =User::find($user);
+        $this->saveQuizDataService->setUser($this->user);
+        $this->updateUserCategorieslevelAndNumberService->setUser($this->user);
+        $this->createQuizQuestionService->setUser($this->user);
+        $this->createQuizService->setUser($this->user);
     }
 
     public function getUser()

@@ -5,71 +5,78 @@ use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Hekmatinasser\Verta\Verta;
 use App\Models\CategoryQuestion;
+use App\Services\Traits\ActorTrait;
 use Illuminate\Support\Facades\Auth;
 
 
 class MyProgressService
 {
+    use ActorTrait;
     private $request;
-    private $user;
 
 
     public function __construct(Request $request)
     {
-        Auth::loginUsingId(1, TRUE);     
 
         $this->request = $request;
-        $this->user = auth()->user();
 
     }
 
     public function getProgressData()
     {
+        $parentCategoryId = 6;
         $parentCategoryId = $this->request->parentCategoryId;
-        // $parentCategoryId = 8;
         $OriginalParentCategory = CategoryQuestion::find($parentCategoryId);
         $allCategoriesId = CategoryQuestion::withDepth()->where('parent_id', $parentCategoryId)->get()->sortBy('_lft')->pluck("id")->toArray();
         $userCategories = $this->user->categoryQuestions()->whereIn("category_question_id", $allCategoriesId)->get()->sortBy('lft');
+        
         $ids = $userCategories->pluck('id')->toArray();
         $labels = $userCategories->pluck('name')->toArray();
         $levels = $userCategories->pluck('pivot.level')->toArray();
         $target_levels = $userCategories->pluck('pivot.target_level')->toArray();
-        $main_level_histories = $userCategories->pluck('pivot.level_history')->toArray();
-        $main_level_history_times = $userCategories->pluck('pivot.level_history_time')->toArray();
+        $histories = $userCategories->pluck('pivot.history')->toArray();
 
-        
-        $two_dimention_level_histories = [];
-        foreach ($main_level_histories as $main_level_history) {
-            $two_dimention_level_histories [] = explode("," ,$main_level_history);
-        }
 
-        $two_dimention_level_history_times = [];
-
-        foreach ($main_level_history_times as $main_level_history_time) {
-            $level_history_time_array = explode(",", $main_level_history_time);
-            $new_level_history_time_array = [];
-            foreach ($level_history_time_array as $time) {
+        $allTimes = [];
+        foreach ($histories as $history) {
+            $history = json_decode($history, true);
+            foreach ($history as $cell) {
+                $time = $cell['time'];
                 $time = (new Verta($time))->formatDate();
-                $new_level_history_time_array[] = $time;
-            } 
-            $two_dimention_level_history_times[] =  $new_level_history_time_array;
-        }
-        $linear_level_history_times =array_values(Arr::sort(array_unique(Arr::flatten($two_dimention_level_history_times))));
-        $updated_Two_dimention_level_history = [];
-
-        for($i=0; $i<  count($two_dimention_level_history_times) ; $i++) {
-            $prev = null;
-            for ($j=0; $j < count($linear_level_history_times) ; $j++) { 
-                $index = array_search($linear_level_history_times[$j],$two_dimention_level_history_times[$i]);            
-                if($index != false)
-                {
-                    $prev = $two_dimention_level_histories[$i][$index];
-                }
-
-                $updated_Two_dimention_level_history[$i][$j] = $prev;                                     
+                $allTimes[] = $time;
             }
-
         }
+        $allTimes = array_unique($allTimes);
+        sort($allTimes);
+        $level_histories = [];
+        foreach ($histories as $history) {
+            $level_histories[] = array_fill(0, count($allTimes), null);
+        }
+        for ($i=0; $i<count($histories) ; $i++) {
+            $history = $histories[$i];
+            $history = json_decode($history, true);
+            foreach ($history as $cell) {
+                $time = $cell['time'];
+                $time = (new Verta($time))->formatDate();
+                $index = array_search($time, $allTimes);
+                if($index>=0)
+                {
+                    $level_histories[$i][$index] = $cell['level'];
+                }
+            }
+        }
+        for ($i=0; $i<count($level_histories) ; $i++) {
+            $level_histories_raw = $level_histories[$i];
+            for ($j=1; $j<count($level_histories_raw); $j++) {
+                if($level_histories[$i][$j] === null)
+                {
+                    $level_histories[$i][$j] = $level_histories[$i][$j-1];
+                }
+            }
+        }
+
+
+
 
 
         $data = [
@@ -77,8 +84,8 @@ class MyProgressService
             'labels' => $labels,
             'levels' => $levels,
             'target_levels' => $target_levels,
-            'level_history' => $updated_Two_dimention_level_history,
-            'level_history_times' => $linear_level_history_times,
+            'level_history' => $level_histories,
+            'level_history_times' => $allTimes,
             'OriginalParentCategoryId' => $OriginalParentCategory->parent_id,
             "ParentCategoryName" => $OriginalParentCategory->name
         ];

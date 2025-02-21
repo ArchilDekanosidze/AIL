@@ -27,8 +27,12 @@ class TestController extends Controller
     
     public function index()
     {
-      $quiz = Quiz::find(110);
-      $this->saveQuizDataService->saveQuizData($quiz);
+      // $quiz = Quiz::find(110);
+      // $this->saveQuizDataService->saveQuizData($quiz);
+      $user = Auth::loginUsingId(1);
+      $this->desktopService->setUser($user);
+      $this->desktopService->getProgressData();
+
     }
  
 }

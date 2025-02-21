@@ -3,9 +3,9 @@ namespace App\Services\Quiz\SubService;
 
 use App\Models\Quiz;
 use App\Models\Question;
+use App\Services\Traits\ActorTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Quiz\Traits\QuizTrait;
-use App\Services\Quiz\Traits\ActorTrait;
 
 
 class SaveQuizDataService

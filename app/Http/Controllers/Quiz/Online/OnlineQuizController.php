@@ -23,7 +23,6 @@ class OnlineQuizController extends Controller
 
     public function onlineQuizInProgress(Quiz $quiz)
     {     
-        dd(2);
         $this->quizService->changeQuizStatusToRuning($quiz);
 
         $errorMessages = [];  
@@ -45,7 +44,7 @@ class OnlineQuizController extends Controller
 
         $question = $quizQuestion->question;
 
-        return view('user.learning.Quiz.onlineQuizInProgress', compact('quiz', 'question', 'quizQuestion', "errorMessages", "timeLeft", "allQuestionAnswered"));
+        return view('quiz.online.inProgress', compact('quiz', 'question', 'quizQuestion', "errorMessages", "timeLeft", "allQuestionAnswered"));
     }
 
     public function showAnswer(Request $request)
@@ -91,7 +90,7 @@ class OnlineQuizController extends Controller
     public function saveOnlineQuizDataAndShowResult(Quiz $quiz)
     {
         $this->quizService->saveQuizData($quiz);
-        return view('user.learning.Quiz.QuizResult', compact('quiz'));
+        return view('quiz.result.result', compact('quiz'));
  
     }
  

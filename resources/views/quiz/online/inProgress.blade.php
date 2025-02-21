@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{asset('assets/css/user/learning/Quiz/onlineQuizInProgress.css')}}">
+<link rel="stylesheet" href="{{asset('assets/css/quiz/online/inProgress.css')}}">
 @endsection
 @section('content')
 <div class="onlineQuizInProgress main-body">
@@ -57,7 +57,7 @@
             <button class="next btn @if($quiz->count == 1) disabled @endif" >بعدی</button>
         </div>
         <div class="endQuizbuttons">
-            <a href="{{route('learning.saveQuizDataAndShowResult', $quiz->id)}}" class="endQuiz">ثبت و مشاهده نتیجه آزمون</a>
+            <a href="{{route('quiz.online.saveOnlineQuizDataAndShowResult', $quiz->id)}}" class="endQuiz">ثبت و مشاهده نتیجه آزمون</a>
         </div>
     </div>
 
@@ -208,7 +208,7 @@
                     $(this).text("مشاهده سوال");
                     if($(".answerRetrived").val() == 0)
                     {                        
-                        var url = "{{route('user.learning.quizInProgress.showAnswer')}}";        
+                        var url = "{{route('quiz.online.showAnswer')}}";        
                         data = createDataForAjax();
                         result = Ajax(url, data)
                         $(".answerDiv").text(result)
@@ -228,9 +228,11 @@
                 
             })
 
-            $(".prev").click(function () {
-                var url = "{{route('user.learning.quizInProgress.prevQuestion')}}";        
-                data = createDataForAjax();  
+
+
+            $(".next").click(function () {
+                var url = "{{route('quiz.online.nextQuestion')}}";        
+                data = createDataForAjax();    
                 result = Ajax(url, data)
                 if(result.errorMessages)
                 {
@@ -241,9 +243,9 @@
                 newQuestion(result)                
             })
 
-            $(".next").click(function () {
-                var url = "{{route('user.learning.quizInProgress.nextQuestion')}}";        
-                data = createDataForAjax();    
+            $(".prev").click(function () {
+                var url = "{{route('quiz.online.prevQuestion')}}";        
+                data = createDataForAjax();  
                 result = Ajax(url, data)
                 if(result.errorMessages)
                 {

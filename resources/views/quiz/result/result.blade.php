@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{asset('assets/css/user/learning/Quiz/QuizResult.css')}}">
+<link rel="stylesheet" href="{{asset('assets/css/quiz/result/result.css')}}">
 @endsection
 @section('content')
 <div class="QuizResult main-body">

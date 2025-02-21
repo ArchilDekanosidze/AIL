@@ -54,6 +54,8 @@ class CreateQuizQuestionService
             if($category->descendants()->count() == 0)
             {
                 $percentage = $this->targetLevels[$categoryId] - $this->currentLevels[$categoryId];
+                $percentage = min($percentage, 100);
+                $percentage = max($percentage, 0);
                 $this->categoryPercentage[$categoryId] = $percentage;
             }
         }
@@ -74,8 +76,9 @@ class CreateQuizQuestionService
     public function NormilizeCatgoryPercentage()
     {
         foreach ($this->categoryPercentage as  $categoryId => $percentage) {
-            $this->categoryPercentage[$categoryId] = $percentage/$this->totalPercentage;            
+            $this->categoryPercentage[$categoryId] = $percentage/$this->totalPercentage;  
         }
+
     }
 
 

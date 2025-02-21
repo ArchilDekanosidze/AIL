@@ -3,11 +3,11 @@ namespace App\Http\Controllers\Quiz\Choosecategory;
 
 
 use App\Http\Controllers\Controller;
-use App\Services\Quiz\ControllerTraits\chooseCategoriesTrait;
+use App\Services\Quiz\ControllerTraits\ChooseCategoriesTrait;
 
 class QuizChooseCategoriesStudentController extends Controller
 {
-    use chooseCategoriesTrait;
+    use ChooseCategoriesTrait;
  
 
 

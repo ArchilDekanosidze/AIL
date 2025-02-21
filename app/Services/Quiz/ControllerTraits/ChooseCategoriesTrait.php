@@ -7,7 +7,7 @@ use App\Services\Quiz\ControllerTraits\ActorControllerTrait;
 
 
 
-trait chooseCategoriesTrait
+trait ChooseCategoriesTrait 
 {
 
     use ActorControllerTrait;

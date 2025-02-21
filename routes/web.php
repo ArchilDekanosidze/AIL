@@ -8,6 +8,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\User\UserLearningNewController;
+use App\Http\Controllers\Quiz\Online\OnlineQuizController;
 use App\Http\Controllers\User\Profile\UserProfileController;
 use App\Http\Controllers\Quiz\Create\CreateQuizStudentController;
 use App\Http\Controllers\User\Category\UserCategoryQuestionController;
@@ -23,6 +24,11 @@ Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create
 
 
 
+Route::get('/quiz/online/{quiz}', [OnlineQuizController::class, 'onlineQuizInProgress'])->name('quiz.online.onlineQuizInProgress');
+Route::post('/quiz/online/showAnswer', [OnlineQuizController::class, 'showAnswer'])->name('quiz.online.showAnswer');
+Route::post('/quiz/online/nextQuestion', [OnlineQuizController::class, 'nextQuestion'])->name('quiz.online.nextQuestion');
+Route::post('/quiz/online/prevQuestion', [OnlineQuizController::class, 'prevQuestion'])->name('quiz.online.prevQuestion');
+Route::get('/quiz/saveOnlineQuizDataAndShowResult/{quiz}', [OnlineQuizController::class, 'saveOnlineQuizDataAndShowResult'])->name('quiz.online.saveOnlineQuizDataAndShowResult');
 
 
 
@@ -49,11 +55,6 @@ Route::post('/profile/getChartResult', [UserProfileController::class, 'getChartR
 
 //user learning
 
-Route::get('/learning/onlineQuizInProgress/{quiz}', [UserLearningNewController::class, 'onlineQuizInProgress'])->name('user.learning.onlineQuizInProgress');
-Route::post('/learning/quizInProgress/showAnswer', [UserLearningNewController::class, 'showAnswer'])->name('user.learning.quizInProgress.showAnswer');
-Route::post('/learning/quizInProgress/nextQuestion', [UserLearningNewController::class, 'nextQuestion'])->name('user.learning.quizInProgress.nextQuestion');
-Route::post('/learning/quizInProgress/prevQuestion', [UserLearningNewController::class, 'prevQuestion'])->name('user.learning.quizInProgress.prevQuestion');
-Route::get('/learning/saveQuizDataAndShowResult/{quiz}', [UserLearningNewController::class, 'saveQuizDataAndShowResult'])->name('learning.saveQuizDataAndShowResult');
 
 
 

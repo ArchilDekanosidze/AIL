@@ -1,39 +1,38 @@
 <?php
-namespace App\Http\Controllers\User\Desktop;
+namespace App\Http\Controllers\Desktop;
 
 
 
 use App\Services\Quiz\QuizService;
 use App\Http\Controllers\Controller;
 use App\Services\Desktop\DesktopService;
+use App\Services\Traits\ActorControllerTrait;
+use App\Services\Desktop\ControllerTraits\quizListControllerTrait;
 
 class DesktopStudentController extends Controller
 {
     private $quizService;
     private $desktopService;
+    private $userId;
 
     public function __construct(QuizService $quizService, DesktopService $desktopService)
     {
         $this->quizService = $quizService;
         $this->desktopService = $desktopService;
+        $this->userId = auth()->user()->id;
 
     }
 
     
     public function index()
     {
-       return view("desktop.student.desktop");
+        $userId = $this->userId;
+        return view("desktop.student.desktop", compact("userId"));
     }
 
 
 
-    public function quizList()
-    {
-        $this->quizService->checkForEndedQuiz();
-        $user = auth()->user();
-        $quizzes =  $user->quizzes;
-        return view('desktop.student.quizList', compact('quizzes'));
-    }
+
 
     public function myProgress()
     {

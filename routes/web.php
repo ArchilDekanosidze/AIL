@@ -6,14 +6,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserHomeController;
+use App\Http\Controllers\Quiz\OnlineQuizController;
+use App\Http\Controllers\Desktop\QuizListController;
 use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\User\UserLearningNewController;
-use App\Http\Controllers\Quiz\Online\OnlineQuizController;
-use App\Http\Controllers\User\Desktop\DesktopStudentController;
-use App\Http\Controllers\Quiz\Create\CreateQuizStudentController;
+use App\Http\Controllers\Desktop\DesktopStudentController;
+use App\Http\Controllers\Quiz\CreateQuizStudentController;
+use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
 use App\Http\Controllers\User\Category\UserCategoryQuestionController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
-use App\Http\Controllers\Quiz\Choosecategory\QuizChooseCategoriesStudentController;
 
 
 
@@ -30,9 +31,15 @@ Route::post('/quiz/online/prevQuestion', [OnlineQuizController::class, 'prevQues
 Route::get('/quiz/result/{quiz}', [OnlineQuizController::class, 'saveOnlineQuizDataAndShowResult'])->name('quiz.online.saveOnlineQuizDataAndShowResult');
 
 
-Route::get('/desktop/student/quizList', [DesktopStudentController::class, 'quizList'])->name('desktop.student.quizList');
-Route::get('/desktop/student/myProgress', [DesktopStudentController::class, 'myProgress'])->name('desktop.student.myProgress');
-Route::post('/desktop/student/getChartResult', [DesktopStudentController::class, 'getChartResult'])->name('desktop.student.getChartResult');
+
+Route::get('/desktop/student', [DesktopStudentController::class, 'index'])->name('desktop.student.index');
+
+
+Route::get('/desktop/quizList/{user}', [QuizListController::class, 'quizList'])->name('desktop.quizList');
+
+Route::get('/desktop/myProgress/{user}', [DesktopStudentController::class, 'myProgress'])->name('desktop.myProgress');
+
+Route::post('/desktop/getChartResult/{user}', [DesktopStudentController::class, 'getChartResult'])->name('desktop.getChartResult');
 
 
 
@@ -53,7 +60,6 @@ Route::post('/categoryQuestion/remove_category_from_user', [UserCategoryQuestion
 
 
 // user profile
-Route::get('/desktop', [DesktopStudentController::class, 'index'])->name('desktop.index');
 
 
 //user learning

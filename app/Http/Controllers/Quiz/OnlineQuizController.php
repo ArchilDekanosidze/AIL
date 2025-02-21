@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Quiz\Online;
+namespace App\Http\Controllers\Quiz;
 
 
 use App\Models\Quiz;

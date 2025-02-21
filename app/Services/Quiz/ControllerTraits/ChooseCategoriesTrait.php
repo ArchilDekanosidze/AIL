@@ -3,7 +3,7 @@ namespace App\Services\Quiz\ControllerTraits;
 
 use App\Models\CategoryQuestion;
 use App\Services\Quiz\QuizService;
-use App\Services\Quiz\ControllerTraits\ActorControllerTrait;
+use App\Services\Traits\ActorControllerTrait;
 
 
 

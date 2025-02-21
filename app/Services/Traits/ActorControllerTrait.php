@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Quiz\ControllerTraits;
+namespace App\Services\Traits;
 
 use Illuminate\Support\Facades\Auth;
 

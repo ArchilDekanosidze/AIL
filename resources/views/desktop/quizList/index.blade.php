@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{asset('assets/css/user/learning/Quiz/QuizList.css')}}">
+<link rel="stylesheet" href="{{asset('assets/css/desktop/quizList/quizList.css')}}">
 @endsection
 @section('content')
 <div class="QuizResult main-body">
@@ -22,8 +22,8 @@
                 <td>{{$quiz->createdAt}}</td>
                 <td>{{$quiz->persian_status}}</td>
                 <td>{{$quiz->finalPercentage}}</td>
-                <td><a href="{{route('user.learning.onlineQuizInProgress', $quiz->id)}}">رفتن</a></td>
-                <td><a class="@if($quiz->status != "ended") disabled @endif" href="{{route('learning.saveQuizDataAndShowResult', $quiz->id)}}">مشاهده</a></td>
+                <td><a href="{{route('quiz.online.onlineQuizInProgress', $quiz->id)}}">رفتن</a></td>
+                <td><a class="@if($quiz->status != "ended") disabled @endif" href="{{route('quiz.online.saveOnlineQuizDataAndShowResult', $quiz->id)}}">مشاهده</a></td>
             </tr>
         @endforeach
     </table>

@@ -2,10 +2,10 @@
 namespace App\Services\Quiz\ControllerTraits;
 
 
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\Services\Quiz\QuizService;
-use App\Services\Quiz\ControllerTraits\ActorControllerTrait;
+use Illuminate\Support\Facades\Redirect;
+use App\Services\Traits\ActorControllerTrait;
 
 
 

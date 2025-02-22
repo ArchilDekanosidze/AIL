@@ -73,8 +73,7 @@ class MyProgressService
         foreach ($this->histories as $history) {
             $history = json_decode($history, true);
             foreach ($history as $cell) {
-                $time = $cell['time'];
-                $time = (new Verta($time))->formatDate();
+                $time =$this->convertTime($cell['time']);
                 $this->allTimes[] = $time;
             }
         }
@@ -94,13 +93,40 @@ class MyProgressService
         for ($i=0; $i<count($this->histories) ; $i++) {
             $history = $this->histories[$i];
             $history = json_decode($history, true);
+            $flag  = true;
+            $prevIndex = -1;
+            $tempLevel =[];
             foreach ($history as $cell) {
-                $time = $cell['time'];
-                $time = (new Verta($time))->formatDate();
+                $time =$this->convertTime($cell['time']);
                 $index = array_search($time, $this->allTimes);
                 if($index>=0)
                 {
-                    $level_histories[$i][$index] = $cell['level'];
+                    if($flag)
+                    {
+                        $prevIndex = $index;
+                        $flag = false;
+                    }
+                    $this->level_histories[$i][$index] = $cell['level'];
+                    if($prevIndex != $index)
+                    {
+                        if(count($tempLevel)>0)
+                        {
+                            $avgLeve = array_sum($tempLevel)/count($tempLevel);
+                        }
+                        else
+                        {
+                            $avgLeve = $cell['level'];
+                        }
+                        $tempLevel =[];
+                        $tempLevel[] =  $cell['level'];
+                        $this->level_histories[$i][$prevIndex] = $avgLeve;
+                        $prevIndex = $index;
+    
+                    }
+                    else
+                    {
+                        $tempLevel[] =  $cell['level'];
+                    }
                 }
             }
         }
@@ -138,14 +164,49 @@ class MyProgressService
         $userCategory = $this->user->categoryQuestions()->where("category_question_id", $this->parentCategoryId)->first();
         $histories = $userCategory->pivot->history;
         $histories = json_decode($histories, true);
-        $level_history = [];
         $allTimes = [];
         foreach ($histories as $history) {
-           $level_history[] = $history['level'];
-           $time = $history['time'];
-           $time = (new Verta($time))->formatDate();
+           $time =$this->convertTime($history['time']);
            $allTimes[] = $time;
         }
+
+        $allTimes = array_unique($allTimes);
+        sort($allTimes);
+        
+        $level_history = array_fill(0, count($allTimes), null);
+
+        $prevIndex = 0;
+        $tempLevel =[];
+        foreach ($histories as $history) {
+            $time = $this->convertTime($history['time']);
+            $index = array_search($time, $allTimes);
+            if($index>=0)
+            {
+                $level_history[$index] = $history['level'];
+                if($prevIndex != $index)
+                {
+                    if(count($tempLevel)>0)
+                    {
+                        $avgLeve = array_sum($tempLevel)/count($tempLevel);
+                    }
+                    else
+                    {
+                        $avgLeve = $history['level'];
+                    }
+                    $tempLevel =[];
+                    $tempLevel[] =  $history['level'];
+                    $level_history[$prevIndex] = $avgLeve;
+                    $prevIndex = $index;
+
+                }
+                else
+                {
+                    $tempLevel[] =  $history['level'];
+                }
+            }           
+        }
+        
+
       
         $data = [
             'ids' => [$userCategory->id],
@@ -159,5 +220,12 @@ class MyProgressService
         ];   
 
         return $data;
+    }
+
+    public function convertTime($stringTime)
+    {
+        $time = (new Verta($stringTime))->format("Y/m/d-H:i");
+
+        return $time;
     }
 }

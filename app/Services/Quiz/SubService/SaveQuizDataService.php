@@ -106,7 +106,7 @@ class SaveQuizDataService
         $this->setInitialData($categoryQuestion);
         
         $history = $this->data[$categoryQuestion->id]['history'];
-        $history[] = ["level" => null, "time" => now(), "isCorrect" => $isCorrect ? 1 : 0];
+        $history[] = ["level" => null, "time" => now()->timestamp, "isCorrect" => $isCorrect ? 1 : 0];
         $newLevel = $this->newlevel($categoryQuestion, $history);
         $history[count($history) - 1]['level'] = $newLevel;        
         $result["level"] = $newLevel;

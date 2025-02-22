@@ -27,6 +27,7 @@ class TestController extends Controller
     
     public function index()
     {
+      // dd(now()->timestamp);
       // $quiz = Quiz::find(110);
       // $this->saveQuizDataService->saveQuizData($quiz);
       $user = Auth::loginUsingId(1);

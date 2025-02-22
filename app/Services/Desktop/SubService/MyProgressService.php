@@ -23,6 +23,7 @@ class MyProgressService
     private $histories;
     private $allTimes=[];
     private $level_histories =[];
+    private $ChildrenCount;
 
 
     public function __construct(Request $request)
@@ -53,9 +54,10 @@ class MyProgressService
 
     public function getUserCategories()
     {
-        // $this->parentCategoryId = 7;
-        $this->parentCategoryId = $this->request->parentCategoryId;
+        // $this->parentCategoryId = 6;
+        $this->parentCategoryId = $this->request->parentCategoryId ?? 1;
         $this->OriginalParentCategory = CategoryQuestion::find($this->parentCategoryId);
+        $this->ChildrenCount = $this->OriginalParentCategory->children()->count() ;
         $allCategoriesId = CategoryQuestion::withDepth()->where('parent_id', $this->parentCategoryId)->get()->sortBy('_lft')->pluck("id")->toArray();
         $this->userCategories = $this->user->categoryQuestions()->whereIn("category_question_id", $allCategoriesId)->get()->sortBy('lft');
     }
@@ -154,7 +156,8 @@ class MyProgressService
             'level_history' => $this->level_histories,
             'level_history_times' => $this->allTimes,
             'OriginalParentCategoryId' => $this->OriginalParentCategory->parent_id,
-            "ParentCategoryName" => $this->OriginalParentCategory->name
+            "ParentCategoryName" => $this->OriginalParentCategory->name,
+            "ChildrenCount" => $this->ChildrenCount
         ];
         return $data;
     }
@@ -216,7 +219,8 @@ class MyProgressService
             'level_history' => $level_history,
             'level_history_times' => $allTimes,
             'OriginalParentCategoryId' => $this->OriginalParentCategory->parent_id,
-            "ParentCategoryName" => $this->OriginalParentCategory->name
+            "ParentCategoryName" => $this->OriginalParentCategory->name,
+            "ChildrenCount" => $this->ChildrenCount,
         ];   
 
         return $data;

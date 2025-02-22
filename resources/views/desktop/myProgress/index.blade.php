@@ -32,9 +32,10 @@
             let HistoryChart = null;
             let result;
             let index;
+            let ctx = document.getElementById('myChart');
+            let ctxHistory = document.getElementById('HistoryChart');
             function showChart(parentCategoryId, childerensOrParent) {
                 getDataForChart(parentCategoryId, childerensOrParent)
-                console.log(result)             
                 showPieChart()
                 showLineChart()                               
             }
@@ -42,24 +43,6 @@
                 var url = "{{route('desktop.getChartResult')}}";        
                 data =  {parentCategoryId : parentCategoryId, childerensOrParent: childerensOrParent, userId: {{$userId}}} ;
                 result = Ajax(url, data)  
-                console.log(result)
-            }
-            function showPieChart() 
-            {
-                labels = result.labels
-                levels = result.levels
-                if(result.ids.length == 1)
-                {
-                    $("#myChart").hide()
-                    return;   
-                }
-                else
-                {
-                    $("#myChart").show()
-                }
-                // console.log(result);
-
-                $(".parentCategoryName").html(result.ParentCategoryName)
                 if(result.OriginalParentCategoryId == null)
                 {
                     $(".parentBtn").addClass("disabled")
@@ -68,19 +51,55 @@
                 {
                     $(".parentBtn").removeClass("disabled")
                 }
+            }
+            function showPieChart() 
+            {
+                labels = result.labels
+                levels = result.levels
+                $(".parentCategoryName").html(result.ParentCategoryName)
 
-                const ctx = document.getElementById('myChart');
                 if(myChart)
                 {
                     myChart.destroy()   
                 }
-            
+                if(result.ChildrenCount == 0)
+                {
+                    showSinglePieChart()
+                }
+                else
+                {
+                    showMultiplePieChart()
+                }            
+            }
+            function showSinglePieChart() {
                 myChart = new Chart(ctx, {
                     type: 'pie',
                     data: {
-                        labels: labels,
+                        labels: [result.labels],
                         datasets: [{
-                            data: levels,
+                            data: [result.levels],
+                             borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        onClick: (event, elements) => {
+                            if(elements.length > 0 )
+                            {
+                                index = elements[0].index;
+                                showChart(result.ids[index])
+                            }
+                        }
+                    }
+                });
+            }
+
+            function showMultiplePieChart() {
+                myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: result.labels,
+                        datasets: [{
+                            data: result.levels,
                              borderWidth: 1
                         }]
                     },
@@ -96,65 +115,60 @@
                 });
             }
             function showLineChart() {
-                labels = result.labels
-                levels = result.levels
-
-                
-                const ctxHistory = document.getElementById('HistoryChart');
                 if(HistoryChart)
                 {
                     HistoryChart.destroy()   
-                }
-                    
-                level_history = result.level_history
-                level_history_times = result.level_history_times
-
-                if(result.ids.length > 1)
+                }                    
+                if(result.ChildrenCount == 0)
                 {
-
-
-                    datasets = []
-                    for (i = 0; i < level_history.length; i++) {                   
-                        datasets.push({
-                            label: labels[i],
-                            data: level_history[i],
-                            pointRadius : 10, 
-                        })
-                    }
-
-                    console.log(result)
-
-                    HistoryChart = new Chart(ctxHistory, {
-                        type: 'line',
-                        data: {
-                            labels: level_history_times,
-                            datasets: datasets,
-                        },
-                        options: {
-
-                        }
-                    });
+                    showSingleLineChart()
                 }
                 else
                 {
-                    alert(level_history);
-                    HistoryChart = new Chart(ctxHistory, {
-                        type: 'line',
-                        data: {
-                            labels: level_history_times,
-                            datasets: [
-                                {
-                                    label : result.labels,
-                                    data : level_history,
-                                    pointRadius : 10, 
-                                }
-                            ],
-                        },
-                        options: {
-
-                        }
-                    });
+                    showMultipleLineChart()
                 }
+            }
+
+            function showSingleLineChart()
+            {
+                console.log(result.level_history_times)
+                HistoryChart = new Chart(ctxHistory, {
+                    type: 'line',
+                    data: {
+                        labels: result.level_history_times,
+                        datasets: [
+                            {
+                                label : [result.labels],
+                                data : result.level_history,
+                                pointRadius : 10, 
+                            }
+                        ],
+                    },
+                    options: {
+
+                    }
+                });
+            }
+
+            function showMultipleLineChart() {
+                datasets = []
+                for (i = 0; i < result.level_history.length; i++) {                   
+                    datasets.push({
+                        label: result.labels[i],
+                        data: result.level_history[i],
+                        pointRadius : 10, 
+                    })
+                }
+                HistoryChart = new Chart(ctxHistory, {
+                    type: 'line',
+                    data: {
+                        labels: result.level_history_times,
+                        datasets: datasets,
+                    },
+                    options: {
+
+                    }
+                });
             }
 
             $(".parentBtn").click(function () {
@@ -162,7 +176,7 @@
             })
 
                       
-            showChart(6)
+            showChart()
 
             
 

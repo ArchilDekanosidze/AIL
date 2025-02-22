@@ -33,3 +33,14 @@
 {
     margin-top: 20px;
 }
+.chooseTimeSpan{
+    display: flex;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    font-size: 20px;
+}
+.chooseTimeSpan .to
+{
+    margin-right: 30px;
+    margin-left: 30px;
+}

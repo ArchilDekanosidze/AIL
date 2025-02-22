@@ -2,7 +2,7 @@
 
 @section('style')
 <link rel="stylesheet" href="{{asset('assets/css/desktop/myProgress/myProgress.css')}}">
-<link rel="stylesheet" href="{{asset('assets/persianDatepicker/css/persianDatepicker-default.css')}}">
+<link rel="stylesheet" href="{{asset('assets/persianDatepicker/persian-datepicker.min.css')}}">
 
 
 @endsection
@@ -31,7 +31,7 @@
                     <option value="روزانه">روزانه</option>
                     <option value="ماهیانه">ماهیانه</option>
                 <select>
-            <div>
+            </div>
         </div>
         <canvas id="HistoryChart"></canvas>
 
@@ -45,21 +45,28 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{{asset('assets/persianDatepicker/js/persianDatepicker.js')}}"></script>
+    <script src="{{asset('assets/persianDatepicker/persian-date.min.js')}}"></script>
+    <script src="{{asset('assets/persianDatepicker/persian-datepicker.min.js')}}"></script>
     {{-- <script src="{{asset('assets/js/chart.js')}}"></script> --}}
 
     <script>
         $(document).ready(function() {
+            var today  = new persianDate().toLocale('en').format("YYYY/MM/DD");
+            var weekAgo  = new persianDate().subtract('days', 7).toLocale('en').format("YYYY/MM/DD");
+
             $("#datePickerFrom").persianDatepicker({
                 format : "YYYY/MM/DD",
                 autoClose : true,
-                initialValue : true
+                initialValue : false
             })
             $("#datePickerTo").persianDatepicker({
                 format : "YYYY/MM/DD",
                 autoClose : true,
-                initialValue : true
+                initialValue : false
             })
+            
+            $("#datePickerFrom").val(weekAgo)
+            $("#datePickerTo").val(today)
 
 
             let myChart = null;

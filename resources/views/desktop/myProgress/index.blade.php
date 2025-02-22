@@ -2,6 +2,9 @@
 
 @section('style')
 <link rel="stylesheet" href="{{asset('assets/css/desktop/myProgress/myProgress.css')}}">
+<link rel="stylesheet" href="{{asset('assets/persianDatepicker/css/persianDatepicker-default.css')}}">
+
+
 @endsection
 @section('content')
 <div class="QuizResult main-body">
@@ -12,6 +15,24 @@
 
     <div>
         <canvas id="myChart"></canvas>
+        <div class="chooseTimeSpan">
+            <div class="from">
+                <label for="dateFrom">نمایش از تاریخ :‌</label>
+                <input type="text" name="datePickerFrom" id="datePickerFrom">
+            </div>
+            <div class="to">
+                <label for="datePickerTo"> تا تاریخ :‌</label>
+                <input type="text" name ="datePickerTo" id="datePickerTo">
+            </div>
+            <div class="spanTime">
+                دقت نمایش: 
+                <select name="spanTimeSelect">
+                    <option value="ساعتی">ساعتی</option>
+                    <option value="روزانه">روزانه</option>
+                    <option value="ماهیانه">ماهیانه</option>
+                <select>
+            <div>
+        </div>
         <canvas id="HistoryChart"></canvas>
 
     </div>
@@ -24,10 +45,23 @@
 
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{asset('assets/persianDatepicker/js/persianDatepicker.js')}}"></script>
     {{-- <script src="{{asset('assets/js/chart.js')}}"></script> --}}
 
     <script>
         $(document).ready(function() {
+            $("#datePickerFrom").persianDatepicker({
+                format : "YYYY/MM/DD",
+                autoClose : true,
+                initialValue : true
+            })
+            $("#datePickerTo").persianDatepicker({
+                format : "YYYY/MM/DD",
+                autoClose : true,
+                initialValue : true
+            })
+
+
             let myChart = null;
             let HistoryChart = null;
             let result;

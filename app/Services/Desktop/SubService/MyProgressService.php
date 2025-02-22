@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Hekmatinasser\Verta\Verta;
 use App\Models\CategoryQuestion;
 use App\Services\Traits\ActorTrait;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -24,6 +25,9 @@ class MyProgressService
     private $allTimes=[];
     private $level_histories =[];
     private $ChildrenCount;
+    private $datePickerFrom;
+    private $datePickerTo;
+    private $spanTimeSelect;
 
 
     public function __construct(Request $request)
@@ -35,9 +39,18 @@ class MyProgressService
 
     public function getProgressData()
     {
+        $this->datePickerFrom = $this->request->datePickerFrom;
+        $this->datePickerTo =  $this->request->datePickerTo;
+        $this->spanTimeSelect =  $this->request->spanTimeSelect;
+
+        // $this->datePickerFrom = "1403/11/27";
+        // $this->datePickerTo = "1403/12/04";
+        // $this->spanTimeSelect = "hour";
+
         $this->getUserCategories();
         $this->setInitialData();
         $this->setAllTimes();
+        $this->allTimes = $this->limitAllTimes($this->allTimes);
         $this->createEmptyLevelHistory();
         $this->fillLevelHistory();
         $this->fillNullValueInLevelHistory();
@@ -156,9 +169,11 @@ class MyProgressService
             'level_history' => $this->level_histories,
             'level_history_times' => $this->allTimes,
             'OriginalParentCategoryId' => $this->OriginalParentCategory->parent_id,
+            "parentCategoryId" => $this->parentCategoryId,
             "ParentCategoryName" => $this->OriginalParentCategory->name,
             "ChildrenCount" => $this->ChildrenCount
         ];
+
         return $data;
     }
 
@@ -175,6 +190,7 @@ class MyProgressService
 
         $allTimes = array_unique($allTimes);
         sort($allTimes);
+        $allTimes = $this->limitAllTimes($allTimes);
         
         $level_history = array_fill(0, count($allTimes), null);
 
@@ -219,6 +235,7 @@ class MyProgressService
             'level_history' => $level_history,
             'level_history_times' => $allTimes,
             'OriginalParentCategoryId' => $this->OriginalParentCategory->parent_id,
+            "parentCategoryId" => $this->parentCategoryId,
             "ParentCategoryName" => $this->OriginalParentCategory->name,
             "ChildrenCount" => $this->ChildrenCount,
         ];   
@@ -228,8 +245,41 @@ class MyProgressService
 
     public function convertTime($stringTime)
     {
-        $time = (new Verta($stringTime))->format("Y/m/d-H:i");
+        if($this->spanTimeSelect == "month")
+        {
+            $time = (new Verta($stringTime))->format("Y/m");
+        }
+        if($this->spanTimeSelect == "day")
+        {
+            $time = (new Verta($stringTime))->format("Y/m/d");
+        }
+        if($this->spanTimeSelect == "hour")
+        {
+            $time = (new Verta($stringTime))->format("Y/m/d-H");
+        }
+        
 
         return $time;
+    }
+
+    public function limitAllTimes($allTimes)
+    {
+        $timeFrom = Verta::parse($this->datePickerFrom)->startDay()->timestamp;
+        $timeTo = Verta::parse($this->datePickerTo)->endDay()->timestamp;
+        $newAllTimes = [];
+        
+        foreach ($allTimes as $TimeCell) {
+            if($this->spanTimeSelect == "month")
+            {
+                $TimeCell = $TimeCell . "/1";
+            }
+            $time = Verta::parse($TimeCell)->timestamp;
+            if($time >= $timeFrom && $time <= $timeTo)
+            {
+                $newAllTimes[] = $TimeCell;
+            }
+        }
+        
+        return $newAllTimes;
     }
 }

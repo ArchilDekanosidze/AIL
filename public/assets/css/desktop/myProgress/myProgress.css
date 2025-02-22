@@ -38,9 +38,30 @@
     margin-top: 70px;
     margin-bottom: 50px;
     font-size: 20px;
+    align-items: center;
 }
 .chooseTimeSpan .to
 {
     margin-right: 30px;
     margin-left: 30px;
+}
+#datePickerFrom ,
+#datePickerTo
+{
+    text-align: left;
+    padding-left: 10px;
+}
+.showRefiendDatabtn
+{
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    background: #ba84f0;
+    border-radius: 30px;
+    padding: 20px 20px;
+    margin-right: 20px;
 }

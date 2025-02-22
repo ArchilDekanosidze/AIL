@@ -26,11 +26,14 @@
             </div>
             <div class="spanTime">
                 دقت نمایش: 
-                <select name="spanTimeSelect">
-                    <option value="ساعتی">ساعتی</option>
-                    <option value="روزانه">روزانه</option>
-                    <option value="ماهیانه">ماهیانه</option>
+                <select class="spanTimeSelect">
+                    <option value="hour">ساعتی</option>
+                    <option value="day">روزانه</option>
+                    <option value="month">ماهیانه</option>
                 <select>
+            </div>
+            <div class="showRefiendData">
+                <button class="showRefiendDatabtn">نمایش</button>
             </div>
         </div>
         <canvas id="HistoryChart"></canvas>
@@ -51,22 +54,44 @@
 
     <script>
         $(document).ready(function() {
+            function toPersianDigits(str) {
+                if (!str) return ""
+                return str.replace(/\d/g, function (d) {
+                    return "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]
+                })
+            }
+  
             var today  = new persianDate().toLocale('en').format("YYYY/MM/DD");
             var weekAgo  = new persianDate().subtract('days', 7).toLocale('en').format("YYYY/MM/DD");
+            var today = toPersianDigits(today);
+            var weekAgo = toPersianDigits(weekAgo);
+            $("#datePickerFrom").val(weekAgo)
+            $("#datePickerTo").val(today)
+
 
             $("#datePickerFrom").persianDatepicker({
                 format : "YYYY/MM/DD",
                 autoClose : true,
-                initialValue : false
+                initialValue : false,          
             })
             $("#datePickerTo").persianDatepicker({
                 format : "YYYY/MM/DD",
                 autoClose : true,
-                initialValue : false
+                initialValue : false,
             })
             
-            $("#datePickerFrom").val(weekAgo)
-            $("#datePickerTo").val(today)
+     
+            $(".showRefiendDatabtn").click(function() {
+                dateFrom = $("#datePickerFrom").val()
+                dateTo = $("#datePickerTo").val()
+                if(dateFrom>dateTo)
+                {
+                    $(".failed-message").html("لطفا تاریخ را به نحوی انتخاب کنید که شروع قبل از پایان باشد")   
+                    $('.failed-message').show().delay(2000).fadeOut('slow');
+                    return;   
+                }
+                showChart(result.parentCategoryId)
+            })
 
 
             let myChart = null;
@@ -75,14 +100,20 @@
             let index;
             let ctx = document.getElementById('myChart');
             let ctxHistory = document.getElementById('HistoryChart');
-            function showChart(parentCategoryId, childerensOrParent) {
-                getDataForChart(parentCategoryId, childerensOrParent)
+            function showChart(parentCategoryId) {
+                getDataForChart(parentCategoryId)
+                console.log(result)
                 showPieChart()
                 showLineChart()                               
             }
-            function getDataForChart(parentCategoryId, childerensOrParent) {
+            function getDataForChart(parentCategoryId) {
                 var url = "{{route('desktop.getChartResult')}}";        
-                data =  {parentCategoryId : parentCategoryId, childerensOrParent: childerensOrParent, userId: {{$userId}}} ;
+                data =  {parentCategoryId : parentCategoryId,
+                          userId: {{$userId}},
+                          datePickerFrom: $("#datePickerFrom").val(),
+                          datePickerTo: $("#datePickerTo").val(),
+                          spanTimeSelect : $(".spanTimeSelect").val()
+                        } ;
                 result = Ajax(url, data)  
                 if(result.OriginalParentCategoryId == null)
                 {
@@ -128,6 +159,7 @@
                             {
                                 index = elements[0].index;
                                 showChart(result.ids[index])
+                  
                             }
                         }
                     }

@@ -22,6 +22,7 @@ class QuizListController extends Controller
     {
         $this->preCheckQuizList(); 
         $quizzes =  $user->quizzes;
+        $quizzes = $quizzes->sortByDesc("started_at");
         return view('desktop.quizList.index', compact('quizzes'));
     }
 

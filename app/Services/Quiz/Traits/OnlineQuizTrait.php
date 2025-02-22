@@ -33,7 +33,7 @@ trait OnlineQuizTrait
     {
         $quizQuestionsNotAnswered = $quiz->quizQuestions->whereNull("user_answer");   
         $quizQuestions = $quiz->quizQuestions;
-        if($quizQuestionsNotAnswered->count() == 0)
+        if($quizQuestionsNotAnswered->count() == 0 || $quiz->status == "ended")
         {
          $this->allQuestionAnswered = 1;   
          $quizQuestion = $quizQuestions->first();

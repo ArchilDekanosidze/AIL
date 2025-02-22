@@ -156,6 +156,8 @@
             }
 
 
+            
+
             if($(".allQuestionAnswered").val() == 1)
             {
                 $(".questionDataDiv").addClass("quizDisabled");
@@ -256,10 +258,23 @@
                 newQuestion(result)                
             })
 
+            $(".endQuizbuttons a").click(function () {
+                var url = "{{route('quiz.online.showAnswer')}}";        
+                data = createDataForAjax();
+                result = Ajax(url, data)
+            })
 
 
-
-
+            place = $(".questionsPlace").text()
+            count = $(".totalQuizQuestionCount").text()
+            if(place >1)
+            {
+                $(".prev").removeClass("disabled")
+            }
+            if(place == count)
+            {
+                $(".next").addClass("disabled")
+            }
 
 
 

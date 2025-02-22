@@ -39,7 +39,7 @@ class OnlineQuizController extends Controller
         $allQuestionAnswered = $this->quizService->allQuestionAnswered;
         if( $allQuestionAnswered == 1)
         {
-            $errorMessages[] = 'به تمام سوالات این آزمون پاسخ داده اید';
+            $errorMessages[] = 'این آزمون به اتمام رسیده است';
         }       
 
         $question = $quizQuestion->question;

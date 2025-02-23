@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\OTP\Profile;
+namespace App\Http\Controllers\Auth\OTP\Desktop;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
@@ -9,7 +9,7 @@ use App\Services\Auth\Traits\hasOTP;
 use App\Services\Auth\Traits\hasUsername;
 use Illuminate\Http\Request;
 
-class ProfileEmailController extends Controller
+class DesktopSettingEmailController extends Controller
 {
 
     use hasUsername;
@@ -39,21 +39,21 @@ class ProfileEmailController extends Controller
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.profile.email.code')->with('success', __('auth.Code Sent'));
+        return redirect()->route('auth.otp.desktop.setting.email.code')->with('success', __('auth.Code Sent'));
     }
 
     public function showEnterCodeForm()
     {
-        return view('auth.otp.profile.email-enter-code');
+        return view('auth.otp.desktop.email-enter-code');
     }
 
     protected function SendConfirmCodeSuccessResponse()
     {
-        return redirect()->route('customer.profiles.profile')->with('success', __('auth.Your email changed succeefully'));
+        return redirect()->route('desktop.setting.setting')->with('success', __('auth.Your email changed succeefully'));
     }
 
     public function showOTPForm()
     {
-        return view('auth.otp.profile.email');
+        return view('auth.otp.desktop.email');
     }
 }

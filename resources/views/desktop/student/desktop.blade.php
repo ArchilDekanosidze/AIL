@@ -17,6 +17,10 @@
         <a class="btn btn-primary" href="{{route('desktop.myProgress', $userId)}}">مشاهده پیشرفته من </a>
     </div>
 
+    <div class="profileCard">        
+        <a class="btn btn-primary" href="{{route('desktop.setting.setting')}}">تنظیمات امنیتی </a>
+    </div>
+
 </div>
 @endsection
 

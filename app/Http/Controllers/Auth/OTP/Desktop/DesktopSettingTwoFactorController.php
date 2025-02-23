@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\OTP\Profile;
+namespace App\Http\Controllers\Auth\OTP\Desktop;
 
 use App\Http\Controllers\Controller;
 use App\Services\Auth\OTPProfileTwoFactor;
@@ -8,7 +8,7 @@ use App\Services\Auth\Traits\hasOTP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ProfileTwoFactorController extends Controller
+class DesktopSettingTwoFactorController extends Controller
 {
     use hasOTP;
 
@@ -22,7 +22,7 @@ class ProfileTwoFactorController extends Controller
 
     public function showToggleForm()
     {
-        return view('auth.otp.profile.two-factor.toggle');
+        return view('auth.otp.desktop.two-factor.toggle');
     }
 
     public function sendTokenForEmail(Request $request)
@@ -49,12 +49,12 @@ class ProfileTwoFactorController extends Controller
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.profile.two.factor.code.form')->with('success', __('auth.Code Sent'));
+        return redirect()->route('auth.otp.desktop.setting.two.factor.code.form')->with('success', __('auth.Code Sent'));
     }
 
     public function showEnterCodeForm()
     {
-        return view('auth.otp.profile.two-factor.enter-code');
+        return view('auth.otp.desktop.two-factor.enter-code');
     }
 
     protected function validateForm(Request $request)
@@ -65,12 +65,12 @@ class ProfileTwoFactorController extends Controller
     public function deactivate()
     {
         $this->otp->deactivate(Auth::user());
-        return back()->with('success', 'Two Factor Deactivated');
+        return back()->with('success', 'احراز هویت دو مرحله ای غیر فعال شد');
     }
 
     protected function SendConfirmCodeSuccessResponse()
     {
         session()->regenerate();
-        return redirect()->route('auth.otp.profile.two.factor.toggle.form')->with('success', __('auth.Two Factor Activated'));
+        return redirect()->route('auth.otp.desktop.setting.two.factor.toggle.form')->with('success', __('auth.Two Factor Activated'));
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('head-tag')
-<title>my compares</title>
+<title>تغییر شماره موبایل</title>
 @endsection
 
 
@@ -12,11 +12,12 @@
         <section class="row">
 
 
-            @include('customer.layouts.partials.profile-sidebar')
 
 
             <main id="main-body" class="main-body col-md-9">
                 <section class="content-wrapper bg-white p-3 rounded-2 mb-2">
+
+
                 <div class="card">
         @if (session('success'))
         <div class="alert alert-success">
@@ -24,11 +25,11 @@
         </div>
         @endif
             <div class="card-header">
-                @lang('public.two factor authentication')
+                تایید کد
             </div>
             <div class="card-body">
-                <p class="small text-center card-text">we've send The Code to you</p>
-            <form method="POST" action="{{route('auth.otp.profile.two.factor.code')}}">
+                <p class="small text-center card-text">کد برای شما ارسال شد</p>
+            <form method="POST" action="{{route('auth.otp.desktop.setting.mobile.code')}}">
                         @csrf
                         <div class="form-group row mb-lg-2">
                             <div class="col-sm-8 offset-sm-2">
@@ -40,12 +41,12 @@
                         </div>
                         <div class="offset-sm-3">
                             <button type="submit" class="btn btn-primary">@lang('public.confirm')</button>
-                        <a class="small ml-2" href="{{route('auth.otp.profile.two.factor.resend')}}">@lang('public.didNotGetCode')</a>
+                        <a class="small ml-2" href="{{route('auth.otp.desktop.setting.mobile.resend')}}">@lang('public.didNotGetCode')</a>
                         </div>
                         @error('code')
                             <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
                                 <strong>
-                                  code is invalid
+                                    code is invalid
                                 </strong>
                             </span>
                         @enderror
@@ -66,8 +67,6 @@
             </div>
             </form>
         </div>
-
-
                 </section>
             </main>
         </section>

@@ -24,12 +24,12 @@ use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
-use App\Http\Controllers\Auth\OTP\Profile\ProfileEmailController;
-use App\Http\Controllers\Auth\OTP\Profile\ProfileMobileController;
 use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
-use App\Http\Controllers\Auth\OTP\Profile\ProfileTwoFactorController;
 use App\Http\Controllers\User\Category\UserCategoryQuestionController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
+use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingEmailController;
+use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingMobileController;
+use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingTwoFactorController;
 
 
 
@@ -40,7 +40,6 @@ use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 
 
 Route::prefix('auth')->name('auth.')->group(function () {
-    //done
     Route::get('/login', [LoginController::class, 'ShowloginForm'])->name('login.form'); 
     Route::post('/login', [LoginController::class, 'login'])->name('login');
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
@@ -70,26 +69,25 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('otp/password/reset', [ResetPasswordOTPController::class, 'showEnterCodeForm'])->name('otp.password.code.form');
     Route::post('otp/password/reset', [ResetPasswordOTPController::class, 'confirmCode'])->name('otp.password.code');
     Route::get('otp/password/resend', [ResetPasswordOTPController::class, 'resend'])->name('otp.password.resend');
-    //
     Route::get('email/send-verification', [VerificationController::class, 'send'])->name('email.send.verification');
     Route::get('email/verify', [VerificationController::class, 'verify'])->name('email.verify');
-    Route::get('otp/profile/two-factor/toggle', [ProfileTwoFactorController::class, 'showToggleForm'])->name('otp.profile.two.factor.toggle.form');
-    Route::get('otp/profile/two-factor/activateByEmail', [ProfileTwoFactorController::class, 'sendTokenForEmail'])->name('otp.profile.two.factor.sendTokenForEmail');
-    Route::get('otp/profile/two-factor/activateByMobile', [ProfileTwoFactorController::class, 'sendTokenForMobile'])->name('otp.profile.two.factor.sendTokenForMobile');
-    Route::get('otp/profile/two-factor/code', [ProfileTwoFactorController::class, 'showEnterCodeForm'])->name('otp.profile.two.factor.code.form');
-    Route::post('otp/profile/two-factor/code', [ProfileTwoFactorController::class, 'confirmCode'])->name('otp.profile.two.factor.code');
-    Route::get('otp/profile/two-factor/resend', [ProfileTwoFactorController::class, 'resend'])->name('otp.profile.two.factor.resend');
-    Route::get('otp/profile/two-factor/deactivate', [ProfileTwoFactorController::class, 'deactivate'])->name('otp.profile.two.factor.deactivate');
-    Route::get('otp/profile/mobile', [ProfileMobileController::class, 'showOTPForm'])->name('otp.profile.mobile.form');
-    Route::post('otp/profile/mobile', [ProfileMobileController::class, 'add'])->name('otp.profile.mobile');
-    Route::get('otp/profile/mobile/code', [ProfileMobileController::class, 'showEnterCodeForm'])->name('otp.profile.mobile.code.form');
-    Route::post('otp/profile/mobile/code', [ProfileMobileController::class, 'confirmCode'])->name('otp.profile.mobile.code');
-    Route::get('otp/profile/mobile/resend', [ProfileMobileController::class, 'resend'])->name('otp.profile.mobile.resend');
-    Route::get('otp/profile/email', [ProfileEmailController::class, 'showOTPForm'])->name('otp.profile.email.form');
-    Route::post('otp/profile/email', [ProfileEmailController::class, 'add'])->name('otp.profile.email');
-    Route::get('otp/profile/email/code', [ProfileEmailController::class, 'showEnterCodeForm'])->name('otp.profile.email.code.form');
-    Route::post('otp/profile/email/code', [ProfileEmailController::class, 'confirmCode'])->name('otp.profile.email.code');
-    Route::get('otp/profile/email/resend', [ProfileEmailController::class, 'resend'])->name('otp.profile.email.resend');
+    Route::get('otp/desktop/setting/two-factor/toggle', [DesktopSettingTwoFactorController::class, 'showToggleForm'])->name('otp.desktop.setting.two.factor.toggle.form');
+    Route::get('otp/desktop/setting/two-factor/activateByEmail', [DesktopSettingTwoFactorController::class, 'sendTokenForEmail'])->name('otp.desktop.setting.two.factor.sendTokenForEmail');
+    Route::get('otp/desktop/setting/two-factor/activateByMobile', [DesktopSettingTwoFactorController::class, 'sendTokenForMobile'])->name('otp.desktop.setting.two.factor.sendTokenForMobile');
+    Route::get('otp/desktop/setting/two-factor/code', [DesktopSettingTwoFactorController::class, 'showEnterCodeForm'])->name('otp.desktop.setting.two.factor.code.form');
+    Route::post('otp/desktop/setting/two-factor/code', [DesktopSettingTwoFactorController::class, 'confirmCode'])->name('otp.desktop.setting.two.factor.code');
+    Route::get('otp/desktop/setting/two-factor/resend', [DesktopSettingTwoFactorController::class, 'resend'])->name('otp.desktop.setting.two.factor.resend');
+    Route::get('otp/desktop/setting/two-factor/deactivate', [DesktopSettingTwoFactorController::class, 'deactivate'])->name('otp.desktop.setting.two.factor.deactivate');
+    Route::get('otp/desktop/setting/mobile', [DesktopSettingMobileController::class, 'showOTPForm'])->name('otp.desktop.setting.mobile.form');
+    Route::post('otp/desktop/setting/mobile', [DesktopSettingMobileController::class, 'add'])->name('otp.desktop.setting.mobile');
+    Route::get('otp/desktop/setting/mobile/code', [DesktopSettingMobileController::class, 'showEnterCodeForm'])->name('otp.desktop.setting.mobile.code.form');
+    Route::post('otp/desktop/setting/mobile/code', [DesktopSettingMobileController::class, 'confirmCode'])->name('otp.desktop.setting.mobile.code');
+    Route::get('otp/desktop/setting/mobile/resend', [DesktopSettingMobileController::class, 'resend'])->name('otp.desktop.setting.mobile.resend');    
+    Route::get('otp/desktop/setting/email', [DesktopSettingEmailController::class, 'showOTPForm'])->name('otp.desktop.setting.email.form');
+    Route::post('otp/desktop/setting/email', [DesktopSettingEmailController::class, 'add'])->name('otp.desktop.setting.email');
+    Route::get('otp/desktop/setting/email/code', [DesktopSettingEmailController::class, 'showEnterCodeForm'])->name('otp.desktop.setting.email.code.form');
+    Route::post('otp/desktop/setting/email/code', [DesktopSettingEmailController::class, 'confirmCode'])->name('otp.desktop.setting.email.code');
+    Route::get('otp/desktop/setting/email/resend', [DesktopSettingEmailController::class, 'resend'])->name('otp.desktop.setting.email.resend');
 });
 
 
@@ -99,12 +97,10 @@ Route::prefix('auth')->name('auth.')->group(function () {
 //Quiz
 Route::get('/quiz/chooseCategories/student', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.chooseCategories.student');
 Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create'])->name('quiz.create.student');
-
 Route::get('/quiz/online/{quiz}', [OnlineQuizController::class, 'onlineQuizInProgress'])->name('quiz.online.onlineQuizInProgress');
 Route::post('/quiz/online/showAnswer', [OnlineQuizController::class, 'showAnswer'])->name('quiz.online.showAnswer');
 Route::post('/quiz/online/nextQuestion', [OnlineQuizController::class, 'nextQuestion'])->name('quiz.online.nextQuestion');
 Route::post('/quiz/online/prevQuestion', [OnlineQuizController::class, 'prevQuestion'])->name('quiz.online.prevQuestion');
-
 Route::get('/quiz/result/{quiz}', [OnlineQuizController::class, 'saveOnlineQuizDataAndShowResult'])->name('quiz.online.saveOnlineQuizDataAndShowResult');
 
 
@@ -116,6 +112,7 @@ Route::get('/desktop/quizList/{user}', [QuizListController::class, 'quizList'])-
 Route::get('/desktop/myProgress/{user}', [myProgressController::class, 'myProgress'])->name('desktop.myProgress');
 Route::post('/desktop/getChartResult', [myProgressController::class, 'getChartResult'])->name('desktop.getChartResult');
 
+Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'setting'])->name('desktop.setting.setting');
 
 
 

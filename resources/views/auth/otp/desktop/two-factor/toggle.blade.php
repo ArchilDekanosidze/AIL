@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('head-tag')
-<title>two factor authentication</title>
+<title>احراز هویت دو مرحله ای</title>
 @endsection
 
 
@@ -12,7 +12,6 @@
         <section class="row">
 
 
-            @include('customer.layouts.partials.profile-sidebar')
 
 
             <main id="main-body" class="main-body col-md-9">
@@ -34,7 +33,7 @@
                         @lang('public.two factor is active' , ['number' => Auth::user()->mobile])
                     </small>
                 </div>
-            <a href="{{route('auth.otp.profile.two.factor.deactivate')}}" class="btn btn-primary mt-5">@lang('public.deactivate')</a>
+            <a href="{{route('auth.otp.desktop.setting.two.factor.deactivate')}}" class="btn btn-primary mt-5">@lang('public.deactivate')</a>
             </div>
             @else
             <div class="card-body text-center">
@@ -44,10 +43,10 @@
                 </small>
                 </div>
                 @if(!empty(Auth::user()->email))
-                <a href="{{route('auth.otp.profile.two.factor.sendTokenForEmail')}}" class="btn btn-primary mt-5">activate By Email</a>
+                <a href="{{route('auth.otp.desktop.setting.two.factor.sendTokenForEmail')}}" class="btn btn-primary mt-5">فعال سازی با ایمیل</a>
                 @endif
                 @if(!empty(Auth::user()->mobile))
-                <a href="{{route('auth.otp.profile.two.factor.sendTokenForMobile')}}" class="btn btn-primary mt-5">activate By Mobile</a>
+                <a href="{{route('auth.otp.desktop.setting.two.factor.sendTokenForMobile')}}" class="btn btn-primary mt-5">فعال سازی با شماره موبایل</a>
                 @endif
             </div>
             @endif

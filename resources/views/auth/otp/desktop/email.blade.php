@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('head-tag')
-<title>Change Email</title>
+<title>تغییر ایمیل</title>
 @endsection
 
 
@@ -12,7 +12,6 @@
         <section class="row">
 
 
-            @include('customer.layouts.partials.profile-sidebar')
 
 
             <main id="main-body" class="main-body col-md-9">
@@ -20,16 +19,16 @@
 
                 <div class="card">
             <div class="card-header">
-                        New Email
+                        ایمیل جدید
             </div>
             <div class="card-body">
-            <form method="POST" action="{{route('auth.otp.profile.email')}}">
+            <form method="POST" action="{{route('auth.otp.desktop.setting.email')}}">
                     @csrf
                     <div class="form-group row mb-lg-2">
-                        <label class="col-sm-3 col-form-label" for="email">email</label>
+                        <label class="col-sm-3 col-form-label" for="email">ایمیل</label>
                         <div class="col-sm-9">
                             <input  name="email" class="form-control" id="email" value="{{old('email')}}"
-                                 placeholder="enter your email">
+                                 placeholder="ایمیل جدید خود را وارد کنید">
                         </div>
                     </div>
                     <div class="col-sm-9 offset-sm-3">

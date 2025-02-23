@@ -30,6 +30,12 @@ class DesktopStudentController extends Controller
         return view("desktop.student.desktop", compact("userId"));
     }
 
+    public function setting()
+    {
+        return view("desktop.setting.setting");
+    }
+
+
 
 
 

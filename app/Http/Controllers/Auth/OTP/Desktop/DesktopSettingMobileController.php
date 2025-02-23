@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\OTP\Profile;
+namespace App\Http\Controllers\Auth\OTP\Desktop;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
@@ -9,7 +9,7 @@ use App\Services\Auth\Traits\hasOTP;
 use App\Services\Auth\Traits\hasUsername;
 use Illuminate\Http\Request;
 
-class ProfileMobileController extends Controller
+class DesktopSettingMobileController extends Controller
 {
 
     use hasUsername;
@@ -40,21 +40,21 @@ class ProfileMobileController extends Controller
 
     protected function SendTokenSuccessResponse()
     {
-        return redirect()->route('auth.otp.profile.mobile.code')->with('success', __('auth.Code Sent'));
+        return redirect()->route('auth.otp.desktop.setting.mobile.code')->with('success', __('auth.Code Sent'));
     }
 
     public function showEnterCodeForm()
     {
-        return view('auth.otp.profile.mobile-enter-code');
+        return view('auth.otp.desktop.mobile-enter-code');
     }
 
     protected function SendConfirmCodeSuccessResponse()
     {
-        return redirect()->route('customer.profiles.profile')->with('success', __('auth.Your mobile number changed succeefully'));
+        return redirect()->route('desktop.setting.setting')->with('success', __('auth.Your mobile number changed succeefully'));
     }
 
     public function showOTPForm()
     {
-        return view('auth.otp.profile.mobile');
+        return view('auth.otp.desktop.mobile');
     }
 }

@@ -12,6 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use App\Jobs\Notification\Email\SendEmail;
 use App\Services\Auth\Traits\HasTwoFactor;
+use App\Services\Auth\Traits\MustVerifyEmail;
 use App\Services\Auth\Traits\MustVerifyMobile;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +21,7 @@ use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasTwoFactor, MustVerifyMobile;
+    use HasApiTokens, HasFactory, Notifiable, HasTwoFactor, MustVerifyMobile, MustVerifyEmail;
 
     /**
      * The attributes that are mass assignable.

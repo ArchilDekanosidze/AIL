@@ -2,16 +2,16 @@
 
 namespace App\Services\Auth\Traits;
 
-trait MustVerifyMobile
+trait MustVerifyEmail
 {
     /**
      * Determine if the user has verified their email address.
      *
      * @return bool
      */
-    public function hasVerifiedMobile()
+    public function hasVerifiedEmail()
     {
-        return !is_null($this->mobile_verified_at);
+        return !is_null($this->email_verified_at);
     }
 
     /**
@@ -19,10 +19,10 @@ trait MustVerifyMobile
      *
      * @return bool
      */
-    public function markMobileAsVerified()
+    public function markEmailAsVerified()
     {
         return $this->forceFill([
-            'mobile_verified_at' => $this->freshTimestamp(),
+            'email_verified_at' => $this->freshTimestamp(),
         ])->save();
     }
 
@@ -31,7 +31,7 @@ trait MustVerifyMobile
      *
      * @return void
      */
-    public function sendMobileVerificationNotification()
+    public function sendEmailVerificationNotification()
     {
         // $this->notify(new VerifyEmail);
     }
@@ -41,8 +41,8 @@ trait MustVerifyMobile
      *
      * @return string
      */
-    public function getMobileForVerification()
+    public function getEmailForVerification()
     {
-        return $this->mobile;
+        return $this->email;
     }
 }

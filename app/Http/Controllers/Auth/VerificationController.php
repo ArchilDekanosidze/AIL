@@ -44,8 +44,9 @@ class VerificationController extends Controller
 
     public function send()
     {
+        dd(2);
         if (Auth::user()->hasVerifiedEmail()) {
-            return redirect()->route('customer.home');
+            return redirect()->route('desktop.setting.setting');
         }
 
         Auth::user()->sendEmailVerificationNotification();
@@ -59,10 +60,10 @@ class VerificationController extends Controller
         }
 
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('customer.home');
+            return redirect()->route('desktop.setting.setting');
         }
         $request->user()->markEmailAsVerified();
-        return redirect()->route('customer.home')->with('success', 'email Has Verified');
+        return redirect()->route('desktop.setting.setting')->with('success', 'ایمیل تایید شد');
 
     }
 }

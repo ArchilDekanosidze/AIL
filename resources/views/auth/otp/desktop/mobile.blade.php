@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('head-tag')
-<title>Change Mobile Number</title>
+<title>تغییر شماره موبایل</title>
 @endsection
 
 
@@ -12,7 +12,6 @@
         <section class="row">
 
 
-            @include('customer.layouts.partials.profile-sidebar')
 
 
             <main id="main-body" class="main-body col-md-9">
@@ -20,16 +19,16 @@
 
                 <div class="card">
             <div class="card-header">
-                        New Mobile number
+                        شماره موبایل جدید
             </div>
             <div class="card-body">
-            <form method="POST" action="{{route('auth.otp.profile.mobile')}}">
+            <form method="POST" action="{{route('auth.otp.desktop.setting.mobile')}}">
                     @csrf
                     <div class="form-group row mb-lg-2">
-                        <label class="col-sm-3 col-form-label" for="mobile">mobile</label>
+                        <label class="col-sm-3 col-form-label" for="mobile">موبایل</label>
                         <div class="col-sm-9">
                             <input  name="mobile" class="form-control" id="mobile" value="{{old('mobile')}}"
-                                 placeholder="enter your mobile number">
+                                 placeholder="شماره موبایل خود را وارد کنید">
                         </div>
                     </div>
                     <div class="col-sm-9 offset-sm-3">

@@ -33,7 +33,7 @@ return [
     ],
     'boolean' => 'The :attribute field must be true or false.',
     'can' => 'The :attribute field contains an unauthorized value.',
-    'confirmed' => 'The :attribute field confirmation does not match.',
+    'confirmed' => 'فیلد تکرار :attribute مطابقت ندارد.',
     'current_password' => 'The password is incorrect.',
     'date' => 'The :attribute field must be a valid date.',
     'date_equals' => 'The :attribute field must be a date equal to :date.',
@@ -168,9 +168,9 @@ return [
         ],
     ],
 
-    'code is invalid.' => 'code is invalid.',
-    'password is not valid' => 'password is not valid',
-    'username already exist or is invalid' => 'wrong username(username already exist or is invalid)',
+    'code is invalid.' => 'کد معتبر نمی باشد.',
+    'password is not valid' => 'پسورد معتبر نمی باشد',
+    'username already exist or is invalid' => 'نام کاربری موجود می باشد یا نام کاربری اشتباه وارد کرده اید',
 
     
     /*

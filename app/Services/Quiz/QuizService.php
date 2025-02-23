@@ -38,7 +38,8 @@ class QuizService
         $this->createQuizService = $createQuizService;
 
         // Auth::loginUsingId(1);
-        // $this->setUser(auth()->user());
+        dd(auth()->user());
+        $this->setUser(auth()->user());
 
     }
 

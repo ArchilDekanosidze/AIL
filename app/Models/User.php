@@ -5,16 +5,21 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
+use App\Mail\VerificationEmail;
+use App\Mail\ResetPasswordEmail;
 use App\Models\CategoryQuestion;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use App\Jobs\Notification\Email\SendEmail;
+use App\Services\Auth\Traits\HasTwoFactor;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasTwoFactor;
 
     /**
      * The attributes that are mass assignable.
@@ -62,6 +67,30 @@ class User extends Authenticatable
         return $this->belongsToMany(Quiz::class, "user_quiz");      
     }
 
+    public function sendEmailVerificationNotification()
+    {
+        SendEmail::dispatch($this, new VerificationEmail($this));
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        SendEmail::dispatch($this, new ResetPasswordEmail($this, $token));
+    }
+
+    public function hasEmail()
+    {
+        return $this->email;
+    }
+
+    public function hasMobile()
+    {
+        return $this->mobile;
+    }
+
+    public function isAdmin()
+    {
+        return $this->user_type;
+    }
 
     
 }

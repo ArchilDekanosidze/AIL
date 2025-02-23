@@ -40,16 +40,11 @@ use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 
 
 Route::prefix('auth')->name('auth.')->group(function () {
-    Route::get('/login', [LoginController::class, 'ShowloginForm'])->name('login.form');
-
-
-
-
-
-
-
+    //done
+    Route::get('/login', [LoginController::class, 'ShowloginForm'])->name('login.form'); 
     Route::post('/login', [LoginController::class, 'login'])->name('login');
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+    //
     Route::get('otp/login/two-factor/code', [LoginTwoFactorController::class, 'showEnterCodeForm'])->name('otp.login.two.factor.code.form');
     Route::post('otp/login/two-factor/code', [LoginTwoFactorController::class, 'confirmCode'])->name('otp.login.two.factor.code');
     Route::get('otp/login/two-factor/resend', [LoginTwoFactorController::class, 'resend'])->name('otp.login.two.factor.resend');
@@ -58,8 +53,12 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('otp/login/code', [LoginOTPController::class, 'showEnterCodeForm'])->name('otp.login.code.form');
     Route::post('otp/login/code', [LoginOTPController::class, 'confirmCode'])->name('otp.login.code');
     Route::get('otp/login/resend', [LoginOTPController::class, 'resend'])->name('otp.login.resend');
+    //done
     Route::get('register', [RegisterController::class, 'ShowRegisterationForm'])->name('register.form');
     Route::post('register', [RegisterController::class, 'Register'])->name('register');
+    //
+
+
     Route::get('otp/register', [RegisterOTPController::class, 'showOTPForm'])->name('otp.register.form');
     Route::post('otp/register', [RegisterOTPController::class, 'sendToken'])->name('otp.register.send.token');
     Route::get('otp/register/code', [RegisterOTPController::class, 'showEnterCodeForm'])->name('otp.register.code.form');
@@ -67,12 +66,16 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('otp/register/resend', [RegisterOTPController::class, 'resend'])->name('otp.register.resend');
     Route::get('redirect/{provider}', [SocialController::class, 'RredirectToProvider'])->name('login.provider.redirect');
     Route::get('{provider}/callback', [SocialController::class, 'providerCallback'])->name('login.provider.callback');
+    //done
     Route::get('password/forget', [ForgotPasswordController::class, 'showForgetForm'])->name('password.forget.form');
     Route::post('password/forget', [ForgotPasswordController::class, 'sendResetLink'])->name('password.forget');
+    //
     Route::get('otp/password/forget', [ForgotPasswordOTPController::class, 'showOTPForm'])->name('otp.password.forget.form');
     Route::post('otp/password/forget', [ForgotPasswordOTPController::class, 'sendToken'])->name('otp.password.send.token');
+    //done
     Route::get('password/reset', [ResetPasswordController::class, 'showResetForm'])->name('password.reset.form');
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.reset');
+    //
     Route::get('otp/password/reset', [ResetPasswordOTPController::class, 'showEnterCodeForm'])->name('otp.password.code.form');
     Route::post('otp/password/reset', [ResetPasswordOTPController::class, 'confirmCode'])->name('otp.password.code');
     Route::get('otp/password/resend', [ResetPasswordOTPController::class, 'resend'])->name('otp.password.resend');

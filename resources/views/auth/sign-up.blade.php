@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('head-tag')
-<title>Sign Up</title>
+<title>ثبت نام</title>
 @endsection
 @section('content')
 
@@ -11,9 +11,9 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-sm-7">
-                        Sign Up
+                        ثبت نام
                     </div>
-                <div class="col-sm-5 text-right"><a href="{{route('auth.otp.register.form')}}"><small>Sign Up without password</small></a></div>
+                <div class="col-sm-5 text-right"><a href="{{route('auth.otp.register.form')}}"><small>ثبت نام بدون رمز عبور</small></a></div>
                 </div>
             </div>
             <div class="card-body">
@@ -56,10 +56,10 @@
                     </div>
 
                     <div class="form-group row mb-lg-3">
-                        <label class="col-sm-3 col-form-label" for="password_confirmation">repeat password</label>
+                        <label class="col-sm-3 col-form-label" for="password_confirmation">تکرار رمز عبور</label>
                         <div class="col-sm-9">
                             <input type="password" name="password_confirmation" class="form-control mb-3" id="password_confirmation"
-                                placeholder="repeat your password">
+                                placeholder="تکرار رمز عبور">
                                 @error('password_confirmation')
                                     <span class="alert_required bg-danger text-white p-1 rounded" role="alert">
                                         <strong>
@@ -81,9 +81,9 @@
                     <div class="offset-sm-3">
                     </div>
                     <div class="offset-sm-3">
-                    <button type="submit" class="btn btn-primary">Sign Up</button>
-                    <a href="{{route('auth.login.provider.redirect', 'google')}}" class="btn btn-danger">Sign Up with google</a>
-                    <a href="{{route('auth.login.form')}}" class="btn btn-success">Login</a>
+                    <button type="submit" class="btn btn-primary">ثبت نام</button>
+                    <a href="{{route('auth.login.provider.redirect', 'google')}}" class="btn btn-danger">ثبت نام با گوگل</a>
+                    <a href="{{route('auth.login.form')}}" class="btn btn-success">ورود</a>
 
                     </div>
             </div>

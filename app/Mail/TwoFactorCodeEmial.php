@@ -2,27 +2,23 @@
 
 namespace App\Mail;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\SerializesModels;
 
-class ResetPassword extends Mailable
+class TwoFactorCodeEmial extends Mailable
 {
     use Queueable, SerializesModels;
-
-    private $user;
-    private $token;
-
-    public function __construct(User $user, string $token)
+    private $code;
+    /**
+     * Create a new message instance.
+     */
+    public function __construct($code)
     {
-        $this->user = $user;
-        $this->token = $token;
+        $this->code = $code;
     }
-
 
     /**
      * Get the message envelope.
@@ -30,7 +26,7 @@ class ResetPassword extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Password',
+            subject: 'Two Factor Code',
         );
     }
 
@@ -40,10 +36,10 @@ class ResetPassword extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.reset-password',
+            view: 'emails.TwoFactorCode',
             with: [
-                'link' => $this->generateLink(),
-            ],
+                'code' => $this->code,
+            ]
         );
     }
 
@@ -55,10 +51,5 @@ class ResetPassword extends Mailable
     public function attachments(): array
     {
         return [];
-    }
-
-    protected function generateLink()
-    {
-        return route('auth.password.reset.form', ['token' => $this->token, 'email' => $this->user->email]);
     }
 }

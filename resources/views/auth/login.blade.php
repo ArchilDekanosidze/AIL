@@ -78,7 +78,7 @@
                     <div class="offset-sm-3">
                     <button type="submit" class="btn btn-primary">@lang('public.login')</button>
                     <a href="{{route('auth.login.provider.redirect', 'google')}}" class="btn btn-danger">@lang('public.login with google')</a>
-                    <a href="{{route('auth.register.form')}}" class="btn btn-success">ورود</a>
+                    <a href="{{route('auth.register.form')}}" class="btn btn-success">ثبت نام</a>
 
                     </div>
             </div>

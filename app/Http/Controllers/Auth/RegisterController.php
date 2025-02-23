@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Events\UserRegistered;
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use App\Rules\Password;
 use App\Rules\PasswordRule;
-use App\Services\Auth\Traits\hasUsername;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use App\Events\UserRegistered;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Providers\RouteServiceProvider;
+use App\Services\Auth\Traits\hasUsername;
+use App\Services\Auth\Traits\AuthBackend\RegistersUsers;
 
 class RegisterController extends Controller
 {
@@ -96,7 +96,7 @@ class RegisterController extends Controller
         }
         $user->password = Hash::make($data['password']);
         $user->created_at = now();
-
+        $user->name = "کاربر-" . now()->timestamp;
         $user->save();
         return $user;
     }

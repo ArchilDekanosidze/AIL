@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class OTPCode extends Mailable
+class OTPCodeEmail extends Mailable
 {
     use Queueable, SerializesModels;
     private $code;

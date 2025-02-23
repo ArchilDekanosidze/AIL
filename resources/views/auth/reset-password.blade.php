@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('head-tag')
-<title>reset password</title>
+<title>تغییر رمز عبور</title>
 @endsection
 @section('content')
 
@@ -9,31 +9,31 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-               reset password
+               تغییر رمز عبور
             </div>
             <div class="card-body">
             <form method="POST" action="{{route('auth.password.reset')}}">
                     @csrf
                 <input type="hidden" name="token" value="{{$token}}">
                     <div class="form-group row mb-lg-2">
-                        <label class="col-sm-3 col-form-label" for="email"> email </label>
+                        <label class="col-sm-3 col-form-label" for="email"> ایمیل </label>
                         <div class="col-sm-9">
                         <input type="email" name="email" class="form-control" id="email" readonly value="{{$email}}"
-                                aria-describedby="emailHelp" placeholder="enter your email">
+                                aria-describedby="emailHelp" placeholder="ایمیل خود را وارد کنید">
                         </div>
                     </div>
                     <div class="form-group row mb-lg-2">
-                        <label class="col-sm-3 col-form-label" for="password">password</label>
+                        <label class="col-sm-3 col-form-label" for="password">رمز عبور</label>
                         <div class="col-sm-9">
                             <input type="password" name="password" class="form-control" id="password"
-                                placeholder="@lang('auth.enter your password')">
+                                placeholder="رمز عبور خود را وارد کنید">
                         </div>
                     </div>
                     <div class="form-group row mb-lg-2">
-                        <label class="col-sm-3 col-form-label" for="password_confirmation">confirm password</label>
+                        <label class="col-sm-3 col-form-label" for="password_confirmation">تکرار رمز عبور</label>
                         <div class="col-sm-9">
                             <input type="password" name="password_confirmation" class="form-control"
-                                id="password_confirmation" placeholder="confirm your password">
+                                id="password_confirmation" placeholder="تکرار رمز عبور">
                         </div>
                     </div>
                     <div class="col-sm-9 offset-sm-3">
@@ -59,7 +59,7 @@
                             </span>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-primary">reset password</button>
+                    <button type="submit" class="btn btn-primary">ثبت رمز جدید</button>
             </div>
             </form>
         </div>

@@ -30,5 +30,28 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'smsFaraz' => [
+        'auth' => [
+            'uname' => env('SMS_Faraz_uname'),
+            'pass' => env('SMS_Faraz_pass'),
+            'from' => "+100020400",
+        ],
+        'baseUri' => "https://ippanel.com/patterns/pattern?username=",
+    ],
+
+    'smsMeliPayamak' => [
+        'auth' => [
+            'uname' => env('SMS_MeliPayamak_uname'),
+            'pass' => env('SMS_MeliPayamak_pass'),
+        ],
+        'url' => "https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber",
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_CALLBACK_LINK'),
+    ],
+
 
 ];

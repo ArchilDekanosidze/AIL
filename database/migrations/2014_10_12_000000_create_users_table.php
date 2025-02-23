@@ -18,7 +18,8 @@ return new class extends Migration
             $table->timestamp('mobile_verified_at')->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->boolean('has_two_factor')->default(false);
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

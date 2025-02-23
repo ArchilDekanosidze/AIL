@@ -22,7 +22,7 @@ return [
     'we\'ve send a SMS to your number' => 'به شماره شما اس ام اس ارسال شد',
     'enter code' => 'کد را وارد کنید',
     'didNotGetCode' => 'کد را دریافت نکردید؟',
-    'confirm' => 'confirm',
+    'confirm' => 'تایید',
     'Code Resent' => 'ارسال مجدد کد',
     'login with OTP' => 'ورود با OTP',
     'send OTP Code' => 'ارسال کد OP',

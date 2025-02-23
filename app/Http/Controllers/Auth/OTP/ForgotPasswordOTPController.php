@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth\OTP;
 
 use App\Http\Controllers\Controller;
-use App\Services\Auth\OTPResetPassword;
 use App\Services\Auth\Traits\hasOTP;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use App\Services\Auth\OTPResetPassword;
+use App\Services\Auth\Traits\AuthBackend\SendsPasswordResetEmails;
 
 class ForgotPasswordOTPController extends Controller
 {

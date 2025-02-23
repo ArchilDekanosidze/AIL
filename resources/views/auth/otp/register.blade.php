@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('head-tag')
-<title>OTP</title>
+<title>ثبت نام با OTP</title>
 @endsection
 
 @section('content')
@@ -10,8 +10,8 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                        Sign up with OTP
-                        <div class="col-sm-5 text-right"><a href="{{route('auth.register.form')}}"><small>Sign up with password</small></a></div>
+                        ثبت نام با OTP
+                        <div class="col-sm-5 text-right"><a href="{{route('auth.register.form')}}"><small>ثبت نام با پسورد</small></a></div>
             </div>
             <div class="card-body">
             <form method="POST" action="{{route('auth.otp.register.send.token')}}">

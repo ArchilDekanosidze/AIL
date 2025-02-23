@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('head-tag')
-<title>OTP</title>
+<title>بازیابی رمز عبور با OTP</title>
 @endsection
 
 @section('content')
@@ -10,8 +10,8 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                        Reset Password with OTP
-                        <div class="col-sm-5 text-right"><a href="{{route('auth.password.forget.form')}}"><small>Reset Password with Email Link</small></a></div>
+                        بازیابی رمز عبور به کمک OTP
+                        <div class="col-sm-5 text-right"><a href="{{route('auth.password.forget.form')}}"><small>بازیابی رمز عبور به کمک لینک ایمیل</small></a></div>
             </div>
             <div class="card-body">
             <form method="POST" action="{{route('auth.otp.password.send.token')}}">

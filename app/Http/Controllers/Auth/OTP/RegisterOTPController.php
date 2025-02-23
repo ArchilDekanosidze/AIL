@@ -45,7 +45,7 @@ class RegisterOTPController extends Controller
     protected function SendConfirmCodeSuccessResponse()
     {
         session()->regenerate();
-        return redirect()->route('customer.home');
+        return redirect()->route('home');
     }
 
 }

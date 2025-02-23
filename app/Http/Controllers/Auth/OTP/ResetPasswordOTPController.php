@@ -10,7 +10,7 @@ use App\Services\Auth\Traits\hasOTP;
 use App\Providers\RouteServiceProvider;
 use App\Services\Auth\OTPResetPassword;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Foundation\Auth\ResetsPasswords;
+use App\Services\Auth\Traits\AuthBackend\ResetsPasswords;
 
 class ResetPasswordOTPController extends Controller
 {

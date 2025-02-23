@@ -11,7 +11,7 @@
         <div class="card">
             <div class="card-header">
                         @lang('public.login with OTP')
-                        <div class="col-sm-5 text-right"><a href="{{route('auth.login.form')}}"><small>login with password</small></a></div>
+                        <div class="col-sm-5 text-right"><a href="{{route('auth.login.form')}}"><small>ورود با پسورد</small></a></div>
             </div>
             <div class="card-body">
             <form method="POST" action="{{route('auth.otp.login.send.token')}}">

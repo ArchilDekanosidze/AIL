@@ -16,12 +16,13 @@ class OTPRegister extends OTPAuthenticaton
         $user = new User();
         if ($this->isUsernameAnEmail(session('username'))) {
             $user->email = session('username');
-            $user->markEmailAsVerified();
+            $user->email_verified_at = now()->timestamp;
         }
         if ($this->isUsernameAnMobile(session('username'))) {
             $user->mobile = session('username');
-            $user->markMobileAsVerified();
+            $user->mobile_verified_at = now()->timestamp;
         }
+        $user->name = "کاربر-" . now()->timestamp;
         $user->save();
         Auth::login($user, session('remember'));
         $this->forgetSession();

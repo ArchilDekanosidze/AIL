@@ -2,7 +2,7 @@
 
 
 @section('head-tag')
-<title>enter OTP code</title>
+<title>ورود کد OTP</title>
 @endsection
 
 @section('content')
@@ -19,11 +19,11 @@
         @endif
             <div class="card-header">
                 OTP Code
-                <div class="col-sm-5 text-right"><a href="{{route('auth.otp.password.forget.form')}}"><small>Change UserName</small></a></div>
-                <div class="col-sm-5 text-right"><a href="{{route('auth.login.form')}}"><small>login with password</small></a></div>
+                <div class="col-sm-5 text-right"><a href="{{route('auth.otp.password.forget.form')}}"><small>فرم بازیابی رمز عبور به کمک OTP</small></a></div>
+                <div class="col-sm-5 text-right"><a href="{{route('auth.login.form')}}"><small>ورود با پسورد</small></a></div>
             </div>
             <div class="card-body">
-                <p class="small text-center card-text">we've send The Code to you</p>
+                <p class="small text-center card-text">کد را برای شما ارسال کردیم</p>
             <form method="POST" action="{{route('auth.otp.password.code')}}">
                         @csrf
                         <div class="form-group row mb-lg-2">
@@ -41,13 +41,13 @@
                         <div class="form-group row mb-lg-2">
                             <div class="col-sm-8 offset-sm-2">
                                 <input type="password" name="password" class="form-control" id="password"
-                                    aria-describedby="codeHelp" placeholder="new password">
+                                    aria-describedby="codeHelp" placeholder="پسورد جدید">
                             </div>
                         </div>
                         <div class="form-group row mb-lg-2">
                             <div class="col-sm-8 offset-sm-2">
                                 <input type="password" name="password_confirmation" class="form-control" id="password_confirmation"
-                                    aria-describedby="codeHelp" placeholder="confirm password">
+                                    aria-describedby="codeHelp" placeholder="تکرار پسورد جدید">
                             </div>
                         </div>
                         <div class="col-sm-9 offset-sm-3 mb-lg-2">

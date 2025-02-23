@@ -70,7 +70,7 @@
                             <label class="form-check-label" for="remember"><small>@lang('public.remember me')</small></label>
                         </div>
                         <div class="form-check">
-                        <a href="{{route('auth.password.forget.form')}}"><small>@lang('public.forget your password?')</small></a>
+                        <a href="{{route('auth.otp.password.forget.form')}}"><small>@lang('public.forget your password?')</small></a>
                         </div>
                     </div>
                     <div class="offset-sm-3">

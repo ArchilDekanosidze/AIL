@@ -2,7 +2,7 @@
 
 
 @section('head-tag')
-<title>enter OTP code</title>
+<title>ورود کد OTP</title>
 @endsection
 
 @section('content')
@@ -20,11 +20,11 @@
         @endif
             <div class="card-header">
                 OTP Code
-                <div class="col-sm-5 text-right"><a href="{{route('auth.otp.register.form')}}"><small>Change UserName</small></a></div>
-                <div class="col-sm-5 text-right"><a href="{{route('auth.register.form')}}"><small>Sign Up with password</small></a></div>
+                <div class="col-sm-5 text-right"><a href="{{route('auth.otp.register.form')}}"><small>ثبت نام با OTP</small></a></div>
+                <div class="col-sm-5 text-right"><a href="{{route('auth.register.form')}}"><small>ثبت نام با پسورد</small></a></div>
             </div>
             <div class="card-body">
-                <p class="small text-center card-text">we've send The Code to you</p>
+                <p class="small text-center card-text">کد برای شما ارسال شد</p>
             <form method="POST" action="{{route('auth.otp.register.code')}}">
                         @csrf
                         <div class="form-group row mb-lg-2">

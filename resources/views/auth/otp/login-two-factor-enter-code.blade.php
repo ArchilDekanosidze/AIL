@@ -2,7 +2,7 @@
 
 
 @section('head-tag')
-<title>enter two factor authentication code</title>
+<title>ورود دو مرحله ای</title>
 @endsection
 
 @section('content')
@@ -20,7 +20,7 @@
                 @lang('public.two factor authentication')
             </div>
             <div class="card-body">
-                <p class="small text-center card-text">we've send The Code to you</p>
+                <p class="small text-center card-text">کد را برای شما ارسال کردیم</p>
             <form method="POST" action="{{route('auth.otp.login.two.factor.code')}}">
                         @csrf
                         <div class="form-group row mb-lg-2">

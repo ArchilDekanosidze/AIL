@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use App\Services\Auth\OTPLogin;
-use App\Services\Auth\Traits\hasOTP;
-use App\Services\Auth\Traits\hasUsername;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Services\Auth\OTPLogin;
+use App\Http\Controllers\Controller;
+use App\Services\Auth\Traits\hasOTP;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
+use App\Services\Auth\Traits\hasUsername;
 use Illuminate\Validation\ValidationException;
+use App\Services\Auth\Traits\AuthBackend\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
@@ -30,7 +30,7 @@ class LoginController extends Controller
     use hasOTP;
     use hasUsername;
 
-    protected $maxAttempts = 1;
+    protected $maxAttempts = 100;
     protected $decayMinutes = 2;
 
     /**

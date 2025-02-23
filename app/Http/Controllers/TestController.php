@@ -52,5 +52,10 @@ class TestController extends Controller
       ];
       SendSms::dispatch($user, $data);
     }
+
+    public function logout()
+    {
+      Auth::logout();
+    }
  
 }

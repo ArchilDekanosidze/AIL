@@ -1,4 +1,4 @@
-@extends('customer.layouts.master-one-col')
+@extends('layouts.master')
 @section('head-tag')
 <title>forgot password</title>
 @endsection

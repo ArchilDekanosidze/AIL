@@ -13,7 +13,7 @@ class MeliPayamak implements SmsSenderInterface
     private $patternCode;
     private $result;
 
-    public function __construct($mobiles, array $data)
+    public function __construct()
     {
         $this->result = array();
     }

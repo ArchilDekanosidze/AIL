@@ -1,4 +1,4 @@
-@extends('customer.layouts.master-simple')
+@extends('layouts.master')
 @section('head-tag')
 <title>reset password</title>
 @endsection

@@ -37,8 +37,8 @@ class QuizService
         $this->createQuizQuestionService = $createQuizQuestionService;
         $this->createQuizService = $createQuizService;
 
-        Auth::loginUsingId(1);
-        $this->setUser(auth()->user());
+        // Auth::loginUsingId(1);
+        // $this->setUser(auth()->user());
 
     }
 

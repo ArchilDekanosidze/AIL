@@ -17,8 +17,8 @@ class DesktopService
     {
         $this->myProgressService = $myProgressService;
 
-        Auth::loginUsingId(1);
-        $this->setUser(auth()->user());
+        // Auth::loginUsingId(1);
+        // $this->setUser(auth()->user());
     }
     public function getProgressData() 
     {

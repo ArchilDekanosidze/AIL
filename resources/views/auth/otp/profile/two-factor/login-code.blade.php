@@ -1,4 +1,4 @@
-@extends('customer.layouts.master-two-col')
+@extends('layouts.master')
 
 
 @section('head-tag')

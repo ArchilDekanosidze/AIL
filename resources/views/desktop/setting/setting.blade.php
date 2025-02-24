@@ -15,7 +15,7 @@
     <div class="profileCard">        
         <a class="btn btn-primary" href="{{route('auth.otp.desktop.setting.email')}}">تغییر ایمیل</a>
     </div>
-    @if(!auth()->user()->hasVerifiedEmail())
+    @if(!auth()->user()->hasVerifiedEmail() && auth()->user()->hasEmail())
         <div class="profileCard">        
             <a class="btn btn-primary" href="{{route('auth.email.send.verification')}}">ارسال ایمیل تاییده</a>
         </div>

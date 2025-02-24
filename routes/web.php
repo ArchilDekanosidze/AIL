@@ -23,6 +23,7 @@ use App\Http\Controllers\Desktop\DesktopStudentController;
 use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
+use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
 use App\Http\Controllers\Category\CategoryQuestionUserController;
 use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
@@ -128,6 +129,10 @@ Route::post('/category/categoryQuestion/user/remove_category_from_user', [Catego
 
 
 
+//admin Panel
+
+Route::get('/admin', [AdminDesktopController::class, 'index'])->name('home');
+
 
 // admin category question
 
@@ -141,10 +146,8 @@ Route::get('/admin/category/categoryQuestion/delete/{currentCategory}', [AdminCa
 // admin question
 
 Route::get('/admin/question/list/{category}', [AdminQuestionController::class, 'index'])->name('admin.question.index');
-
 Route::get('/admin/question/create', [AdminQuestionController::class, 'create'])->name('admin.question.create');
 Route::post('/admin/question/create', [AdminQuestionController::class, 'store'])->name('admin.question.store');
-
 Route::get('/admin/question/edit/{question}', [AdminQuestionController::class, 'edit'])->name('admin.question.edit');
 Route::post('/admin/question/update/{question}', [AdminQuestionController::class, 'update'])->name('admin.question.update');
 Route::get('/admin/question/delete/{question}', [AdminQuestionController::class, 'delete'])->name('admin.question.delete');

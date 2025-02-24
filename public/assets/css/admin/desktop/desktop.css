@@ -1,0 +1,43 @@
+.userProfile
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.userProfile .profileCard
+{
+    width: 22%;
+    height: 200px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: aqua;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.userProfile .profileCard:hover
+{
+    background: rgb(5, 214, 92);
+}
+
+
+.userProfile .profileCard .btn
+{
+    background: transparent;
+    border: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:mediumblue;
+    font-size: 24px;
+}

@@ -1,0 +1,31 @@
+@extends('layouts.master')
+
+@section('style')
+<link rel="stylesheet" href="{{asset('assets/css/admin/desktop/desktop.css')}}">
+@endsection
+@section('content')
+<div class="userProfile main-body"> 
+    <div class="profileCard">        
+        <a class="btn btn-primary" href="{{route('admin.category.categoryQuestion.create')}}">ساخت  دسته بندی جدید برای سوالات</a>
+    </div>
+
+    <div class="profileCard">        
+        <a class="btn btn-primary" href="{{route('admin.question.create')}}">ساخت سوال جدید</a>
+    </div>
+
+</div>
+@endsection
+
+
+
+
+
+
+
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+
+        });
+    </script>
+@endsection

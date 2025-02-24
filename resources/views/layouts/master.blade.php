@@ -32,6 +32,9 @@
                         <h4 class="successFromController">{{$value}}</h4>
                     @endforeach
                 @endisset
+                @if(session()->has('success'))
+                    <h4 class="successFromController">{{session('success')}}</h4>
+                @endif
                 
             </div>
             @yield('content')

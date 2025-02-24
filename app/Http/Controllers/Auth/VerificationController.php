@@ -44,11 +44,10 @@ class VerificationController extends Controller
 
     public function send()
     {
-        dd(2);
         if (Auth::user()->hasVerifiedEmail()) {
             return redirect()->route('desktop.setting.setting');
         }
-
+        
         Auth::user()->sendEmailVerificationNotification();
         return back()->with('success', __('auth.verification Email Sent'));
     }

@@ -1,6 +1,10 @@
 <div class="mainHeader">
     @auth
-        <a href="{{route('desktop.student.index')}}" class="btn btn-primary">پنل کاربری</a>
+        @if (Request::is("/"))
+            <a href="{{route('desktop.student.index')}}" class="btn btn-primary">پنل کاربری</a>
+        @else
+            <a href="{{route('home')}}" class="btn btn-primary">خانه</a>
+        @endif
         <a href="{{route('auth.logout')}}" class="btn btn-primary">خروج</a>
     @endauth
     @guest

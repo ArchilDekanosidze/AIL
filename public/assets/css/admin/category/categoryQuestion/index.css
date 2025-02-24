@@ -1,6 +1,6 @@
 .adminCategory .mainDivDirection .btn
 {
-    width: 22%;
+    width: 32%;
     height: 200px;
     margin-bottom: 20px;
     font-size: 25px;
@@ -43,16 +43,4 @@
 .adminCategory .mainDivDirection .btn  .cardButtons a
 {
     color: aqua;
-}
-.questionFront
-{
-    font-size: 20px;
-}
-.cardButtons
-{
-    font-size: 20px;    
-}
-.cardButtons .deleteLink
-{
-    margin-right: 20px;
 }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string("p4");
             $table->integer("answer");
             $table->float('percentage', 15, 8);
-            $table->integer('count');
+            $table->integer('count')->default(100);
             $table->boolean('isfree')->default(0);
             $table->timestamps();
             $table->foreign('category_question_id')->references('id')->on('category_questions')->onDelete('cascade');

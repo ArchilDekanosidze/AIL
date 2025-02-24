@@ -14,13 +14,13 @@ class AdminCategoryQuestionController extends Controller
     {      
         $path = $category->path();
         $directCats =  $category->children()->get();
-        return view('admin.category.question.index', compact('directCats', 'path'));
+        return view('admin.category.categoryQuestion.index', compact('directCats', 'path'));
     }
 
     public function create()
     {
         $categories = CategoryQuestion::all();
-        return view('admin.category.question.create', compact('categories'));
+        return view('admin.category.categoryQuestion.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -34,12 +34,14 @@ class AdminCategoryQuestionController extends Controller
     public function edit(CategoryQuestion $currentCategory)
     {
         $categories = CategoryQuestion::all();
-        return view('admin.category.question.edit', compact('categories', 'currentCategory'));
+        return view('admin.category.categoryQuestion.edit', compact('categories', 'currentCategory'));
     }
 
     public function update(Request $request, CategoryQuestion $currentCategory)
     {
         $parentCat = CategoryQuestion::find($request->categorySelect);
+        $currentCategory->name =  $request->currentCategoryName;
+        $parentCat->save();
         $currentCategory->appendToNode($parentCat)->save();
         return back();
     }
@@ -51,7 +53,7 @@ class AdminCategoryQuestionController extends Controller
         {
             $currentCategory->delete();
         }
-        return back();
+        return back()->withErrors("این دسته بندی حاوی سوال می باشد");
     }
 }
 

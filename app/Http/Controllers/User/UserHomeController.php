@@ -78,6 +78,6 @@ class UserHomeController extends Controller
         
         // dd($user->userCategoryStatus($cat));
 
-        return view("User.home");
+        return view("home");
     }
 }

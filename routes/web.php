@@ -24,13 +24,12 @@ use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
+use App\Http\Controllers\Category\CategoryQuestionUserController;
 use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
-use App\Http\Controllers\User\Category\UserCategoryQuestionController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingEmailController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingMobileController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingTwoFactorController;
-
 
 
 
@@ -120,41 +119,35 @@ Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'settin
 
 
 Route::get('/', [UserHomeController::class, 'index'])->name('home');
-Route::post('/categoryQuestion/randomFreeQuestion', [UserCategoryQuestionController::class, 'getRandomFreeQuestion'])->name('user.categoryQuestion.randomFreeQuestion.get');
 
 
-
-
-
-Route::get('/categoryQuestion/index/{currentCategory}', [UserCategoryQuestionController::class, 'index'])->name('user.categoryQuestion.index');
-Route::post('/categoryQuestion/add_category_to_user', [UserCategoryQuestionController::class, 'addCategoryToUser'])->name('user.categoryQuestion.add_category_to_user');
-Route::post('/categoryQuestion/remove_category_from_user', [UserCategoryQuestionController::class, 'removeCategoryFromUser'])->name('user.categoryQuestion.remove_category_from_user');
-
-
-// user profile
-
-
-//user learning
-
-
+Route::post('/category/categoryQuestion/user/randomFreeQuestion', [CategoryQuestionUserController::class, 'getRandomFreeQuestion'])->name('category.categoryQuestion.user.randomFreeQuestion.get');
+Route::get('/category/categoryQuestion/user/index/{currentCategory}', [CategoryQuestionUserController::class, 'index'])->name('category.categoryQuestion.user.index');
+Route::post('/category/categoryQuestion/user/add_category_to_user', [CategoryQuestionUserController::class, 'addCategoryToUser'])->name('category.categoryQuestion.user.add_category_to_user');
+Route::post('/category/categoryQuestion/user/remove_category_from_user', [CategoryQuestionUserController::class, 'removeCategoryFromUser'])->name('category.categoryQuestion.user.remove_category_from_user');
 
 
 
 
 // admin category question
 
-Route::get('/admin/category/question/list/{category}', [AdminCategoryQuestionController::class, 'index'])->name('admin.category.question.index');
-Route::get('/admin/category/question/create', [AdminCategoryQuestionController::class, 'create'])->name('admin.category.question.create');
-Route::post('/admin/category/question/create', [AdminCategoryQuestionController::class, 'store'])->name('admin.category.question.store');
-Route::get('/admin/category/question/edit/{currentCategory}', [AdminCategoryQuestionController::class, 'edit'])->name('admin.category.question.edit');
-Route::post('/admin/category/question/update/{currentCategory}', [AdminCategoryQuestionController::class, 'update'])->name('admin.category.question.update');
-Route::get('/admin/category/question/delete/{currentCategory}', [AdminCategoryQuestionController::class, 'delete'])->name('admin.category.question.delete');
+Route::get('/admin/category/categoryQuestion/list/{category}', [AdminCategoryQuestionController::class, 'index'])->name('admin.category.categoryQuestion.index');
+Route::get('/admin/category/categoryQuestion/create', [AdminCategoryQuestionController::class, 'create'])->name('admin.category.categoryQuestion.create');
+Route::post('/admin/category/categoryQuestion/create', [AdminCategoryQuestionController::class, 'store'])->name('admin.category.categoryQuestion.store');
+Route::get('/admin/category/categoryQuestion/edit/{currentCategory}', [AdminCategoryQuestionController::class, 'edit'])->name('admin.category.categoryQuestion.edit');
+Route::post('/admin/category/categoryQuestion/update/{currentCategory}', [AdminCategoryQuestionController::class, 'update'])->name('admin.category.categoryQuestion.update');
+Route::get('/admin/category/categoryQuestion/delete/{currentCategory}', [AdminCategoryQuestionController::class, 'delete'])->name('admin.category.categoryQuestion.delete');
 
 // admin question
 
-Route::get('/admin/question/create', [AdminQuestionController::class, 'create'])->name('admin.question.create');
-Route::post('/admin/question/create', [AdminCategoryQuestionController::class, 'store'])->name('admin.question.store');
+Route::get('/admin/question/list/{category}', [AdminQuestionController::class, 'index'])->name('admin.question.index');
 
+Route::get('/admin/question/create', [AdminQuestionController::class, 'create'])->name('admin.question.create');
+Route::post('/admin/question/create', [AdminQuestionController::class, 'store'])->name('admin.question.store');
+
+Route::get('/admin/question/edit/{question}', [AdminQuestionController::class, 'edit'])->name('admin.question.edit');
+Route::post('/admin/question/update/{question}', [AdminQuestionController::class, 'update'])->name('admin.question.update');
+Route::get('/admin/question/delete/{question}', [AdminQuestionController::class, 'delete'])->name('admin.question.delete');
 
 
 

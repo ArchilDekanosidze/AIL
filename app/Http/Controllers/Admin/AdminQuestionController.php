@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\CategoryQuestion;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Models\CategoryQuestion;
 use App\Http\Controllers\Controller;
 
 
@@ -12,9 +13,9 @@ class AdminQuestionController extends Controller
 
     public function index(CategoryQuestion $category)
     {      
-        // $path = $category->path();
-        // $directCats =  $category->children()->get();
-        // return view('admin.question.index', compact('directCats', 'path'));
+        $path = $category->path();
+        $questions = Question::where("category_question_id", $category->id)->get();
+        return view('admin.question.index', compact('questions', 'path'));
     }
 
     public function create()
@@ -25,33 +26,49 @@ class AdminQuestionController extends Controller
 
     public function store(Request $request)
     {
-        // $newCat  = CategoryQuestion::create(['name' => $request->newCategory]);
-        // $parentCat = CategoryQuestion::find($request->categorySelect);
-        // $newCat->appendToNode($parentCat)->save();
-        // return back();
+        $categoryQuestion = CategoryQuestion::find($request->categorySelect);
+
+
+        $question = new Question();
+        $question->category_question_id = $categoryQuestion->id;
+        $question->front = $request->editorFront;
+        $question->back = $request->editorBack;
+        $question->p1 = $request->editorP1;
+        $question->p2 = $request->editorP2;
+        $question->p3 = $request->editorP3;
+        $question->p4 = $request->editorP4;
+        $question->answer = $request->answer;
+        $question->percentage = $request->percentage;
+        $question->save();
+        return back()->with("success", "سوال با موفقیت ثبت شد");
     }
 
-    public function edit(CategoryQuestion $currentCategory)
+    public function edit(Question $question)
     {
-        // $categories = CategoryQuestion::all();
-        // return view('admin.question.edit', compact('categories', 'currentCategory'));
+        $categories = CategoryQuestion::all();
+        return view('admin.question.edit', compact('question', 'categories'));
     }
 
-    public function update(Request $request, CategoryQuestion $currentCategory)
+    public function update(Request $request, Question $question)
     {
-        // $parentCat = CategoryQuestion::find($request->categorySelect);
-        // $currentCategory->appendToNode($parentCat)->save();
-        // return back();
+        $categoryQuestion = CategoryQuestion::find($request->categorySelect);
+        $question->category_question_id = $categoryQuestion->id;
+        $question->front = $request->editorFront;
+        $question->back = $request->editorBack;
+        $question->p1 = $request->editorP1;
+        $question->p2 = $request->editorP2;
+        $question->p3 = $request->editorP3;
+        $question->p4 = $request->editorP4;
+        $question->answer = $request->answer;
+        $question->percentage = $request->percentage;
+        $question->save();
+        return back()->with("success", "سوال با موفقیت ثبت شد");
     }
 
-    public function delete(Request $request, CategoryQuestion $currentCategory)
+    public function delete(Request $request, Question $question)
     {
-        // $allQuestionCount = $currentCategory->allQuestion();
-        // if($allQuestionCount->count() == 0)
-        // {
-        //     $currentCategory->delete();
-        // }
-        // return back();
+        $question->delete();
+        return back();
     }
 }
 

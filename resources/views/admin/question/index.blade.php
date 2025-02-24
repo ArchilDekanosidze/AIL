@@ -7,13 +7,11 @@
 <p class="breadcrump"> @php echo $path @endphp </p>
 <div class="adminCategory main-body">
     <div class="mainDivDirection">
-        @foreach($directCats as $directCat)
-            <div class="btn">
-            <a  class="btn-primary catName" href="{{route('admin.category.question.index', $directCat->id)}}">{{$directCat->name}} </a> 
+        @foreach($questions as $question)
+            <p class="questionFront">{{$question->front}}</p>
             <div class="cardButtons">
-                <a class="editLink" href="{{route('admin.category.question.edit', $directCat->id)}}">ادیت</a>
-                <a class="editLink" href="{{route('admin.category.question.delete', $directCat->id)}}">حذف</a>
-            </div>
+                <a class="editLink" href="{{route('admin.question.edit', $question->id)}}">ادیت</a>
+                <a class="deleteLink" href="{{route('admin.question.delete', $question->id)}}">حذف</a>
             </div>             
         @endforeach                
     </div>

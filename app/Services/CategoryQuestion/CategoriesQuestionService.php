@@ -55,17 +55,13 @@ class CategoriesQuestionService
 
     public function addCategoryToUser()
     {
-
         $currentCategoryId = $this->request->currentCategoryId;
-
-        $categoriesId = $this->getDescendantsAndSelfIds($currentCategoryId);
         
+        $categoriesId = $this->getDescendantsAndSelfIds($currentCategoryId);
         $data = $categoriesId->mapWithKeys(function($id){
             return [$id => ['is_active' => true]];
         })->toArray();
         $this->user->categoryQuestions()->syncWithoutDetaching($data);
-
-
         return true;
     }
 

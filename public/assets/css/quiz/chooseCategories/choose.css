@@ -99,3 +99,71 @@
     font-size: 20px;
     font-weight: bold;
 }
+
+.catCheckBoxLi
+{
+    margin-right: calc(var(--depth,0) * 50px);
+}
+.liDetails
+{
+    display: flex;
+}
+.alignerLi
+{
+    margin-bottom: 0px;
+    width: 28px;
+}
+.minNumberRquire
+{
+    background-color: rgb(243, 75, 75);
+}
+@media only screen and (max-width: 1200px) {
+    .userLearningChooseCategory ul
+    {
+        font-size: 18px;
+        padding-right: 0px;
+    }
+    .userLearningChooseCategory .mainButton
+    {
+        flex-wrap: wrap;
+    }
+  .userLearningChooseCategory .mainButton button
+  {
+    font-size: 18px;
+  }
+  .userLearningChooseCategory .startPaperLearning,
+  .userLearningChooseCategory .learningSetting
+  {
+    margin-right: 0px;
+  }
+  .learningSettingDirectDiv
+  {
+    width: 95%;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  #quizName
+  {
+    width: 200px;
+  }
+  #testCount,
+  #testTime
+  {
+    width: 75px;
+  }
+  .userLearningChooseCategory ul li
+  {
+    display: flex;
+    flex-direction: column;
+  }
+  .catCheckBoxLi
+    {
+        margin-right: calc(var(--depth,0) * 20px);
+    }
+    .alignerLi
+    {
+        width: 24px ;
+    }
+
+}

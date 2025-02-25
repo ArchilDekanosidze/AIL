@@ -69,7 +69,7 @@
     justify-content: space-between;
 }
 
-.userCategory .Questiondiv .nextRandomQuestion
+.userCategory .nextRandomQuestion
 {
     background-color: green;
     padding: 10px 20px;
@@ -82,7 +82,7 @@
     font-size: 24px;
 }
 
-.userCategory .Questiondiv .toggleFrontAndBack
+.userCategory  .toggleFrontAndBack
 {
     background-color: rgb(61, 128, 228);
     padding: 10px 20px;
@@ -94,8 +94,43 @@
     color: white;
     font-size: 24px;
 }
-.breadCrump
+.breadCrump 
 {
     padding: 10px;
     font-size: 20px;
+}
+.questionDataDiv
+{
+    display: flex;
+    flex-direction: column;
+}
+.questionDataDiv .pdiv
+{
+    margin-bottom: 20px;
+    border: 3px solid gray;
+    padding: 10px 20px;
+}
+.questionFront
+{
+    margin-bottom: 20px;
+}
+.mainQuestionDiv .buttons
+{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .userCategory .mainDivDirection .categoryCard 
+    {
+        width: 100%;
+    }
+    .userCategory  .toggleFrontAndBack,
+    .userCategory  .nextRandomQuestion
+    {
+        padding: 5px 10px;
+        font-size: 18px;
+    }
+
 }

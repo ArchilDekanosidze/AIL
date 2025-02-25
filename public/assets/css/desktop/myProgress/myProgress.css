@@ -65,3 +65,53 @@
     padding: 20px 20px;
     margin-right: 20px;
 }
+
+@media only screen and (max-width: 1200px) {
+    .parentBtn
+    {
+        font-size: 18px;
+        padding: 5px 10px;
+    }
+    .chartHeader .parentCategoryName
+    {
+        font-size: 18px;
+    }
+    .chooseTimeSpan
+    {
+        font-size: 18px;
+        flex-direction: column;
+    }
+    .chooseTimeSpan .from
+    {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: 95%;
+    }
+    .chooseTimeSpan .to
+    {
+        margin-right: 0px;
+        margin-left: 0px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: 95%;      
+    }
+    .chooseTimeSpan .spanTime
+    {
+        margin-bottom: 20px;
+    }
+    .showRefiendDatabtn
+    {
+        font-size: 16px;
+        padding: 5px 10px;
+    }
+    #datePickerFrom
+    {
+        width: 200px;
+    }
+    #datePickerTo
+    {
+        width: 200px;
+    }
+}

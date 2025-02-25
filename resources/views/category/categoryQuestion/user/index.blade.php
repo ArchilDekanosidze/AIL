@@ -39,13 +39,29 @@
             </div>
         @endforeach                
     </div>
-    <div class="Questiondiv">
-        <div class="front"></div>
-        <div class="back hidden"></div>
+    <div class="mainQuestionDiv">
         <div class="buttons">
             <button class="toggleFrontAndBack">مشاهده پاسخ</button>
             <button class="nextRandomQuestion">سوال بعدی</button>
         </div>
+        <div class="questionDataDiv">
+            <div class="questionFront"></div>
+            <div class="pdiv p1">
+                <span class="p1Text"></span>
+            </div>
+            <div class="pdiv p2">
+                <span class="p2Text"></span>
+            </div>
+            <div class="pdiv p3">
+                <span class="p3Text"></span>
+            </div>
+            <div class="pdiv p4">
+                <span class="p4Text"></span>
+            </div>
+        </div>
+        <div class="answerDiv">
+        </div>
+
     </div>
 </div>
 @endsection
@@ -64,21 +80,22 @@
             var data =  { currentCategoryId : $('.currentCategoryId').val()};    
    
             result = Ajax(url, data)
-            $(".Questiondiv .front").html(result["front"])
-            $(".Questiondiv .back").html(result["back"])
-            $(".Questiondiv .front").addClass("show");
-            $(".Questiondiv .front").removeClass("hidden");
-            $(".Questiondiv .back").addClass("hidden");
-            $(".Questiondiv .back").removeClass("show");
+            $(".mainQuestionDiv .questionFront").html(result["front"])
+            $(".mainQuestionDiv .p1").html(result["p1"])
+            $(".mainQuestionDiv .p2").html(result["p2"])
+            $(".mainQuestionDiv .p3").html(result["p3"])
+            $(".mainQuestionDiv .p4").html(result["p4"])
+
+            $(".mainQuestionDiv .answerDiv").html(result["back"])
+            $(".mainQuestionDiv .questionDataDiv").addClass("show");
+            $(".mainQuestionDiv .questionDataDiv").removeClass("hidden");
+            $(".mainQuestionDiv .answerDiv").addClass("hidden");
+            $(".mainQuestionDiv .answerDiv").removeClass("show");
             $(".toggleFrontAndBack").text("مشاهده پاسخ")
 
         }      
         
-        function toggleCategoryUser(action, url, data)
-        {
-            alert(url)
-            
-        }
+ 
 
         $(document).ready(function() {
             getNextQuestion()
@@ -87,18 +104,18 @@
                 if(text == "مشاهده پاسخ")
                 {
                     $(this).text("مشاهده سوال")
-                    $(".Questiondiv .front").addClass("hidden");
-                    $(".Questiondiv .front").removeClass("show");
-                    $(".Questiondiv .back").addClass("show");
-                    $(".Questiondiv .back").removeClass("hidden");
+                    $(".mainQuestionDiv .questionDataDiv").addClass("hidden");
+                    $(".mainQuestionDiv .questionDataDiv").removeClass("show");
+                    $(".mainQuestionDiv .answerDiv").addClass("show");
+                    $(".mainQuestionDiv .answerDiv").removeClass("hidden");
                 }
                 else
                 {
                     $(this).text("مشاهده پاسخ")
-                    $(".Questiondiv .front").addClass("show");
-                    $(".Questiondiv .front").removeClass("hidden");
-                    $(".Questiondiv .back").addClass("hidden");
-                    $(".Questiondiv .back").removeClass("show");
+                    $(".mainQuestionDiv .questionDataDiv").addClass("show");
+                    $(".mainQuestionDiv .questionDataDiv").removeClass("hidden");
+                    $(".mainQuestionDiv .answerDiv").addClass("hidden");
+                    $(".mainQuestionDiv .answerDiv").removeClass("show");
                 }
             })
 

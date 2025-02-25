@@ -96,3 +96,31 @@
 {
     background-color: #f39c55;
 }
+
+@media only screen and (max-width: 1200px) { 
+    .onlineQuizInProgress .buttons
+    {
+        flex-direction: column;
+        width: 100%;
+    }
+    .onlineQuizInProgress .buttons  .btn,
+    .endQuizbuttons .endQuiz
+    {
+        font-size: 16px;
+        padding: 10px 15px;        
+    }
+    .endQuizbuttons .endQuiz
+    {
+        width: auto;
+    }
+    .endQuizbuttons
+    {
+        justify-content: center;
+    }
+    .onlineQuizInProgress .buttons .nextPrevAnswer .questionToggle
+    {
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+}
+

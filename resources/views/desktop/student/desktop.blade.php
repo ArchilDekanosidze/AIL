@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{asset('assets/css/desktop/student/desktop.css')}}">
+<link rel="stylesheet" href="{{asset('assets/css/desktop/setting/setting.css')}}">
 @endsection
 @section('content')
 <div class="userProfile main-body"> 

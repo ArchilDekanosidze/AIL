@@ -131,7 +131,7 @@ Route::post('/category/categoryQuestion/user/remove_category_from_user', [Catego
 
 //admin Panel
 
-Route::get('/admin', [AdminDesktopController::class, 'index'])->name('home');
+Route::get('/admin', [AdminDesktopController::class, 'index'])->name('admin.home');
 
 
 // admin category question
@@ -170,3 +170,5 @@ Route::get('/test/emailTest', [TestController::class, 'emailTest']);
 Route::get('/test/smsTest', [TestController::class, 'smsTest']);
 
 Route::get('/test/logout', [TestController::class, 'logout']);
+
+Route::get('/test/addCatToUserMinChange', [TestController::class, 'addCatToUserMinChange']);

@@ -13,6 +13,7 @@ use App\Jobs\Notification\Sms\SendSmsToMultipleUser;
 use App\Services\Notification\Sms\Contracts\SmsTypes;
 use App\Services\Quiz\SubService\SaveQuizDataService;
 use App\Jobs\Notification\Email\SendEmailWithMailAddress;
+use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class TestController extends Controller
 {
@@ -56,6 +57,11 @@ class TestController extends Controller
     public function logout()
     {
       Auth::logout();
+    }
+
+    public function addCatToUserMinChange(CategoriesQuestionService $categoriesQuestionService)
+    {
+      $categoriesQuestionService->addCategoryToUser();
     }
  
 }

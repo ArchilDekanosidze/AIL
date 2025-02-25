@@ -11,14 +11,19 @@
         <ul>
             @foreach($allCategories as $category)            
                 @if($userCategories->contains($category))                        
-                    <li class="catCheckBoxLi" style="margin-right : {{$category->depth *50}}px; @php  if($category->depth >1) echo 'display:none' @endphp" >                      
-                        @if($category->descendants()->count() > 0 )
-                            <span class="triangelForCategory">
-                                <span class="toggle-icon">&#9664</span>
-                            </span>
-                        @endif
+                    <li class="catCheckBoxLi" data-parentId = {{$category->parent_id}} data-catId = {{$category->id}} style="--depth: {{$category->depth}}; @php  if($category->depth >1) echo 'display:none' @endphp" >                      
+                        <div class="liDetails">
+                            @if($category->descendants()->count() > 0 )
+                                <span class="triangelForCategory">
+                                    <span class="toggle-icon">&#9664</span>
+                                </span>
+                            @else
+                                <p class="alignerLi" style="--depth: {{$category->depth-1}}""> </p>
+                            @endif
 
-                        <input type="checkbox" name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
+
+                            <input type="checkbox"  name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
+                        </div>
                         @if($category->descendants()->count() == 0)
                             <div class="targetLevelDiv advancedSettingDiv">
                                 <lable for="targetLevel"> درصد هدف:</lable>
@@ -32,7 +37,7 @@
                         <input type="hidden" name="currentLevels[{{$category->id}}]" min="0" max="100" value="{{$userCategories->find($category)->pivot->level}}">
                         <div class="number_to_change_levelDiv advancedSettingDiv">
                             <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
-                            <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="{{(4-$category->depth) * 25}}" max="1000" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
+                            <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="{{(6-$category->depth) * 25}}" max="1000" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
                         </div>
                         
                     </li>
@@ -41,8 +46,8 @@
         </ul>
 
         <div class="mainButton">
-            <button class="startOnlineLearning btn" name="action" value="online">شروع آزمون آنلاین</button>
-            <button  class="startPaperLearning btn disabled" name="action" value="paper">پرینت آزمون کتبی</button>
+            <button class="startLearning startOnlineLearning btn" name="action" value="online">شروع آزمون آنلاین</button>
+            <button  class="startLearning startPaperLearning btn disabled" name="action" value="paper">پرینت آزمون کتبی</button>
             <a class="learningSetting btn">تنظیمات آزمون</a>
             <a class="advanceSetting btn">تنظیمات حرفه ای</a>
         </div>
@@ -74,67 +79,56 @@
                 return parseInt(this, 10);
             }
 
+            function toggleSubCategories(parentId, checked) {
+                $(".catCheckBox").each(function () {
+                    if($(this).parent().parent().data("parentid") ==  parentId)
+                    {                        
+                        $(this).prop('checked', checked)
+                        toggleSubCategories($(this).parent().parent().data('catid'), checked)
+                    }
+                })
+            }
+
+            function hideSubCategories(catId)
+            {
+                $(".catCheckBoxLi").each(function () {
+                        parentId= $(this).data('parentid')
+                        if(parentId == catId)
+                        {
+                            hideSubCategories($(this).data('catid'))
+                            $(this).hide()
+                            $(this).find('.toggle-icon').html("&#9664")
+                            $(this).find('.triangelForCategory').removeClass('open')
+                        }
+                    })
+            }
 
 
-            $('.catCheckBox').click(function(){
-                mainElm = $(this).parent()
-                mainMargin = mainElm.css("marginRight").toNum()
-                nextElm = mainElm.next()
-                while(true)
-                {
-                    nextElmMargin = nextElm.css("marginRight").toNum()
-                    if(nextElmMargin <= mainMargin)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        nextElm.find('.catCheckBox').prop('checked', mainElm.find('.catCheckBox').prop('checked'))
-                    }
-                    nextElm = nextElm.next()
-                }
+            $('.catCheckBox').on("change", function(){
+
+                catId = $(this).parent().parent().data("catid")
+                isChecked = $(this).is(":checked")
+                toggleSubCategories(catId, isChecked)
+                
             })
 
             $('.triangelForCategory').click(function(){
                 $(this).toggleClass('open')
-                mainElm = $(this).parent()
-                mainMargin = mainElm.css("marginRight").toNum()
-                nextElm = mainElm.next()
-                if($(this).hasClass('open'))
-                {
+                catId = $(this).parent().parent().data("catid")
+                if($(this).hasClass('open'))                {
                     $(this).find('.toggle-icon').html("&#9660")
-                    while(true)
-                    {
-                        nextElmMargin = nextElm.css("marginRight").toNum()                       
-                        if(nextElmMargin <= mainMargin)
+                    $(".catCheckBoxLi").each(function () {
+                        parentId= $(this).data('parentid')
+                        if(parentId == catId)
                         {
-                            return;
+                            $(this).show()
                         }
-                        else
-                        {
-                            nextElm.find('.toggle-icon').html("&#9660")
-                            nextElm.find(".triangelForCategory").addClass("open");
-                            nextElm.show()
-                        }
-                        nextElm = nextElm.next()
-                    }
+                    })
                 }
                 else
                 {
-                    $(this).find('.toggle-icon').html("&#9664")
-                    while(true)
-                    {
-                        nextElmMargin = nextElm.css("marginRight").toNum()
-                        if(nextElmMargin <= mainMargin)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            nextElm.hide()
-                        }
-                        nextElm = nextElm.next()
-                    }
+                    $(this).find('.toggle-icon').html("&#9664")                 
+                    hideSubCategories(catId)
                 }
             })
 
@@ -162,10 +156,39 @@
                     $(".advancedSettingDiv").hide()
                     $(this).text("تنظیمات حرفه ای")
                 }
+            })  
+
+            $(".startLearning").click(function () {
+                flag = false
+                $(".numbers_to_change_level").each(function () {
+                    if($(this).val() < $(this).attr('min'))
+                    {
+                        flag = true
+                        $(this).parent().parent().addClass('minNumberRquire')
+                    }
+                })
+                if(flag)
+                {
+                    $(".failed-message").html("حداقل سوالات برای تغییر سطح نمی تواند از حد مجاز کمتر باشد ")   
+                    $('.failed-message').show().delay(5000).fadeOut('slow');
+                }
+            })
+            $('.numbers_to_change_level').on("blur", function () {
+                if($(this).val() < $(this).attr('min'))
+                {
+                    $(this).val($(this).attr('min'))   
+                    $(".failed-message").html("حداقل سوالات برای تغییر سطح نمی تواند از حد مجاز کمتر باشد ")   
+                    $('.failed-message').show().delay(5000).fadeOut('slow');
+
+                }
             })
 
-            
-
+            $('.numbers_to_change_level').each(function() {
+                if($(this).val() < $(this).attr('min'))
+                {
+                    $(this).val($(this).attr('min'))   
+                }
+            })
 
 
         });

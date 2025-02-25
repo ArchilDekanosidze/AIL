@@ -7,13 +7,25 @@
     display: flex;
     font-weight: bold;
     color: yellow;
-    display: flex;    
+    display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
 }
 .userHome .mainDivDirection
 {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+}
+
+@media only screen and (max-width: 1200px) {
+    .userHome .mainDivDirection .btn
+    {
+        width: 100%;
+    }
 }

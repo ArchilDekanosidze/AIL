@@ -25,7 +25,7 @@ trait CreateQuizTrait
     }
 
     public function create(Request $request)
-    {                    
+    {       
         if(!$request->has('categorySelected'))
         {
             return Redirect::back()->withErrors(['msg' => 'لطفا حداقل یک دسته بندی انتخاب کنید']);

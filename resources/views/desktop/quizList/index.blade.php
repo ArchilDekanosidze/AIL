@@ -27,6 +27,18 @@
             </tr>
         @endforeach
     </table>
+    <div class="quizTableSmallerScreenWith">
+        @foreach ($quizzes as $quiz)
+            <div class="quizDetail">
+                <p>نام آزمون: {{$quiz->quiz_name}}</p>
+                <p>تاریخ ساخته شدن: {{$quiz->createdAt}}</p>
+                <p>وضعیت آزمون : {{$quiz->persian_status}}</p>
+                <p>درصد آزمون : {{$quiz->finalPercentage}}</p>
+                <p><a href="{{route('quiz.online.onlineQuizInProgress', $quiz->id)}}">رفتن به آزمون</a></p>
+                <p><a class="@if($quiz->status != "ended") disabled @endif" href="{{route('quiz.online.saveOnlineQuizDataAndShowResult', $quiz->id)}}">مشاهده</a></p>
+            </div>    
+        @endforeach
+    </div>
 
 </div>
 @endsection

@@ -49,6 +49,7 @@ class MyProgressService
 
         $this->getUserCategories();
         $this->setInitialData();
+        $this->fillNullInHistory();
         $this->setAllTimes();
         $this->allTimes = $this->limitAllTimes($this->allTimes);
         $this->createEmptyLevelHistory();
@@ -83,8 +84,22 @@ class MyProgressService
         $this->target_levels = $this->userCategories->pluck('pivot.target_level')->toArray();
         $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
     }
-
+    public function fillNullInHistory()
+    {
+        for($i= 0; $i<count( $this->histories) ; $i++) {
+            if(is_null($this->histories[$i]))
+            {
+                $history= [["level" => 1, "time" => now()->timestamp, "isCorrect" =>  0]]; 
+                $data=[];
+                $data[$this->userCategories[$i]->id] = ["history" => $history];
+                $this->user->categoryQuestions()->syncWithoutDetaching($data);
+                $this->histories[$i] = json_encode($history);
+            }
+        }
+    }
+    
     public function setAllTimes() {
+        // dd($this->histories);
         foreach ($this->histories as $history) {
             $history = json_decode($history, true);
             foreach ($history as $cell) {

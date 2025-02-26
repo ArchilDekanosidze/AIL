@@ -16,22 +16,22 @@
 
 
     <div class="questionDataDiv">
-        <div class="questionFront">{{$question->front}}</div>
+        <div class="questionFront">{!! $question->front !!}</div>
         <div class="pdiv p1">
             <input type="checkbox" class="pCheckBox p1CheckBox">
-            <span class="p1Text">{{$question->p1}}</span>
+            <span class="p1Text">{!! $question->p1 !!}</span>
         </div>
         <div class="pdiv p2">
             <input type="checkbox" class="pCheckBox p2CheckBox">
-            <span class="p2Text">{{$question->p2}}</span>
+            <span class="p2Text">{!! $question->p2 !!}</span>
         </div>
         <div class="pdiv p3">
             <input type="checkbox" class="pCheckBox p3CheckBox">
-            <span class="p3Text">{{$question->p3}}</span>
+            <span class="p3Text">{!! $question->p3 !!}</span>
         </div>
         <div class="pdiv p4">
             <input type="checkbox" class="pCheckBox p4CheckBox">
-            <span class="p4Text">{{$question->p4}}</span>
+            <span class="p4Text">{!! $question->p4 !!}</span>
         </div>
     </div>
     <div class="answerDiv">
@@ -111,7 +111,7 @@
                 if(result.quizQuestion.user_answer)
                 {
                     $(".questionAswer").val(result.question.answer)
-                    $(".answerDiv").text(result.question.back)
+                    $(".answerDiv").html(result.question.back)
                     $(".answerRetrived").val(1);
                     $(".questionDataDiv .pdiv").addClass('disabled');
                 }
@@ -213,7 +213,7 @@
                         var url = "{{route('quiz.online.showAnswer')}}";        
                         data = createDataForAjax();
                         result = Ajax(url, data)
-                        $(".answerDiv").text(result)
+                        $(".answerDiv").html(result)
                         console.log(result)
                     }
                     $(".answerRetrived").val(1);

@@ -46,7 +46,7 @@ class CreateQuizService
             $this->quiz->quiz_name =  $this->user->name . "-" . now();
         }
         $this->quiz->quiz_type =  $this->quiz_type;
-        $this->quiz->count = $this->testCount;
+        $this->quiz->count =min($this->testCount, count($this->selectedQuestions));
         $this->quiz->time = $this->testTime * 60;
         $this->user->quizzes()->save($this->quiz);
     }

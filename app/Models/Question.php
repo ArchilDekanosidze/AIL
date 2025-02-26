@@ -25,4 +25,13 @@ class Question extends Model
     {
         return $this->belongsTo(CategoryQuestion::class, 'category_question_question');
     }
+
+    public function scopeTest($query)
+    {
+        return $query->where('type', 'test');
+    }
+    public function scopeDescriptive($query)
+    {
+        return $query->where('type', 'description');
+    }
 }

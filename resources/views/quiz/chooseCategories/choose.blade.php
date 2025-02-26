@@ -184,7 +184,7 @@
             })
 
             $('.numbers_to_change_level').each(function() {
-                if($(this).val() < $(this).attr('min'))
+                if(parseInt($(this).val()) < parseInt($(this).attr('min')))
                 {
                     $(this).val($(this).attr('min'))   
                 }

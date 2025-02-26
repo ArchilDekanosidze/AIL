@@ -93,14 +93,14 @@ class CreateQuizQuestionService
             $numQuestions = $percentage * $totalQuestions;
             $current_level = $this->user->categoryQuestions->find($categoryId)->pivot->level;
             $sumTargetLevel = $sumTargetLevel + $current_level;
-            $questions =$category->questions()->orderByRaw('ABS(percentage -?)' , $current_level)
+            $questions =$category->questions()->test()->orderByRaw('ABS(percentage -?)' , $current_level)
                 ->inRandomOrder()->limit($numQuestions)->get()->shuffle();
             $this->selectedQuestions = $this->selectedQuestions->merge($questions);
         }
 
         //select remaining question 
         $avgTargetlevel = $sumTargetLevel / (count($this->categoryPercentage));
-        $questions = Question::whereIn("category_question_id", $this->categoriesId)
+        $questions = Question::whereIn("category_question_id", $this->categoriesId)->test()
             ->whereNotIn("id", $this->selectedQuestions->pluck("id"))
             ->orderByRaw('ABS(percentage -?)' , $avgTargetlevel)
             ->inRandomOrder()->limit($totalQuestions-$this->selectedQuestions->count())->get()->shuffle();

@@ -12,9 +12,9 @@ class SeedController extends Controller
 {
     public function index()
     {
-        $this->createUser();
+        // $this->createUser();
         $this->createCategoryQuestion();
-        $this->createQuestion();
+        // $this->createQuestion();
     }
     public function createUser()
     {
@@ -28,21 +28,28 @@ class SeedController extends Controller
     public function createCategoryQuestion()
     {
         $cat0  = CategoryQuestion::create(['name' => 'دسته بندی']);
-
         $cat1  = CategoryQuestion::create(['name' => 'دوازدهم تجربی']);$cat1->appendToNode($cat0)->save();
-        $cat11  = CategoryQuestion::create(['name' => 'ریاضی']);$cat11->appendToNode($cat1)->save();
-        $cat12  = CategoryQuestion::create(['name' => 'فیزیک']);$cat12->appendToNode($cat1)->save();
-        $cat13  = CategoryQuestion::create(['name' => 'شیمی']);$cat13->appendToNode($cat1)->save();
-
         $cat2  = CategoryQuestion::create(['name' => 'یازدهم تجربی']);$cat2->appendToNode($cat0)->save();
-        $cat21  = CategoryQuestion::create(['name' => 'ریاضی']);$cat21->appendToNode($cat2)->save();
-        $cat22  = CategoryQuestion::create(['name' => 'فیزیک']);$cat22->appendToNode($cat2)->save();
-        $cat23  = CategoryQuestion::create(['name' => 'شیمی']);$cat23->appendToNode($cat2)->save();
-
         $cat3  = CategoryQuestion::create(['name' => 'دهم تجربی']);$cat3->appendToNode($cat0)->save();
-        $cat31  = CategoryQuestion::create(['name' => 'ریاضی']);$cat31->appendToNode($cat3)->save();
-        $cat32  = CategoryQuestion::create(['name' => 'فیزیک']);$cat32->appendToNode($cat3)->save();
-        $cat33  = CategoryQuestion::create(['name' => 'شیمی']);$cat33->appendToNode($cat3)->save();
+        $cat4  = CategoryQuestion::create(['name' => 'دوازدهم ریاضی']);$cat4->appendToNode($cat0)->save();
+        $cat5  = CategoryQuestion::create(['name' => 'یازدهم ریاضی']);$cat5->appendToNode($cat0)->save();
+        $cat6  = CategoryQuestion::create(['name' => 'دهم ریاضی']);$cat6->appendToNode($cat0)->save();
+        $cat7  = CategoryQuestion::create(['name' => 'دوازدهم انسانی']);$cat7->appendToNode($cat0)->save();
+        $cat8  = CategoryQuestion::create(['name' => 'یازدهم انسانی']);$cat8->appendToNode($cat0)->save();
+        $cat9  = CategoryQuestion::create(['name' => 'دهم انسانی']);$cat9->appendToNode($cat0)->save();
+        $cat10  = CategoryQuestion::create(['name' => 'دوازدهم معارف اسلامی']);$cat10->appendToNode($cat0)->save();
+        $cat11  = CategoryQuestion::create(['name' => 'یازدهم معارف اسلامی']);$cat11->appendToNode($cat0)->save();
+        $cat12  = CategoryQuestion::create(['name' => 'دهم معارف اسلامی']);$cat12->appendToNode($cat0)->save();
+        $cat13  = CategoryQuestion::create(['name' => 'نهم']);$cat13->appendToNode($cat0)->save();
+        $cat14  = CategoryQuestion::create(['name' => 'هشتم']);$cat14->appendToNode($cat0)->save();
+        $cat15  = CategoryQuestion::create(['name' => 'هفتم']);$cat15->appendToNode($cat0)->save();
+        $cat16  = CategoryQuestion::create(['name' => 'ششم']);$cat16->appendToNode($cat0)->save();
+        $cat17  = CategoryQuestion::create(['name' => 'پنجم']);$cat17->appendToNode($cat0)->save();
+        $cat18  = CategoryQuestion::create(['name' => 'چهارم']);$cat18->appendToNode($cat0)->save();
+        $cat19  = CategoryQuestion::create(['name' => 'سوم']);$cat19->appendToNode($cat0)->save();
+        $cat20  = CategoryQuestion::create(['name' => 'دوم']);$cat20->appendToNode($cat0)->save();
+        $cat21  = CategoryQuestion::create(['name' => 'اول']);$cat21->appendToNode($cat0)->save();
+
 
     }
 

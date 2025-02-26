@@ -28,7 +28,7 @@ class AdminCategoryQuestionController extends Controller
         $newCat  = CategoryQuestion::create(['name' => $request->newCategory]);
         $parentCat = CategoryQuestion::find($request->categorySelect);
         $newCat->appendToNode($parentCat)->save();
-        return back();
+        return redirect()->back()->with("categorySelect", $request->categorySelect);
     }
 
     public function edit(CategoryQuestion $currentCategory)

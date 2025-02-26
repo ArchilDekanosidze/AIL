@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string("quiz_name")->nullable();
             $table->string("quiz_type")->default("online");
-            $table->int("count")->default(0);
-            $table->int("time")->default(0);
+            $table->integer("count")->default(0);
+            $table->integer("time")->default(0);
             $table->string("status")->default("created");
-            $table->int("rightAnswers")->nullable();
-            $table->int("wrongAnswers")->nullable();
-            $table->int("notAnswers")->nullable();
-            $table->int("finalPercentage")->nullable();
+            $table->integer("rightAnswers")->nullable();
+            $table->integer("wrongAnswers")->nullable();
+            $table->integer("notAnswers")->nullable();
+            $table->integer("finalPercentage")->nullable();
 
             
 

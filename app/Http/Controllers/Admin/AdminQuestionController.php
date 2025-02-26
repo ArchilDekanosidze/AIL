@@ -40,7 +40,7 @@ class AdminQuestionController extends Controller
         $question->answer = $request->answer;
         $question->percentage = $request->percentage;
         $question->save();
-        return back()->with("success", "سوال با موفقیت ثبت شد");
+        return back()->with("categorySelect", $request->categorySelect);
     }
 
     public function edit(Question $question)

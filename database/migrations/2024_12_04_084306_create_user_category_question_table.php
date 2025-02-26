@@ -19,7 +19,7 @@ return new class extends Migration
             $table->float('level')->default(1);
             $table->float('target_level')->default(100);
             $table->text('history')->nullable();
-            $table->int('number_to_change_level')->default(25);
+            $table->integer('number_to_change_level')->default(25);
             $table->timestamps();
         });
     }

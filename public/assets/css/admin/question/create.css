@@ -6,7 +6,7 @@
 }
 .adminCategory .categorySelect
 {
-    width: 500px;
+    width: fit-content;
     margin-bottom: 30px;
 }
 

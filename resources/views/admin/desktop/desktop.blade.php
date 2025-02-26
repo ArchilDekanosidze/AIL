@@ -6,6 +6,11 @@
 @section('content')
 <div class="userProfile main-body"> 
     <div class="profileCard">        
+        <a class="btn btn-primary" href="{{route('admin.category.categoryQuestion.index', 1)}}">لیست دسته بندی های سوالات</a>
+    </div>
+    
+    
+    <div class="profileCard">        
         <a class="btn btn-primary" href="{{route('admin.category.categoryQuestion.create')}}">ساخت  دسته بندی جدید برای سوالات</a>
     </div>
 

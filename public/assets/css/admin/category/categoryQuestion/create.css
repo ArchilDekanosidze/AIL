@@ -7,7 +7,7 @@
 }
 .adminCategory .categorySelect
 {
-    width: 300px;
+    width: fit-content;
 }
 
 .adminCategory .newCategory

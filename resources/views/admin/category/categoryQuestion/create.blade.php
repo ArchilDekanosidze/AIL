@@ -10,7 +10,7 @@
         <div class="mainDivDirection">
             <select class="categorySelect" name="categorySelect">
             @foreach($categories as $category)
-                        <option value="{{$category->id}}">{{$category->path()}}</option>
+                        <option value="{{$category->id}}" {{session('categorySelect') == $category->id ? 'selected' : ''}}>{{$category->path()}}</option>
             @endforeach      
             </select>   
             <input type="text" class="newCategory" name="newCategory">    

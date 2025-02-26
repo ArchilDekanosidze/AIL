@@ -16,11 +16,11 @@ return new class extends Migration
             $table->bigInteger('category_question_id')->unsigned(); 
             $table->longText("front");
             $table->longText("back");
-            $table->longText("p1");
-            $table->longText("p2");
-            $table->longText("p3");
-            $table->longText("p4");
-            $table->integer("answer");
+            $table->longText("p1")->nullable();
+            $table->longText("p2")->nullable();
+            $table->longText("p3")->nullable();
+            $table->longText("p4")->nullable();
+            $table->integer("answer")->nullable();
             $table->float('percentage', 15, 8);
             $table->integer('count')->default(100);
             $table->string('type')->default('test');

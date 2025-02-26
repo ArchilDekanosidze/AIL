@@ -15,7 +15,11 @@
     </div>
 
     <div class="profileCard">        
-        <a class="btn btn-primary" href="{{route('admin.question.create')}}">ساخت سوال جدید</a>
+        <a class="btn btn-primary" href="{{route('admin.question.create')}}">ساخت سوال تستی جدید</a>
+    </div>
+
+    <div class="profileCard">        
+        <a class="btn btn-primary" href="{{route('admin.question.descriptive.create')}}">ساخت سوال تشریحی جدید</a>
     </div>
 
 </div>

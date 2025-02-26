@@ -8,20 +8,13 @@ use App\Models\CategoryQuestion;
 use App\Http\Controllers\Controller;
 
 
-class AdminQuestionController extends Controller
+class AdminQuestionDescriptiveController extends Controller
 {
-
-    public function index(CategoryQuestion $category)
-    {      
-        $path = $category->path();
-        $questions = Question::where("category_question_id", $category->id)->get();
-        return view('admin.question.index', compact('questions', 'path'));
-    }
 
     public function create()
     {
         $categories = CategoryQuestion::all();
-        return view('admin.question.test.create', compact('categories'));
+        return view('admin.question.descriptive.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -33,13 +26,8 @@ class AdminQuestionController extends Controller
         $question->category_question_id = $categoryQuestion->id;
         $question->front = $request->editorFront;
         $question->back = $request->editorBack;
-        $question->p1 = $request->editorP1;
-        $question->p2 = $request->editorP2;
-        $question->p3 = $request->editorP3;
-        $question->p4 = $request->editorP4;
-        $question->answer = $request->answer;
         $question->percentage = $request->percentage;
-        $question->type = "test";
+        $question->type = "descriptive";
         $question->save();
         return back()->with("categorySelect", $request->categorySelect);
     }
@@ -47,7 +35,7 @@ class AdminQuestionController extends Controller
     public function edit(Question $question)
     {
         $categories = CategoryQuestion::all();
-        return view('admin.question.test.edit', compact('question', 'categories'));
+        return view('admin.question.descriptive.edit', compact('question', 'categories'));
     }
 
     public function update(Request $request, Question $question)
@@ -64,6 +52,12 @@ class AdminQuestionController extends Controller
         $question->percentage = $request->percentage;
         $question->save();
         return back()->with("success", "سوال با موفقیت ثبت شد");
+    }
+
+    public function delete(Request $request, Question $question)
+    {
+        $question->delete();
+        return back();
     }
 }
 

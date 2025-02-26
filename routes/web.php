@@ -26,6 +26,7 @@ use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
 use App\Http\Controllers\Category\CategoryQuestionUserController;
+use App\Http\Controllers\Admin\AdminQuestionDescriptiveController;
 use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingEmailController;
@@ -151,6 +152,13 @@ Route::post('/admin/question/create', [AdminQuestionController::class, 'store'])
 Route::get('/admin/question/edit/{question}', [AdminQuestionController::class, 'edit'])->name('admin.question.edit');
 Route::post('/admin/question/update/{question}', [AdminQuestionController::class, 'update'])->name('admin.question.update');
 Route::get('/admin/question/delete/{question}', [AdminQuestionController::class, 'delete'])->name('admin.question.delete');
+
+
+Route::get('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'create'])->name('admin.question.descriptive.create');
+Route::post('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'store'])->name('admin.question.descriptive.store');
+Route::get('/admin/question/descriptive/edit/{question}', [AdminQuestionDescriptiveController::class, 'edit'])->name('admin.question.descriptive.edit');
+Route::post('/admin/question/descriptive/update/{question}', [AdminQuestionDescriptiveController::class, 'update'])->name('admin.question.descriptive.update');
+
 
 
 

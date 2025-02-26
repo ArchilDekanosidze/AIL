@@ -1,0 +1,57 @@
+.adminCategory .mainDivDirection{
+    margin-right: 50px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.adminCategory .categorySelect
+{
+    width: 500px;
+    margin-bottom: 30px;
+}
+
+.adminCategory .newCategory
+{
+    width: 300px;
+    margin-top: 50px;
+}
+
+.adminCategory .save
+{
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    justify-content: center;
+    background: aqua;
+    border-radius: 30px;
+    font-size: 30px;
+    margin-bottom: 50px;
+  }
+}
+
+#editorFront
+{
+    margin-bottom: 30px;
+}
+.ck-editor__editable
+{
+    min-height: 150px;
+    max-height: 150px;
+    overflow: auto;
+    margin-bottom: 20px;
+}
+.mytextBox
+{
+    margin-bottom: 20px;
+}
+
+.myTextArea
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.myTextArea>div
+{
+    width: 46%;
+}

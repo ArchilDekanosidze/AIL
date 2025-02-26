@@ -6,6 +6,7 @@
 @section('content')
 <div class="onlineQuizInProgress main-body">
 
+    
     <input type="hidden" class="questionId" value="{{$question->id}}">
     <input type="hidden" class="quizQuestionId" value="{{$quizQuestion->id}}">
     <input type="hidden" class="quizId" value="{{$quiz->id}}">

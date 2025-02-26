@@ -43,6 +43,7 @@ class OnlineQuizController extends Controller
         }       
 
         $question = $quizQuestion->question;
+        // dd($question, $quizQuestion);
 
         return view('quiz.online.inProgress', compact('quiz', 'question', 'quizQuestion', "errorMessages", "timeLeft", "allQuestionAnswered"));
     }
@@ -59,7 +60,6 @@ class OnlineQuizController extends Controller
     public function nextQuestion()
     {
         $quizQuestion = $this->quizService->nextQuestionOfQuiz();
-
 
         if(is_null($quizQuestion))
         {

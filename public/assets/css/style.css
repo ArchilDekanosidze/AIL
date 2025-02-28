@@ -378,3 +378,7 @@ text-align: left !important;
   {
     display: none;
   }
+  mrow, msqrt
+  {
+    direction: ltr;
+  }

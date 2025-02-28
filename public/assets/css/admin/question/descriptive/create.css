@@ -50,8 +50,13 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    flex-direction: column;
 }
 .myTextArea>div
 {
     width: 46%;
+}
+.mytextBox
+{
+    margin-top: 30px;
 }

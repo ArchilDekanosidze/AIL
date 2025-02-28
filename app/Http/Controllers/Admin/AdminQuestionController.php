@@ -65,5 +65,11 @@ class AdminQuestionController extends Controller
         $question->save();
         return back()->with("success", "سوال با موفقیت ثبت شد");
     }
+
+    public function delete(Request $request, Question $question)
+    {
+        $question->delete();
+        return back();
+    }
 }
 

@@ -355,3 +355,26 @@ button[disabled]{
     }
 
 }
+
+.rz-align-left
+{
+    text-align: left;
+}
+math{
+    direction: ltr;
+}
+
+math mstyle[dir="rtl"] {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+  
+math mstyle[dir="ltr"] {
+direction: ltr !important;
+text-align: left !important;
+}
+
+  .mjx-mrow
+  {
+    display: none;
+  }

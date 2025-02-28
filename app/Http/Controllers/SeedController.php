@@ -12,7 +12,7 @@ class SeedController extends Controller
 {
     public function index()
     {
-        // $this->createUser();
+        $this->createUser();
         $this->createCategoryQuestion();
         // $this->createQuestion();
     }

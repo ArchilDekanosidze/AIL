@@ -1,8 +1,8 @@
 <?php
 
+
+
 use Illuminate\Support\Facades\Route;
-
-
 use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Auth\LoginController;
@@ -22,6 +22,7 @@ use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\Desktop\DesktopStudentController;
 use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
+use App\Http\Controllers\Admin\Import\AdminImportController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
@@ -38,6 +39,7 @@ use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingTwoFactorController;
 
 
 
+Route::get('/', [UserHomeController::class, 'index'])->name('home');
 
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -95,6 +97,15 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
 
 
+Route::post('/category/categoryQuestion/user/randomFreeQuestion', [CategoryQuestionUserController::class, 'getRandomFreeQuestion'])->name('category.categoryQuestion.user.randomFreeQuestion.get');
+Route::get('/category/categoryQuestion/user/index/{currentCategory}', [CategoryQuestionUserController::class, 'index'])->name('category.categoryQuestion.user.index');
+Route::post('/category/categoryQuestion/user/add_category_to_user', [CategoryQuestionUserController::class, 'addCategoryToUser'])->name('category.categoryQuestion.user.add_category_to_user');
+Route::post('/category/categoryQuestion/user/remove_category_from_user', [CategoryQuestionUserController::class, 'removeCategoryFromUser'])->name('category.categoryQuestion.user.remove_category_from_user');
+
+
+
+
+
 //Quiz
 Route::get('/quiz/chooseCategories/student', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.chooseCategories.student');
 Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create'])->name('quiz.create.student');
@@ -107,12 +118,9 @@ Route::get('/quiz/result/{quiz}', [OnlineQuizController::class, 'saveOnlineQuizD
 
 
 Route::get('/desktop/student', [DesktopStudentController::class, 'index'])->name('desktop.student.index');
-
-
 Route::get('/desktop/quizList/{user}', [QuizListController::class, 'quizList'])->name('desktop.quizList');
 Route::get('/desktop/myProgress/{user}', [myProgressController::class, 'myProgress'])->name('desktop.myProgress');
 Route::post('/desktop/getChartResult', [myProgressController::class, 'getChartResult'])->name('desktop.getChartResult');
-
 Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'setting'])->name('desktop.setting.setting');
 
 
@@ -120,13 +128,8 @@ Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'settin
 
 
 
-Route::get('/', [UserHomeController::class, 'index'])->name('home');
 
 
-Route::post('/category/categoryQuestion/user/randomFreeQuestion', [CategoryQuestionUserController::class, 'getRandomFreeQuestion'])->name('category.categoryQuestion.user.randomFreeQuestion.get');
-Route::get('/category/categoryQuestion/user/index/{currentCategory}', [CategoryQuestionUserController::class, 'index'])->name('category.categoryQuestion.user.index');
-Route::post('/category/categoryQuestion/user/add_category_to_user', [CategoryQuestionUserController::class, 'addCategoryToUser'])->name('category.categoryQuestion.user.add_category_to_user');
-Route::post('/category/categoryQuestion/user/remove_category_from_user', [CategoryQuestionUserController::class, 'removeCategoryFromUser'])->name('category.categoryQuestion.user.remove_category_from_user');
 
 
 
@@ -144,7 +147,7 @@ Route::get('/admin/category/categoryQuestion/edit/{currentCategory}', [AdminCate
 Route::post('/admin/category/categoryQuestion/update/{currentCategory}', [AdminCategoryQuestionController::class, 'update'])->name('admin.category.categoryQuestion.update');
 Route::get('/admin/category/categoryQuestion/delete/{currentCategory}', [AdminCategoryQuestionController::class, 'delete'])->name('admin.category.categoryQuestion.delete');
 
-// admin question
+// admin question test
 
 Route::get('/admin/question/list/{category}', [AdminQuestionController::class, 'index'])->name('admin.question.index');
 Route::get('/admin/question/create', [AdminQuestionController::class, 'create'])->name('admin.question.create');
@@ -153,6 +156,7 @@ Route::get('/admin/question/edit/{question}', [AdminQuestionController::class, '
 Route::post('/admin/question/update/{question}', [AdminQuestionController::class, 'update'])->name('admin.question.update');
 Route::get('/admin/question/delete/{question}', [AdminQuestionController::class, 'delete'])->name('admin.question.delete');
 
+// admin question descriptive
 
 Route::get('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'create'])->name('admin.question.descriptive.create');
 Route::post('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'store'])->name('admin.question.descriptive.store');
@@ -180,3 +184,8 @@ Route::get('/test/smsTest', [TestController::class, 'smsTest']);
 Route::get('/test/logout', [TestController::class, 'logout']);
 
 Route::get('/test/addCatToUserMinChange', [TestController::class, 'addCatToUserMinChange']);
+
+
+//Import
+Route::get('/import/test', [AdminImportController::class, 'importTest']);
+Route::get('/import/tashrihi', [AdminImportController::class, 'importTashrihi']);

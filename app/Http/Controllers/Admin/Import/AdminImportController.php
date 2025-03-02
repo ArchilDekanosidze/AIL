@@ -3,204 +3,300 @@ namespace App\Http\Controllers\Admin\Import;
 
 use DOMXPath;
 use DOMDocument;
-use App\Http\Controllers\Controller;
 use App\Models\Question;
 use App\Models\QuestionsTemp;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\CategoryQuestion;
+use DOMElement;
 use Illuminate\Support\Facades\Response;
+use PhpParser\Node\Stmt\Catch_;
 
 class AdminImportController extends Controller
 {
     private $doc;
     private $xpath;
-    private $QuestionText = [];
-    private $AnswerText = [];
-    private $Choice1=[];
-    private $Choice2 =[];
-    private $Choice3=[];
-    private $Choice4=[];
-    private $category_question_id=25;
-    private $percentage = 20;
-    private $type = "test";
+    private $QuestionText = null;
+    private $AnswerText = null;
+    private $Choice1 = null;
+    private $Choice2 = null;
+    private $Choice3 = null;
+    private $Choice4 = null;
+    private $type;
+    private $level;
+    private $category_question_id;
+    private $correctAnswer;
+
     private  $folderPath = 'images' . '/' . 'دهم-تجربی' . '/' . 'فیزیک' . '/' . '1' . '/';
 
-    public function importTest()
+    public function import()
     {       
-        $this->createXpathTest();
-        $this->createTestQuestionArray();
-        $this->CreateQuestionTestRecords();                    
+        $this->createXpath();
+        $this->sweepDivs();
     }
 
-    public function importTashrihi()
-    {
-        $this->createXpathTashrihi();
-        $this->createTashrihiQuestionArray();
-        $this->CreateQuestionTashrihiRecords();
 
-    }
-
-    public function createXpathTest()
+    public function createXpath()
     {
-        Question::truncate();
+        QuestionsTemp::truncate();
         $this->doc = new DOMDocument();
         libxml_use_internal_errors(true); // Prevents warnings for malformed HTML
-        $this->doc->loadHTMLFile(__DIR__ . '/test.html');
+        $this->doc->loadHTMLFile(__DIR__ . '/import.html');
         libxml_clear_errors();
 
         $this->xpath = new DOMXPath($this->doc);
     }
 
-    public function createXpathTashrihi()
-    {
-        Question::truncate();
-        $this->doc = new DOMDocument();
-        libxml_use_internal_errors(true); // Prevents warnings for malformed HTML
-        $this->doc->loadHTMLFile(__DIR__ . '/tashrihi.html');
-        libxml_clear_errors();
 
-        $this->xpath = new DOMXPath($this->doc);
-    }
-
-    public function createTestQuestionArray()
+    public function sweepDivs()
     {
-        $elements = $this->xpath->query("//*[@ng-bind-html]");
-        foreach ($elements as $p) 
+        $divs = $this->xpath->query("//div[contains(@class, 'as-sortable-item')]");
+        foreach ($divs as $div) 
         {
-            $html = $this->doc->saveHTML($p->parentNode);
-            if($p->hasAttribute('ng-bind-html'))
+            $this->setTexts($div);         
+            $this->setTypeAndLevel($div);
+            $this->setCategoryQuestionId($div);
+            $this->getCorrectAnswer();
+            if($this->QuestionText != null)
             {
-                $pos1 = mb_strpos($html, '<span><img class="unique" src=');
-                if($pos1  !== false)
-                {
-                    $pos1 = mb_strpos($html, 'https', $pos1);
-                    $pos2 = mb_strpos($html, '></span>', $pos1);
-                    $filePath = mb_substr($html, $pos1, $pos2- $pos1-1);
-                    $newAddress = $this->saveImageFromWeb($filePath);
-                    $html =str_replace($filePath, $newAddress, $html);
-                }
-                if($p->getAttribute('ng-bind-html') == "q.QuestionText | unsafe")
-                {                    
-                    $this->QuestionText[] = $html;
-                }
-                if($p->getAttribute('ng-bind-html') == "q.AnswerText | unsafe")
-                {                    
-                    $this->AnswerText[] = $html;
-                }     
-                if($p->getAttribute('ng-bind-html') == "q.Choice1 | unsafe")
-                {                    
-                    $this->Choice1[] = $html;
-                }  
-                if($p->getAttribute('ng-bind-html') == "q.Choice2 | unsafe")
-                {                    
-                    $this->Choice2[] = $html;
-                }             
-                if($p->getAttribute('ng-bind-html') == "q.Choice3 | unsafe")
-                {                    
-                    $this->Choice3[] = $html;
-                } 
-                if($p->getAttribute('ng-bind-html') == "q.Choice4 | unsafe")
-                {                    
-                    $this->Choice4[] = $html;
-                } 
+                $this->CreateQuestionRecord();
             }
+            $this->emptyData();
         }
     }
-    public function createTashrihiQuestionArray()
+
+    public function setTexts($div)
     {
-        $elements = $this->xpath->query("//*[@ng-bind-html]");
-        foreach ($elements as $p) 
+        $elements = $this->xpath->query(".//p", $div);
+        foreach ($elements as $element) {
+            $html = $this->doc->saveHTML($element->parentNode);
+            $html = $this->checkForImage($html);
+            if($element->getAttribute('ng-bind-html') == "q.QuestionText | unsafe")
+            {
+                $this->QuestionText = $html;
+            }
+            if($element->getAttribute('ng-bind-html') == "q.AnswerText | unsafe")
+            {                    
+                $this->AnswerText = $html;
+            }     
+            if($element->getAttribute('ng-bind-html') == "q.Choice1 | unsafe")
+            {                    
+                $this->Choice1 = $html;
+            }  
+            if($element->getAttribute('ng-bind-html') == "q.Choice2 | unsafe")
+            {                    
+                $this->Choice2 = $html;
+            }             
+            if($element->getAttribute('ng-bind-html') == "q.Choice3 | unsafe")
+            {                    
+                $this->Choice3 = $html;
+            } 
+            if($element->getAttribute('ng-bind-html') == "q.Choice4 | unsafe")
+            {                    
+                $this->Choice4 = $html;
+            } 
+        }
+
+    }
+
+    public function setTypeAndLevel($div)
+    {
+        $elements = $this->xpath->query(".//*[contains(@class, 'questionLevel')]", $div);
+        $type = trim($elements[0]->nodeValue);
+        if($type=='تستی')
         {
-            $html = $this->doc->saveHTML($p->parentNode);
-            if($p->hasAttribute('ng-bind-html'))
-            {
-                $pos1 = mb_strpos($html, '<span><img class="unique" src=');
-                if($pos1  !== false)
-                {
-                    $pos1 = mb_strpos($html, 'https', $pos1);
-                    $pos2 = mb_strpos($html, '></span>', $pos1);
-                    $filePath = mb_substr($html, $pos1, $pos2- $pos1-1);
-                    $newAddress = $this->saveImageFromWeb($filePath);
-                    $html =str_replace($filePath, $newAddress, $html);
-                }
-                if($p->getAttribute('ng-bind-html') == "q.QuestionText | unsafe")
-                {                    
-                    $this->QuestionText[] = $html;
-                }
-                if($p->getAttribute('ng-bind-html') == "q.AnswerText | unsafe")
-                {                    
-                    $this->AnswerText[] = $html;
-                }     
-            }
+            $this->type = "test";
         }
+        if($type== 'تشریحی')
+        {
+            $this->type = "descriptive";
+        }
+        if($type=='درسنامه')
+        {
+            $this->type = "lesson";
+        }
+        $levelPersian = $elements[1];
+        $this->level = $this->getlevel($levelPersian);
+
     }
 
-    public function CreateQuestionTestRecords()
+    public function CreateQuestionRecord()
     {
 
-        for ($i=0; $i < count($this->QuestionText); $i++) { 
-            $quesion = new Question();
-            $quesion->category_question_id = $this->category_question_id; //
-            $quesion->front = $this->QuestionText[$i];
-            $quesion->back = $this->AnswerText[$i];
-            $quesion->p1 = $this->Choice1[$i];
-            $quesion->p2 = $this->Choice2[$i];
-            $quesion->p3 = $this->Choice3[$i];
-            $quesion->p4 = $this->Choice4[$i];     
-            $myAnswer  = $this->AnswerText[$i];
-            $search = 'گزینه';
-            $pos = mb_strpos($myAnswer, $search);
-            if($pos  !== false)
-            {
-                $result = mb_substr($myAnswer, $pos + strlen($search)-4 , 1);
-                $result = $this->convertPersianToEnglish($result);
-                if($result == 1 || $result == 2 || $result == 3 || $result == 4)
-                {
-                    $quesion->answer = $result;
-                }
-                else
-                {
-                    $search = 'گزینه';
-                    $pos = mb_strpos($myAnswer, $search);        
-                    $result = mb_substr($myAnswer, $pos + strlen($search) +40 , 1);
-                    $result = $this->convertPersianToEnglish($result);
-                    $quesion->answer = $result;               
-                }
-            }
-            else
-            {
-                $quesion->answer = 0;           
-            }
-            $quesion->percentage = $this->percentage;       //
-            $quesion->count = 100;
-            $quesion->type = $this->type;        //
-            $quesion->isfree = 0;   
-            $quesion->timestamps = now();
-            $quesion->save();
-        }
+        $quesion = new QuestionsTemp();
+        $quesion->category_question_id = $this->category_question_id; //
+        $quesion->front = $this->QuestionText;
+        $quesion->back = $this->AnswerText;
+        $quesion->p1 = $this->Choice1;
+        $quesion->p2 = $this->Choice2;
+        $quesion->p3 = $this->Choice3;
+        $quesion->p4 = $this->Choice4;     
+        $quesion->answer = $this->correctAnswer;     
+
+        $quesion->percentage = $this->level;       //
+        $quesion->count = 100;
+        $quesion->type = $this->type;        //
+        $quesion->isfree = 0;   
+        $quesion->timestamps = now();
+        $quesion->save();        
     }
 
-    public function CreateQuestionTashrihiRecords()
+    public function emptyData()
     {
+        
+        $this->QuestionText = null;
+        $this->AnswerText = null;
+        $this->Choice1 = null;
+        $this->Choice2 = null;
+        $this->Choice3 = null;
+        $this->Choice4 = null;
+        $this->type= null;
+        $this->level = 0;
+        $this->category_question_id = null;
+        $this->correctAnswer = 0;
+    }
 
-        for ($i=0; $i < count($this->QuestionText); $i++) { 
-            $quesion = new Question();
-            $quesion->category_question_id = $this->category_question_id; //
-            $quesion->front = $this->QuestionText[$i];
-            $quesion->back = $this->AnswerText[$i];
 
-            $quesion->percentage = $this->percentage;       //
-            $quesion->count = 100;
-            $quesion->type = $this->type;        //
-            $quesion->isfree = 0;   
-            $quesion->timestamps = now();
-            $quesion->save();
+
+
+    public function getlevel($node)
+    {
+        $html = trim($node->nodeValue);
+        $level = 0;
+        if(mb_strpos($html, "آسان") !==false)
+        {
+            $level = 20;
+        }
+        else if(mb_strpos($html, "متوسط") !==false)
+        {
+            $level = 40;
+        }
+        else if(mb_strpos($html, "خیلی دشوار") !==false) // agar doshvar balatar bashe eshtebeh mishe
+        {
+            $level = 80;
+        }  
+        else if(mb_strpos($html, "دشوار") !==false)
+        {
+            $level= 60;
+        }
+        return $level;
+                                        
+    }
+
+    public function setCategoryQuestionId($div)
+    {
+        $this->category_question_id = false;
+        $elements = $this->xpath->query(".//*[contains(@class, 'CourseLabel')]", $div);
+        foreach ($elements as $element) 
+        {
+            $element = $element->parentNode;
+            $catArray = [];
+            foreach ($element->childNodes as $child) {
+                $vale = $child->nodeValue;
+                $vale = trim($vale);
+                if($vale !== "" && strpos($vale, "ObjectTitle") === false)
+                {
+                    $catArray[] = $vale;
+                }
+            }
+            
+            $parentId = null;
+            $CatArraySize = count($catArray) -1;
+            $catArrayId = [];
+            $catArrayParentId = [];
+            for ($i= $CatArraySize ; $i >=0  ; $i--) {                 
+                $cat = CategoryQuestion::where("name", $catArray[$i])->first();
+                try {
+                    $catArrayId[] = $cat->id;
+                } catch (\Throwable $th) {
+                    dd($catArray[$i]);
+                }
+                $catArrayParentId[] = $cat->parent_id;
+            }
+
+            $flag = true;
+            for ($i= 1 ; $i < $CatArraySize  ; $i++) {   
+                if($catArrayId[$i] != $catArrayParentId[$i-1])
+                {
+                    $flag = false;
+                }            
+            }    
+            
+            if($flag)
+            {
+                $this->category_question_id =  $catArrayId[0];
+            }        
+        }
+        
+    }
+
+    public function getCorrectAnswer()
+    {
+        if($this->type !="test")
+        {
+            $this->correctAnswer = null;
+            return;
+        }
+        $this->correctAnswer = 0;
+        $search = 'گزین';
+        $pos = mb_strpos($this->AnswerText, $search);
+        if($pos  !== false)
+        {
+            $r1 = mb_strpos($this->AnswerText, '۱', $pos);
+            $r2 = mb_strpos($this->AnswerText, '۲', $pos);
+            $r3 = mb_strpos($this->AnswerText, '۳', $pos);
+            $r4 = mb_strpos($this->AnswerText, '۴', $pos);
+            $min = 1000000;
+            if($r1 !== false && $r1< $min)
+            {
+                $min = $r1;
+                $this->correctAnswer = 1;
+            }
+            if($r2 !== false && $r2< $min)
+            {
+                $min = $r2;
+                $this->correctAnswer = 2;
+            }
+            if($r3 !== false && $r3< $min)
+            {
+                $min = $r3;
+                $this->correctAnswer = 3;
+            }
+            if($r4 !== false && $r4< $min)
+            {
+                $min = $r4;
+                $this->correctAnswer = 4;
+            }
         }
     }
 
-    public function convertPersianToEnglish($number) {
-        $persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        $englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-       
-        return str_replace($persianDigits, $englishDigits, $number);
+
+    public function transfer()
+    {
+        $rows = DB::table('questions_temps')->get()->toArray();
+        foreach ($rows as $row) {
+            $row = (array)$row;
+            unset($row['id']);
+            DB::table('questions')->insert($row);
+        }
+        QuestionsTemp::truncate();
+        dd($rows);
+    }
+
+
+
+    public function checkForImage($html)
+    {
+        $pos1 = mb_strpos($html, '<span><img class="unique" src=');
+        if($pos1  !== false)
+        {
+            $pos1 = mb_strpos($html, 'https', $pos1);
+            $pos2 = mb_strpos($html, '></span>', $pos1);
+            $filePath = mb_substr($html, $pos1, $pos2- $pos1-1);
+            $newAddress = $this->saveImageFromWeb($filePath);
+            $html =str_replace($filePath, $newAddress, $html);
+        }
+        return $html;
     }
 
     public function saveImageFromWeb($imageUrl)
@@ -218,6 +314,13 @@ class AdminImportController extends Controller
         file_put_contents($savePath, $imageContents);
 
         return asset($filePath);
+    }
+
+    public function convertPersianToEnglish($number) {
+        $persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        $englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+       
+        return str_replace($persianDigits, $englishDigits, $number);
     }
 }
 

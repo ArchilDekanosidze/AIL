@@ -32,6 +32,10 @@ class Question extends Model
     }
     public function scopeDescriptive($query)
     {
-        return $query->where('type', 'description');
+        return $query->where('type', 'descriptive');
+    }
+    public function scopeLesson($query)
+    {
+        return $query->where('type', 'lesson');
     }
 }

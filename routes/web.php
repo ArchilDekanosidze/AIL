@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
 use App\Http\Controllers\Category\CategoryQuestionUserController;
 use App\Http\Controllers\Admin\AdminQuestionDescriptiveController;
+use App\Http\Controllers\Admin\Import\AdminImportCategoryController;
 use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingEmailController;
@@ -187,5 +188,6 @@ Route::get('/test/addCatToUserMinChange', [TestController::class, 'addCatToUserM
 
 
 //Import
-Route::get('/import/test', [AdminImportController::class, 'importTest']);
-Route::get('/import/tashrihi', [AdminImportController::class, 'importTashrihi']);
+Route::get('/import', [AdminImportController::class, 'import']);
+Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
+

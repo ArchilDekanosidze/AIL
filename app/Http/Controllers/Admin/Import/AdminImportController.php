@@ -31,6 +31,7 @@ class AdminImportController extends Controller
 
     public function import()
     {       
+        //copy(document.querySelector(.firefox).outerHTML)
         $this->createXpath();
         $this->sweepDivs();
     }

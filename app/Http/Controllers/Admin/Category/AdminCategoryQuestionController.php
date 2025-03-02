@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Category;
 use App\Models\CategoryQuestion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Session;
 
 class AdminCategoryQuestionController extends Controller
 {
@@ -20,6 +20,13 @@ class AdminCategoryQuestionController extends Controller
     public function create()
     {
         $categories = CategoryQuestion::all();
+        return view('admin.category.categoryQuestion.create', compact('categories'));
+    }
+
+    public function createSubCat($categorySelect)
+    {
+        $categories = CategoryQuestion::all();
+        Session::put("categorySelect", $categorySelect);
         return view('admin.category.categoryQuestion.create', compact('categories'));
     }
 

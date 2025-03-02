@@ -12,6 +12,7 @@
             <a  class="btn-primary catName" href="{{route('admin.category.categoryQuestion.index', $directCat->id)}}">{{$directCat->name}} </a> 
             <div class="cardButtons">
                 <a class="editLink" href="{{route('admin.category.categoryQuestion.edit', $directCat->id)}}">ادیت</a>
+                <a class="editLink" href="{{route('admin.category.categoryQuestion.createSubCat', $directCat->id)}}">افزودن زیر دسته</a>
                 <a class="editLink" href="{{route('admin.question.index', $directCat->id)}}">لیست سوالات</a>
                 <a class="editLink" href="{{route('admin.category.categoryQuestion.delete', $directCat->id)}}">حذف</a>
             </div>

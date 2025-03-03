@@ -24,7 +24,9 @@
                         <a class="editLink" href="{{route('admin.question.descriptive.edit', $question->id)}}">ادیت</a>
                     @endif
                     <a class="deleteLink" href="{{route('admin.question.delete', $question->id)}}">حذف</a>                        
-                </div>    
+                    <a class="showLink" href="{{route('admin.question.show', $question->id)}}">نمایش</a>                        
+                </div> 
+                  
             </div>         
         @endforeach                
     </div>

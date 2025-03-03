@@ -27,11 +27,14 @@ class AdminImportController extends Controller
     private $category_question_id;
     private $correctAnswer;
 
-    private  $folderPath = 'images' . '/' . 'دهم-تجربی' . '/' . 'فیزیک' . '/' . '1' . '/';
+    private  $folderPath = 'images' . '/' . 'tajrobi_10' . '/' . 'riazi1' . '/';
 
     public function import()
     {       
         //copy(document.querySelector(.firefox).outerHTML)
+        // این دو تای پایینی رو اصلاح کن که بیشترین مقدار کتگوری ای رو نگه داره
+        // SELECT * FROM `questions` WHERE `id` NOT IN( SELECT `id` FROM ( SELECT MIN(`id`) as id FROM `questions` GROUP BY `front` ) as temp ); 
+        // DELETE FROM `questions` WHERE `id` NOT IN( SELECT `id` FROM ( SELECT MIN(`id`) as id FROM `questions` GROUP BY `front` ) as temp ); 
         $this->createXpath();
         $this->sweepDivs();
     }
@@ -139,7 +142,11 @@ class AdminImportController extends Controller
         $quesion->type = $this->type;        //
         $quesion->isfree = 0;   
         $quesion->timestamps = now();
-        $quesion->save();        
+        try {
+            $quesion->save();                    
+        } catch (\Throwable $th) {
+            dd($this->category_question_id);
+        }
     }
 
     public function emptyData()
@@ -205,19 +212,20 @@ class AdminImportController extends Controller
             $CatArraySize = count($catArray) -1;
             $catArrayId = [];
             $catArrayParentId = [];
-            for ($i= $CatArraySize ; $i >=0  ; $i--) {                 
-                $cat = CategoryQuestion::where("name", $catArray[$i])->first();
-                try {
-                    $catArrayId[] = $cat->id;
-                } catch (\Throwable $th) {
-                    dd($catArray[$i]);
-                }
+
+            $cat = CategoryQuestion::where("name", "$catArray[0]")->first();
+            $catArrayId[] = $cat->id;
+            $catArrayParentId[] = $cat->parent_id;
+            
+            for ($i= 1 ; $i <=$CatArraySize  ; $i++) {                 
+                $cat = CategoryQuestion::where("name", "$catArray[$i]")->where('parent_id', $cat->id)->first();
+                $catArrayId[] = $cat->id;
                 $catArrayParentId[] = $cat->parent_id;
             }
-
+            
             $flag = true;
-            for ($i= 1 ; $i < $CatArraySize  ; $i++) {   
-                if($catArrayId[$i] != $catArrayParentId[$i-1])
+            for ($i= 0 ; $i < $CatArraySize  ; $i++) {   
+                if($catArrayId[$i] != $catArrayParentId[$i+1])
                 {
                     $flag = false;
                 }            
@@ -225,7 +233,7 @@ class AdminImportController extends Controller
             
             if($flag)
             {
-                $this->category_question_id =  $catArrayId[0];
+                $this->category_question_id =  $catArrayId[$CatArraySize];
             }        
         }
         

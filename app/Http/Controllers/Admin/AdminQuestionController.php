@@ -17,6 +17,10 @@ class AdminQuestionController extends Controller
         $questions = Question::where("category_question_id", $category->id)->get();
         return view('admin.question.index', compact('questions', 'path'));
     }
+    public function show(Question $question)
+    {
+        return view('admin.question.show', compact('question'));
+    }
 
     public function create()
     {

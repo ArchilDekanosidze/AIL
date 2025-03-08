@@ -4,8 +4,8 @@ namespace App\Services\Quiz\ControllerTraits;
 use App\Models\CategoryQuestion;
 use App\Services\Quiz\QuizService;
 use App\Services\Traits\ActorControllerTrait;
-
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 trait ChooseCategoriesTrait 
 {
@@ -20,11 +20,9 @@ trait ChooseCategoriesTrait
 
     }
 
-    public function chooseCategories()
+    public function chooseCategories(Request $request)
     {       
         $this->PreCheck();
-        $this->setUser();
-        $user = $this->getUser();
         return $this->returnRedirect();
     }
     
@@ -43,4 +41,6 @@ trait ChooseCategoriesTrait
         $allCategories = CategoryQuestion::withDepth()->get()->sortBy('_lft')->skip(1);
         return view('quiz.chooseCategories.choose', compact('userCategories', 'allCategories'));
     }
+
+
 }

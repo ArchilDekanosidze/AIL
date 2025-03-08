@@ -16,7 +16,14 @@ trait ActorTrait
 
     public function getUser()
     {
-        return $this->user;
+        if($this->user)
+        {
+            return $this->user;
+        }
+        else
+        {
+            return auth()->user();
+        }
     }
    
     public function setRole()

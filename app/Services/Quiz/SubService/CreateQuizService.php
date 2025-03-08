@@ -23,6 +23,7 @@ class CreateQuizService
         $this->quiz_type = $request->action;
         $this->testCount = $request->testCount;
         $this->testTime = $request->testTime;
+        // dd($request->all());
 
     }
 
@@ -43,12 +44,12 @@ class CreateQuizService
         }
         else
         {
-            $this->quiz->quiz_name =  $this->user->name . "-" . now();
+            $this->quiz->quiz_name =  $this->getUser()->name . "-" . now();
         }
         $this->quiz->quiz_type =  $this->quiz_type;
         $this->quiz->count =min($this->testCount, count($this->selectedQuestions));
         $this->quiz->time = $this->testTime * 60;
-        $this->user->quizzes()->save($this->quiz);
+        $this->getUser()->quizzes()->save($this->quiz);
     }
 
     public function addQuestionsToQuiz()

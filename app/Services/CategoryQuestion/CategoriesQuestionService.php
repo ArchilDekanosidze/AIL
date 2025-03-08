@@ -6,14 +6,16 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\Auth;
+use App\Services\CategoryQuestion\Traits\ActorCategoriesQuestionServiceServiceTrait;
 
 
 
 
 
 class CategoriesQuestionService
-{
-    private $request;
+{ 
+    use ActorCategoriesQuestionServiceServiceTrait;
+    public $request;
     private $user;
 
     const USER_CATEGORY_STATUS_ALL = 'all';
@@ -23,11 +25,7 @@ class CategoriesQuestionService
 
     public function __construct(Request $request)
     {
-        Auth::loginUsingId(1, TRUE);     
-
         $this->request = $request;
-        $this->user = auth()->user();
-
     }
     public function getDirectcats(CategoryQuestion $category)
     {
@@ -58,10 +56,12 @@ class CategoriesQuestionService
         $currentCategoryId = $this->request->currentCategoryId;
         
         $categoriesId = $this->getDescendantsAndSelfIds($currentCategoryId);
+        $parentsId = $this->getParentsIds($currentCategoryId);
+        $categoriesId = $categoriesId->merge($parentsId);
         $data = $categoriesId->mapWithKeys(function($id){
             return [$id => ['is_active' => true]];
         })->toArray();
-        $this->user->categoryQuestions()->syncWithoutDetaching($data);
+        $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
         return true;
     }
 
@@ -74,7 +74,8 @@ class CategoriesQuestionService
             return [$id => ['is_active' => false]];
         })->toArray();
 
-        $this->user->categoryQuestions()->syncWithoutDetaching($data);
+        $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+
 
         return true;
     }
@@ -105,9 +106,14 @@ class CategoriesQuestionService
     {
         return CategoryQuestion::descendantsAndSelf($currentCategoryId)->pluck('id');
     }
+    public function getParentsIds($currentCategoryId)
+    {
+        $categoryQuestion = CategoryQuestion::find($currentCategoryId);
+        return $categoryQuestion->ancestors()->select('id', 'parent_id')->get()->pluck('id');
+    }
     public function userSelectedCategoryIds()
     {
-        return $this->user->categoryQuestions()->pluck('category_question_id');
+        return $this->getUser()->categoryQuestions()->pluck('category_question_id');
     }
    
 }

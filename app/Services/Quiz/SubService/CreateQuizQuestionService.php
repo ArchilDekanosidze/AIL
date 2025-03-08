@@ -91,7 +91,7 @@ class CreateQuizQuestionService
             $category = CategoryQuestion::find($categoryId);
             if(!$categoryId) continue;
             $numQuestions = $percentage * $totalQuestions;
-            $current_level = $this->user->categoryQuestions->find($categoryId)->pivot->level;
+            $current_level = $this->getUser()->categoryQuestions->find($categoryId)->pivot->level;
             $sumTargetLevel = $sumTargetLevel + $current_level;
             $questions =$category->questions()->test()->orderByRaw('ABS(percentage -?)' , $current_level)
                 ->inRandomOrder()->limit($numQuestions)->get()->shuffle();

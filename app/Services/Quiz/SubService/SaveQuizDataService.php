@@ -49,7 +49,7 @@ class SaveQuizDataService
                 }
             }
         }
-        $this->user->categoryQuestions()->syncWithoutDetaching($this->data);
+        $this->getUser()->categoryQuestions()->syncWithoutDetaching($this->data);
         
         $quiz->rightAnswers = $rightAnswers;
         $quiz->wrongAnswers = $wrongAnswers;
@@ -66,7 +66,7 @@ class SaveQuizDataService
         $this->changeQuestion($isCorrect, $question);
 
         $categoriesId = $this->questionAncestorsAndSelfId($question);
-        $categoriesQuestion = $this->user->categoryQuestions->whereIn("id", $categoriesId);
+        $categoriesQuestion = $this->getUser()->categoryQuestions->whereIn("id", $categoriesId);
 
 
         $this->updatecategoriesQuestion($categoriesQuestion, $isCorrect, $question);  
@@ -82,7 +82,7 @@ class SaveQuizDataService
         }
         else
         {
-            $question->percentage =max( ($question->percentage * $question->count -1)/($question->count), 0 );
+            $question->percentage =max( ($question->percentage * $question->count -1)/($question->count), 1 );
         }
         $question->count = $question->count +1;
         $question->save();
@@ -133,7 +133,7 @@ class SaveQuizDataService
         }
         $newLevel =(int) ($sumAnswerForLevel / ($categoryQuestion->pivot->number_to_change_level*3) * 100);
         $newLevel = min(100, $newLevel);
-        $newLevel = max(0, $newLevel);
+        $newLevel = max(1, $newLevel);
         return $newLevel;
     }
 

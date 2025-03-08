@@ -10,11 +10,11 @@ use App\Services\Quiz\Traits\ActorQuizServiceTrait;
 use App\Services\Quiz\SubService\SaveQuizDataService;
 use App\Services\Quiz\SubService\CreateQuizQuestionService;
 use App\Services\Quiz\SubService\UpdateUserCategorieslevelAndNumberService;
+use Illuminate\Http\Client\Request as ClientRequest;
 
 class QuizService
-{   use QuizTrait, OnlineQuizTrait, ActorQuizServiceTrait;
+{   use QuizTrait, OnlineQuizTrait, ActorQuizServiceTrait; 
     public $quiz;
-    public $request;
     public $allQuestionAnswered  = 0;
     public $isCurrentQuestionShowedAnswer = 0;
     public $pivotDataForUpdatingCategory;
@@ -26,21 +26,16 @@ class QuizService
 
 
     public function __construct(Request $request,
-    SaveQuizDataService $saveQuizDataService, 
+     SaveQuizDataService $saveQuizDataService, 
      UpdateUserCategorieslevelAndNumberService $updateUserCategorieslevelAndNumberService,
      CreateQuizQuestionService $createQuizQuestionService,
      CreateQuizService $createQuizService)
     {
-        $this->request = $request;
         $this->saveQuizDataService = $saveQuizDataService;
         $this->updateUserCategorieslevelAndNumberService = $updateUserCategorieslevelAndNumberService;
         $this->createQuizQuestionService = $createQuizQuestionService;
         $this->createQuizService = $createQuizService;
-
-        Auth::loginUsingId(1);
-        // dd(auth()->user());
-        $this->setUser(auth()->user());
-
+        $this->request = $request;
     }
 
     public function UpdateUserCategorieslevelAndNumber()

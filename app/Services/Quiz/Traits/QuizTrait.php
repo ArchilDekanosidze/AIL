@@ -17,7 +17,6 @@ trait QuizTrait
     public function checkForEndedQuiz()
     {
         
-
         $quizzes = $this->getUser()->quizzes()->where("status" , "!=" , "ended")->get();
         foreach ($quizzes as $quiz) {
             $timeLeft = $this->getTimeleft($quiz);

@@ -8,10 +8,12 @@ trait ActorControllerTrait
 {
     private $user;
     private $role;
+    private $request;
 
-    public function setUser()
+
+    public function setUser($user)
     {
-        return true;
+        $this->user = $user;
     }
 
     public function getUser()
@@ -27,6 +29,5 @@ trait ActorControllerTrait
     public function getRole()
     {
         return $this->role;
-    }
-
+    }    
 }

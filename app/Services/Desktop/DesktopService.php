@@ -12,13 +12,12 @@ class DesktopService
 {
     use ActorDesktopServiceTrait;
     private $myProgressService;
+    public $request;
+
 
     public function __construct(MyProgressService $myProgressService)
     {
         $this->myProgressService = $myProgressService;
-
-        // Auth::loginUsingId(1);
-        // $this->setUser(auth()->user());
     }
     public function getProgressData() 
     {

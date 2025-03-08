@@ -26,8 +26,9 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
+    private $payeId = "15";
 
-    private  $folderPath = 'images' . '/' . 'tajrobi_10' . '/' . 'riazi1' . '/';
+    private  $folderPath = 'images' . '/' . '8' . '/' . 'ghoran' . '/';
 
     public function import()
     {       
@@ -55,6 +56,9 @@ class AdminImportController extends Controller
     public function sweepDivs()
     {
         $divs = $this->xpath->query("//div[contains(@class, 'as-sortable-item')]");
+        // $divs = $this->xpath->query("//div[contains(@class, 'textQuestionBox')]");
+        // dd(count($divs));
+        
         foreach ($divs as $div) 
         {
             $this->setTexts($div);         
@@ -213,13 +217,19 @@ class AdminImportController extends Controller
             $catArrayId = [];
             $catArrayParentId = [];
 
-            $cat = CategoryQuestion::where("name", "$catArray[0]")->first();
+            $cat = CategoryQuestion::where("name", "$catArray[0]")->where("parent_id", $this->payeId)->first();
             $catArrayId[] = $cat->id;
             $catArrayParentId[] = $cat->parent_id;
             
-            for ($i= 1 ; $i <=$CatArraySize  ; $i++) {                 
+            for ($i= 1 ; $i <=$CatArraySize  ; $i++) {  
+                $oldCat = $cat;               
                 $cat = CategoryQuestion::where("name", "$catArray[$i]")->where('parent_id', $cat->id)->first();
-                $catArrayId[] = $cat->id;
+                try {
+                    $catArrayId[] = $cat->id;
+                } catch (\Throwable $th) {
+                    // dd(CategoryQuestion::where("name", "$catArray[$i]")->get());
+                    dd($catArray[$i], $cat, $oldCat);
+                }
                 $catArrayParentId[] = $cat->parent_id;
             }
             
@@ -280,18 +290,35 @@ class AdminImportController extends Controller
     }
 
 
+    // public function transfer()
+    // {
+    //     $rows = DB::table('questions_temps')->get()->toArray();
+    //     foreach ($rows as $row) {
+    //         $row = (array)$row;
+    //         unset($row['id']);
+    //         DB::table('questions')->insert($row);
+    //     }
+    //     QuestionsTemp::truncate();
+    //     dd($rows);
+    // }
+
+
     public function transfer()
     {
-        $rows = DB::table('questions_temps')->get()->toArray();
-        foreach ($rows as $row) {
+        $rows = DB::table('questions_temps')->get();
+        $insertData = $rows->map(function($row){
             $row = (array)$row;
             unset($row['id']);
-            DB::table('questions')->insert($row);
-        }
+            return $row;
+        });
+
+        $insertData->chunk(100)->each(function($chunck){
+            DB::table('questions')->insert($chunck->toArray());
+        });
+
         QuestionsTemp::truncate();
         dd($rows);
     }
-
 
 
     public function checkForImage($html)
@@ -310,17 +337,33 @@ class AdminImportController extends Controller
 
     public function saveImageFromWeb($imageUrl)
     {
-        $imageContents = file_get_contents($imageUrl);
+        $imageContents = false;
 
-        if ($imageContents === false) {
-            return "Failed to download image.";
-        }
-    
         $fileName = basename($imageUrl); // Extracts filename from URL
         $filePath = $this->folderPath . $fileName;
         $savePath = public_path($filePath); // Save in public/images
+        if(file_exists($savePath))
+        {
+            return asset($filePath);
+        }
 
-        file_put_contents($savePath, $imageContents);
+
+
+        try {
+            $imageContents = file_get_contents($imageUrl);
+        } catch (\Throwable $th) {
+            dump($imageUrl);
+        }
+
+        // if ($imageContents === false) {
+        //     return "Failed to download image.";
+        // }
+    
+
+        if($imageContents !== false)
+        {
+            file_put_contents($savePath, $imageContents);
+        }
 
         return asset($filePath);
     }

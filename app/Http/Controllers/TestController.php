@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Mail\UserRegistered;
 use App\Jobs\SendEmailToUsers;
+use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\Notification\Sms\SendSms;
 use App\Services\Desktop\DesktopService;
@@ -13,7 +14,9 @@ use App\Jobs\Notification\Sms\SendSmsToMultipleUser;
 use App\Services\Notification\Sms\Contracts\SmsTypes;
 use App\Services\Quiz\SubService\SaveQuizDataService;
 use App\Jobs\Notification\Email\SendEmailWithMailAddress;
+use App\Models\Question;
 use App\Services\CategoryQuestion\CategoriesQuestionService;
+use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
@@ -62,6 +65,14 @@ class TestController extends Controller
     public function addCatToUserMinChange(CategoriesQuestionService $categoriesQuestionService)
     {
       $categoriesQuestionService->addCategoryToUser();
+    }
+
+    public function catQuestionsCount(Request $request)
+    {
+      $parentCategory = CategoryQuestion::find($request->id);
+      dd(Question::count());
+      dd(count($parentCategory->allQuestion()));
+
     }
  
 }

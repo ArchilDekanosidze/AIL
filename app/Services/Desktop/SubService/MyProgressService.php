@@ -73,7 +73,7 @@ class MyProgressService
         $this->OriginalParentCategory = CategoryQuestion::find($this->parentCategoryId);
         $this->ChildrenCount = $this->OriginalParentCategory->children()->count() ;
         $allCategoriesId = CategoryQuestion::withDepth()->where('parent_id', $this->parentCategoryId)->get()->sortBy('_lft')->pluck("id")->toArray();
-        $this->userCategories = $this->user->categoryQuestions()->whereIn("category_question_id", $allCategoriesId)->get()->sortBy('lft');
+        $this->userCategories = $this->getUser()->categoryQuestions()->whereIn("category_question_id", $allCategoriesId)->get()->sortBy('lft');
     }
 
     public function setInitialData()
@@ -92,7 +92,7 @@ class MyProgressService
                 $history= [["level" => 1, "time" => now()->timestamp, "isCorrect" =>  0]]; 
                 $data=[];
                 $data[$this->userCategories[$i]->id] = ["history" => $history];
-                $this->user->categoryQuestions()->syncWithoutDetaching($data);
+                $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
                 $this->histories[$i] = json_encode($history);
             }
         }
@@ -194,7 +194,7 @@ class MyProgressService
 
     public function createDataSingle()
     {
-        $userCategory = $this->user->categoryQuestions()->where("category_question_id", $this->parentCategoryId)->first();
+        $userCategory = $this->getUser()->categoryQuestions()->where("category_question_id", $this->parentCategoryId)->first();
         $histories = $userCategory->pivot->history;
         $histories = json_decode($histories, true);
         $allTimes = [];

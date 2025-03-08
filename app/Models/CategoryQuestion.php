@@ -35,7 +35,13 @@ class CategoryQuestion extends Model
         return $allQuestion;        
     }
 
+    public function allQuestionCount()
+    {
+        $categoryIds  = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id');
+        $questionCount = Question::whereIn('category_question_id', $categoryIds)->count();
+        return $questionCount;
 
+    }
 
 
 

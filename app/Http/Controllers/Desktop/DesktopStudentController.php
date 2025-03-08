@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Desktop;
 
 use App\Services\Quiz\QuizService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Services\Desktop\DesktopService;
 use App\Services\Traits\ActorControllerTrait;
 use App\Services\Desktop\ControllerTraits\quizListControllerTrait;
@@ -15,18 +16,15 @@ class DesktopStudentController extends Controller
     private $desktopService;
     private $userId;
 
-    public function __construct(QuizService $quizService, DesktopService $desktopService)
+    public function __construct()
     {
-        $this->quizService = $quizService;
-        $this->desktopService = $desktopService;
-        $this->userId = auth()->user()->id;
 
     }
 
     
     public function index()
     {
-        $userId = $this->userId;
+        $userId = Auth::user()->id;
         return view("desktop.student.desktop", compact("userId"));
     }
 
@@ -34,11 +32,5 @@ class DesktopStudentController extends Controller
     {
         return view("desktop.setting.setting");
     }
-
-
-
-
-
-
 
 }

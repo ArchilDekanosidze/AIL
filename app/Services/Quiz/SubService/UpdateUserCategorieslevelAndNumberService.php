@@ -33,7 +33,7 @@ class UpdateUserCategorieslevelAndNumberService
         foreach ($this->targetLevels  as $categoryId => $targetLevel) {
             $data[$categoryId] = ['target_level' => min($targetLevel, 100)];
         }        
-        $this->user->categoryQuestions()->syncWithoutDetaching($data);
+        $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
 
     }
 
@@ -43,7 +43,7 @@ class UpdateUserCategorieslevelAndNumberService
         foreach ($this->numbers_to_change_level  as $categoryId => $number_to_change_level) {
             $data[$categoryId] = ["number_to_change_level" => $number_to_change_level];
         }        
-        $this->user->categoryQuestions()->syncWithoutDetaching($data);
+        $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
     }
     
 }

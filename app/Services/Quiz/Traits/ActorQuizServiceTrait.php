@@ -9,6 +9,8 @@ trait ActorQuizServiceTrait
 {
     private $user;
     private $role;
+    private $request;
+
 
     public function setUser($user)
     {
@@ -21,7 +23,14 @@ trait ActorQuizServiceTrait
 
     public function getUser()
     {
-        return $this->user;
+        if($this->user)
+        {
+            return $this->user;
+        }
+        else
+        {
+            return auth()->user();
+        }
     }
    
     public function setRole()

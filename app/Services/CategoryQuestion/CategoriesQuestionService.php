@@ -45,7 +45,8 @@ class CategoriesQuestionService
     {
         $currentCategoryId = $this->request->currentCategoryId;
         $categoriesId = $this->getDescendantsAndSelfIds($currentCategoryId);
-        $randomQuestion = Question::whereIn('category_question_id', $categoriesId)->test()->inRandomOrder()->first();
+        $categoryId = $categoriesId[rand(0,$categoriesId->count()-1)];
+        $randomQuestion = Question::where('category_question_id', $categoryId)->test()->orderByRaw('rand()')->first();
         return $randomQuestion;        
     }
 

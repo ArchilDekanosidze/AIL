@@ -24,9 +24,10 @@
                 <a class="btn btn-primary" href="{{route('category.categoryQuestion.user.index', $directCat->id)}}">{{$directCat->name}}</a> 
                 
                 @auth         
-                    @if(userCategoryStatus($directCat->id) == "all")
+                    {{ $userStatus =  userCategoryStatus($directCat->id);}}
+                    @if($userStatus == "all")
                         <button class="toggleCategoryUser toggleCategoryUserBtn" data-catid = "{{$directCat->id}}">حذف از لیست یادگیری</button>                      
-                    @elseif(userCategoryStatus($directCat->id) == "none")
+                    @elseif($userStatus == "none")
                         <button class="toggleCategoryUser toggleCategoryUserBtn" data-catid = "{{$directCat->id}}">افزودن به لیست یادگیری</button>      
                     @else
                         <div class="toggleCategoryUserPartial">

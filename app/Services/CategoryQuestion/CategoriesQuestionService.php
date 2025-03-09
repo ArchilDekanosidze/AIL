@@ -5,6 +5,7 @@ namespace App\Services\CategoryQuestion;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Services\CategoryQuestion\Traits\ActorCategoriesQuestionServiceServiceTrait;
 
@@ -54,15 +55,27 @@ class CategoriesQuestionService
 
     public function addCategoryToUser()
     {
-        $currentCategoryId = $this->request->currentCategoryId;
-        
+        $currentCategoryId = $this->request->currentCategoryId;        
         $categoriesId = $this->getDescendantsAndSelfIds($currentCategoryId);
+
         $parentsId = $this->getParentsIds($currentCategoryId);
         $categoriesId = $categoriesId->merge($parentsId);
-        $data = $categoriesId->mapWithKeys(function($id){
-            return [$id => ['is_active' => true]];
-        })->toArray();
-        $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+
+
+
+        //
+        $this->getUser()
+            ->categoryQuestions()
+            ->newPivotStatement()
+            ->whereIn('category_question_id', $categoriesId)
+            ->update(['is_active' => true ]);
+
+
+
+        // $data = $categoriesId->mapWithKeys(function($id){
+        //     return [$id => ['is_active' => true]];
+        // })->toArray();
+        // $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
         return true;
     }
 
@@ -71,12 +84,23 @@ class CategoriesQuestionService
         $currentCategoryId = $this->request->currentCategoryId;
         $categoriesId = $this->getDescendantsAndSelfIds($currentCategoryId);
        
-        $data = $categoriesId->mapWithKeys(function($id){
-            return [$id => ['is_active' => false]];
-        })->toArray();
+        //
+        $this->getUser()
+            ->categoryQuestions()
+            ->newPivotStatement()
+            ->whereIn('category_question_id', $categoriesId)
+            ->update(['is_active' => false ]);
 
-        $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
 
+
+
+        // $data = $categoriesId->mapWithKeys(function($id){
+        //     return [$id => ['is_active' => false]];
+        // })->toArray();
+
+        // $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+
+        
 
         return true;
     }

@@ -15,6 +15,11 @@
     <div class="profileCard">        
         <a class="btn btn-primary" href="{{route('auth.otp.desktop.setting.email')}}">تغییر ایمیل</a>
     </div>
+
+    <div class="profileCard">        
+        <a class="btn btn-primary" href="{{route('auth.desktop.setting.changeNameForm')}}">تغییر نام کاربری</a>
+    </div>
+
     @if(!auth()->user()->hasVerifiedEmail() && auth()->user()->hasEmail())
         <div class="profileCard">        
             <a class="btn btn-primary" href="{{route('auth.email.send.verification')}}">ارسال ایمیل تاییده</a>

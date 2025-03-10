@@ -104,6 +104,6 @@ class RegisterController extends Controller
     protected function SendRegisterSuccessResponse()
     {
         session()->regenerate();
-        return redirect($this->redirectTo)->with('success', 'Please verify your email');
+        return redirect($this->redirectTo)->with('success', 'لطفا ایمیل خود را تایید کنید');
     }
 }

@@ -30,6 +30,7 @@ use App\Http\Controllers\Category\CategoryQuestionUserController;
 use App\Http\Controllers\Admin\AdminQuestionDescriptiveController;
 use App\Http\Controllers\Admin\Import\AdminImportCategoryController;
 use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
+use App\Http\Controllers\Auth\OTP\Desktop\DesktopChangeNameController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingEmailController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingMobileController;
@@ -75,6 +76,10 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('otp/password/resend', [ResetPasswordOTPController::class, 'resend'])->name('otp.password.resend');
     Route::get('email/send-verification', [VerificationController::class, 'send'])->name('email.send.verification');
     Route::get('email/verify', [VerificationController::class, 'verify'])->name('email.verify');
+    
+    Route::get('/desktop/setting/changeName', [DesktopChangeNameController::class, 'changeNameForm'])->name('desktop.setting.changeNameForm');
+    Route::post('/desktop/setting/changeName', [DesktopChangeNameController::class, 'changeName'])->name('desktop.setting.changeName');
+
     Route::get('otp/desktop/setting/two-factor/toggle', [DesktopSettingTwoFactorController::class, 'showToggleForm'])->name('otp.desktop.setting.two.factor.toggle.form');
     Route::get('otp/desktop/setting/two-factor/activateByEmail', [DesktopSettingTwoFactorController::class, 'sendTokenForEmail'])->name('otp.desktop.setting.two.factor.sendTokenForEmail');
     Route::get('otp/desktop/setting/two-factor/activateByMobile', [DesktopSettingTwoFactorController::class, 'sendTokenForMobile'])->name('otp.desktop.setting.two.factor.sendTokenForMobile');
@@ -92,6 +97,7 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('otp/desktop/setting/email/code', [DesktopSettingEmailController::class, 'showEnterCodeForm'])->name('otp.desktop.setting.email.code.form');
     Route::post('otp/desktop/setting/email/code', [DesktopSettingEmailController::class, 'confirmCode'])->name('otp.desktop.setting.email.code');
     Route::get('otp/desktop/setting/email/resend', [DesktopSettingEmailController::class, 'resend'])->name('otp.desktop.setting.email.resend');
+
 });
 
 
@@ -123,6 +129,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/desktop/myProgress/{user}', [myProgressController::class, 'myProgress'])->name('desktop.myProgress');
     Route::post('/desktop/getChartResult', [myProgressController::class, 'getChartResult'])->name('desktop.getChartResult');
     Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'setting'])->name('desktop.setting.setting');
+
 });
 
 

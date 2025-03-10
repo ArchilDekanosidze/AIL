@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 trait hasOTP
-{
+{ 
     protected $otp;
     use hasUsername;
 

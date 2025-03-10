@@ -2,10 +2,11 @@
 
 namespace App\Services\CategoryQuestion;
 
+use App\Models\User;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Services\CategoryQuestion\Traits\ActorCategoriesQuestionServiceServiceTrait;
 
@@ -64,11 +65,16 @@ class CategoriesQuestionService
 
 
         //
-        $this->getUser()
-            ->categoryQuestions()
-            ->newPivotStatement()
-            ->whereIn('category_question_id', $categoriesId)
-            ->update(['is_active' => true ]);
+        $data = $categoriesId->map(function($id){
+            return ['user_id' => $this->getUser()->id, 'category_question_id' => $id, 'is_active' => true];
+        })->toArray();
+
+        DB::table('user_category_question')->upsert($data, ['user_id', 'category_question_id']);
+        // $this->getUser()
+        //     ->categoryQuestions()
+        //     ->newPivotStatement()
+        //     ->whereIn('category_question_id', $categoriesId)
+        //     ->upsert(['is_active' => true ]);
 
 
 
@@ -85,11 +91,18 @@ class CategoriesQuestionService
         $categoriesId = $this->getDescendantsAndSelfIds($currentCategoryId);
        
         //
-        $this->getUser()
-            ->categoryQuestions()
-            ->newPivotStatement()
-            ->whereIn('category_question_id', $categoriesId)
-            ->update(['is_active' => false ]);
+
+        $data = $categoriesId->map(function($id){
+            return ['user_id' => $this->getUser()->id, 'category_question_id' => $id, 'is_active' => false];
+        })->toArray();
+
+        DB::table('user_category_question')->upsert($data, ['user_id', 'category_question_id']);
+
+        // $this->getUser()
+        //     ->categoryQuestions()
+        //     ->newPivotStatement()
+        //     ->whereIn('category_question_id', $categoriesId)
+        //     ->update(['is_active' => false ]);
 
 
 

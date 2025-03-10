@@ -10,10 +10,10 @@
         @csrf
         <ul>
             @foreach($allCategories as $category)            
-                @if(isset($userCategoriesHashSet[$category->id]))                        
+                @if($userCategories->contains($category))                        
                     <li class="catCheckBoxLi" data-parentId = {{$category->parent_id}} data-catId = {{$category->id}} style="--depth: {{$category->depth}}; @php  if($category->depth >1) echo 'display:none' @endphp" >                      
                         <div class="liDetails">
-                            @if(isset($categoryIdsWithSubcategories[$category->id]))
+                            @if($category->descendants()->count() > 0 )
                                 <span class="triangelForCategory">
                                     <span class="toggle-icon">&#9664</span>
                                 </span>
@@ -24,7 +24,7 @@
 
                             <input type="checkbox"  name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
                         </div>
-                        @if(!isset($categoryIdsWithSubcategories[$category->id]))
+                        @if($category->descendants()->count() == 0)
                             <div class="targetLevelDiv advancedSettingDiv">
                                 <lable for="targetLevel"> درصد هدف:</lable>
                                 <input class="targetLevel" id="targetLevel" name="targetLevels[{{$category->id}}]" type="number" min="0" max="100" value="{{$userCategories->find($category)->pivot->target_level}}">
@@ -37,7 +37,7 @@
                         <input type="hidden" name="currentLevels[{{$category->id}}]" min="0" max="100" value="{{$userCategories->find($category)->pivot->level}}">
                         <div class="number_to_change_levelDiv advancedSettingDiv">
                             <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
-                            <input class="numbers_to_change_level" id="numbers_to_change_level" name="numbers_to_change_level[{{$category->id}}]" type="number" min="{{(6-$category->depth) * 25}}" max="1000" value="{{$userCategories->find($category)->pivot->number_to_change_level}}">
+                            <input class="numbers_to_change_level"  name="numbers_to_change_level[{{$category->id}}]" type="number" min="{{(6-$category->depth) * 25}}" max="1000" value="{{max($userCategories->find($category)->pivot->number_to_change_level,(6-$category->depth) * 25) }}" />
                         </div>
                         
                     </li>
@@ -161,7 +161,7 @@
             $(".startLearning").click(function () {
                 flag = false
                 $(".numbers_to_change_level").each(function () {
-                    if($(this).val() < $(this).attr('min'))
+                    if(parseInt($(this).val()) < parseInt($(this).attr('min')))
                     {
                         flag = true
                         $(this).parent().parent().addClass('minNumberRquire')

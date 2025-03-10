@@ -21,6 +21,8 @@ return new class extends Migration
             $table->text('history')->nullable();
             $table->integer('number_to_change_level')->default(25);
             $table->timestamps();
+
+            $table->unique(['user_id', 'category_question_id']);
         });
     }
 

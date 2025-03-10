@@ -26,7 +26,7 @@ trait CreateQuizTrait
 
     public function create(Request $request)
     {       
-        dd($request->all());
+        // dd($request->all());
         // dd()
         if(!$request->has('categorySelected'))
         {

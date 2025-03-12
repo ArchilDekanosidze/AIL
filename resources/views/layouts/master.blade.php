@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     @include('layouts.head-tag')
     @yield('head-tag')
     @yield('style')

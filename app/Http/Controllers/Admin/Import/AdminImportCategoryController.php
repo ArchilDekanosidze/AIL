@@ -17,6 +17,7 @@ class AdminImportCategoryController extends Controller
     private $doc;
     private $xpath;
     private $parentCategory;
+    private $payeId = "14";
 
 
 
@@ -25,7 +26,7 @@ class AdminImportCategoryController extends Controller
         $this->createXpath();
         $rootUl = $this->xpath->query("//ul")->item(0);
         $nestedCategories = $this->traverseTree($rootUl);
-        $this->parentCategory = CategoryQuestion::find(15);
+        $this->parentCategory = CategoryQuestion::find($this->payeId);
         $this->saveCategories($nestedCategories);
         dd($nestedCategories);
     }

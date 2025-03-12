@@ -363,6 +363,14 @@ button[disabled]{
 math{
     direction: ltr;
 }
+.rz-ltr
+{
+    direction: ltr;
+}
+p.ng-binding
+{
+    margin-top: -10px;
+}
 
 math mstyle[dir="rtl"] {
     direction: rtl !important;
@@ -374,11 +382,11 @@ direction: ltr !important;
 text-align: left !important;
 }
 
-  .mjx-mrow
-  {
+.mjx-mrow
+{
     display: none;
-  }
-  mrow, msqrt
-  {
+}
+mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi
+{
     direction: ltr;
-  }
+}

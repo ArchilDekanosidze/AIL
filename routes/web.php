@@ -44,6 +44,7 @@ use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingTwoFactorController;
 Route::get('/', [UserHomeController::class, 'index'])->name('home');
 
 
+
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('/login', [LoginController::class, 'ShowloginForm'])->name('login.form'); 
     Route::post('/login', [LoginController::class, 'login'])->name('login');
@@ -202,6 +203,8 @@ Route::get('/test/logout', [TestController::class, 'logout']);
 Route::get('/test/addCatToUserMinChange', [TestController::class, 'addCatToUserMinChange']);
 
 Route::get('/test/catQuestionsCount', [TestController::class, 'catQuestionsCount']);
+
+Route::get('/test/remoteDB', [TestController::class, 'remoteDB']);
 
 
 

@@ -74,5 +74,15 @@ class TestController extends Controller
       dd(count($parentCategory->allQuestion()));
 
     }
+
+    public function remoteDB()
+    {
+      $user = User::find(1);
+      $model = new User();
+
+      $model->setConnection('remoteConnection');
+      $model->name = "ali";
+      $model->save();
+    }
  
 }

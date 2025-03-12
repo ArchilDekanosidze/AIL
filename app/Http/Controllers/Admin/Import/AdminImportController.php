@@ -26,9 +26,9 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
-    private $payeId = "15";
+    private $payeId = "14";
 
-    private  $folderPath = 'images' . '/' . '8' . '/' . 'ghoran' . '/';
+    private  $folderPath = 'images' . '/' . '9' . '/' . 'ghoran' . '/';
 
     public function import()
     {       

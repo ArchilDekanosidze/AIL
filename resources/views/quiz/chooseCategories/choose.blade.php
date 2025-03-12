@@ -36,7 +36,7 @@
                         </div>
                         <input type="hidden" name="currentLevels[{{$category->id}}]" min="0" max="100" value="{{$userCategories->find($category)->pivot->level}}">
                         <div class="number_to_change_levelDiv advancedSettingDiv">
-                            <lable for="numbers_to_change_level"> تعداد آخرین سوالات در نظرگرفته شده برای محاسبه درصد فعلی:</lable>
+                            <lable for="numbers_to_change_level"> آستانه:</lable>
                             <input class="numbers_to_change_level"  name="numbers_to_change_level[{{$category->id}}]" type="number" min="{{(6-$category->depth) * 25}}" max="1000" value="{{max($userCategories->find($category)->pivot->number_to_change_level,(6-$category->depth) * 25) }}" />
                         </div>
                         

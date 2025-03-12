@@ -9,7 +9,7 @@ class SmsTypesMeliPayamak implements SmsTypes
     {
         try {
             return [
-                self::VERIFICATION_CODE => '164887',
+                self::VERIFICATION_CODE => '309138',
                 self::VERIFICATION_CODE_NAME => '164904',
                 self::TWO_FACTOR_ACTIVATION_CODE => '164887',
                 self::OTP_CODE => '164887',

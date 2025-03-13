@@ -353,6 +353,11 @@ button[disabled]{
         padding: 5px;
         font-size: 16px;
     }
+    .row
+    {
+        margin-right: 0;
+        margin-left: 0;
+    }
 
 }
 
@@ -413,7 +418,7 @@ mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi, mtext
   white-space: normal !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  display: inline;
-  direction: ltr;
+  display: contents;
+  direction: ltr !important;
 }
 

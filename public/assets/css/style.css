@@ -367,6 +367,25 @@ math{
 {
     direction: ltr;
 }
+
+
+/* mjx-container *
+{
+    direction: ltr !important;
+    text-align: left !important;
+}
+mjx-utext
+{
+    white-space: nowrap !important;
+    display: contents !important;
+}
+mjx-msqrt mjx-utext
+{
+    display: inline-block !important;
+} */
+
+
+
 p.ng-binding
 {
     margin-top: -10px;
@@ -386,7 +405,7 @@ text-align: left !important;
 {
     display: none;
 }
-mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi
+mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi, mtext
 {
     direction: ltr;
 }
@@ -397,3 +416,4 @@ mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi
   display: inline;
   direction: ltr;
 }
+

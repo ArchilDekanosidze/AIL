@@ -36,3 +36,45 @@
         }); 
     }
 </script>
+
+{{-- <script type="text/javascript" src="{{asset('assets/MathJax.js')}}"></script>
+
+<script type="text/x-mathjax-config;executed=true">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+    linebreaks: { automatic: false, width: "container" },
+    scale: 120,
+     mtextFontInherit: true
+    }
+    });
+
+</script> --}}
+
+
+<script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      "HTML-CSS": {
+            linebreaks: { automatic: false, width: "container" },
+            scale: 120,
+            mtextFontInherit: true
+            }
+        });
+    };
+</script>
+{{-- <script async src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+<script>
+
+MathJax.typesetPromise().then(function() {
+    document.querySelectorAll(".MathJax mtext").forEach((element) => {
+        element.style.direction = "rtl !important";
+        element.style.textAlign = "right";
+        element.style.whiteSpace = "nowrap";
+    });
+});
+</script> --}}

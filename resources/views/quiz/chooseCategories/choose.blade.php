@@ -59,7 +59,7 @@
             </div>
             <div class="testCountDiv learningSettingDirectDiv">
                 <lable for="testCount"> تعداد سوالات آزمون:</lable>
-                <input id="testCount" name="testCount" type="number" min="0" max="150" value="40">
+                <input id="testCount" name="testCount" type="number" min="1" max="150" value="40">
             </div>
             <div class="testTimeDiv learningSettingDirectDiv">
                 <lable for="testTime"> مدت زمان آزمون بر حسب دقیقه:</lable>

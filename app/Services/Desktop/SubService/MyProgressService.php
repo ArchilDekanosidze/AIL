@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 class MyProgressService
 {
     use ActorTrait;
-    private $request;
     private $parentCategoryId;
     private $OriginalParentCategory;
     private $userCategories;

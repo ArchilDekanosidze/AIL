@@ -14,7 +14,7 @@ trait ActorQuizServiceTrait
 
     public function setUser($user)
     {
-        $this->user =User::find($user)->first();
+        $this->user =User::find($user);
         $this->saveQuizDataService->setUser($this->user);
         $this->updateUserCategorieslevelAndNumberService->setUser($this->user);
         $this->createQuizQuestionService->setUser($this->user);

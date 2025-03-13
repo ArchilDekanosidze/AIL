@@ -131,5 +131,10 @@
         margin-right: 0px;
         margin-left: 0px;
     }
+    .questionDataDiv,
+    .answerDiv
+    {
+        font-size: 16px;
+    }
 }
 

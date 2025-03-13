@@ -141,6 +141,7 @@
                 }
 
                 changeColorBaseOnAnswer()
+                MathBreak()
 
             }
 
@@ -228,6 +229,9 @@
                     $(".questionDataDiv").show();
                     $(".answerDiv").hide();
                 }
+
+                MathBreak()
+
                 
             })
 

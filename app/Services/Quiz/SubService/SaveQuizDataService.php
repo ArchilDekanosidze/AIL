@@ -78,11 +78,11 @@ class SaveQuizDataService
     {
         if($isCorrect)
         {
-            $question->percentage =min(($question->percentage * $question->count + 3)/$question->count , 100);
+            $question->percentage =max(($question->percentage * $question->count -1)/$question->count , 1);
         }
         else
         {
-            $question->percentage =max( ($question->percentage * $question->count -1)/($question->count), 1 );
+            $question->percentage =min( ($question->percentage * $question->count +1)/($question->count), 100 );
         }
         $question->count = $question->count +1;
         $question->save();

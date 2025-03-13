@@ -115,6 +115,7 @@
                           spanTimeSelect : $(".spanTimeSelect").val()
                         } ;
                 result = Ajax(url, data)  
+                console.log(result);
                 if(result.OriginalParentCategoryId == null)
                 {
                     $(".parentBtn").addClass("disabled")

@@ -390,3 +390,10 @@ mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi
 {
     direction: ltr;
 }
+.math-container  {
+  white-space: normal !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  display: inline;
+  direction: ltr;
+}

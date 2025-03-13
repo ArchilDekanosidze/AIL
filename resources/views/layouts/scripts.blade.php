@@ -26,5 +26,13 @@
             $('.successFromController').delay(5000).fadeOut('slow');
 
 
-        })
+    })
+    function MathBreak() {
+        document.querySelectorAll('mstyle').forEach(el => {
+            const newEl = document.createElement('p');
+            newEl.className = 'math-container';
+            newEl.innerHTML = el.innerHTML; // Copy the content
+            el.replaceWith(newEl); // Replace the custom tag
+        }); 
+    }
 </script>

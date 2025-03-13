@@ -8,6 +8,7 @@ trait ActorTrait
 {
     private $user;
     private $role;
+    private $request;
 
     public function setUser($user)
     {
@@ -34,6 +35,15 @@ trait ActorTrait
     public function getRole()
     {
         return $this->role;
+    }
+
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
+    public function getRequest()
+    {
+        return $this->request;
     }
 
 }

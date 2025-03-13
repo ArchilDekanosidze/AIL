@@ -32,6 +32,10 @@ trait CreateQuizTrait
         {
             return Redirect::back()->withErrors(['msg' => 'لطفا حداقل یک دسته بندی انتخاب کنید']);
         }
+        if($request->testCount == 0)
+        {
+            return Redirect::back()->withErrors(['msg' => 'تعداد سوالات انتخابی نمی تواند کمتر از یک باشد']);
+        }
         
         $this->PreCheck() ;             
 

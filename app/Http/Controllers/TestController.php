@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Question;
 use App\Mail\UserRegistered;
+use Illuminate\Http\Request;
 use App\Jobs\SendEmailToUsers;
 use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\Auth;
@@ -13,10 +15,9 @@ use App\Jobs\Notification\Email\SendEmail;
 use App\Jobs\Notification\Sms\SendSmsToMultipleUser;
 use App\Services\Notification\Sms\Contracts\SmsTypes;
 use App\Services\Quiz\SubService\SaveQuizDataService;
+use App\Services\Desktop\SubService\MyProgressService;
 use App\Jobs\Notification\Email\SendEmailWithMailAddress;
-use App\Models\Question;
 use App\Services\CategoryQuestion\CategoriesQuestionService;
-use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
@@ -83,6 +84,26 @@ class TestController extends Controller
       $model->setConnection('remoteConnection');
       $model->name = "ali";
       $model->save();
+    }
+
+    public function myProgress(Request $request,MyProgressService $myProgressService)
+    {
+      $request->merge(["datePickerFrom"=>"1403/11/27"]);
+      $request->merge(["datePickerTo"=>"1403/12/24"]);
+      $request->merge(["spanTimeSelect"=>"hour"]);
+      $request->merge(["parentCategoryId"=>"1"]);
+
+      
+      $myProgressService->setRequest($request);
+      $data = $myProgressService->getProgressData();
+      dd($data);
+    }
+
+    public function loginAs($id)
+    {
+      Auth::guard('web')->loginUsingId($id, true);
+      request()->session()->regenerate();
+      return redirect()->route('desktop.student.index');
     }
  
 }

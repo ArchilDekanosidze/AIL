@@ -205,6 +205,9 @@ Route::get('/test/addCatToUserMinChange', [TestController::class, 'addCatToUserM
 Route::get('/test/catQuestionsCount', [TestController::class, 'catQuestionsCount']);
 
 Route::get('/test/remoteDB', [TestController::class, 'remoteDB']);
+Route::get('/test/myProgress', [TestController::class, 'myProgress']);
+Route::get('/test/loginAs/{id}', [TestController::class, 'loginAs']);
+
 
 
 

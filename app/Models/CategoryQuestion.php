@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use Kalnoy\Nestedset\NodeTrait;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -52,8 +53,37 @@ class CategoryQuestion extends Model
         return implode(" -> ", $ancestorName->toArray());
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::saved(function(){
+            self::clearCache();
+        });
 
+        static::deleted(function(){
+            self::clearCache();
+        });
+    }
 
+    public static function getCachedAllCategories()
+    {
+        return Cache::rememberForever('allCategoriesWithCountAndDepth', function () {
+            return self::withDepth()->withCount('descendants')->get()->sortBy('_lft')->skip(1);
+        });
+    }
+
+    public static function getCachedAllCategoryIdsWithSubcategories()
+    {
+        return Cache::rememberForever('allCategoryIdsWithSubcategories', function () {
+            return self::whereHas('descendants')->pluck('id')->toArray();
+        });
+    }
+
+    public static function clearCache()
+    {
+        Cache::forget('allCategoriesWithCountAndDepth');
+        Cache::forget('allCategoryIdsWithSubcategories');
+    }
 
 
 

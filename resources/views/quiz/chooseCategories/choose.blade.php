@@ -13,7 +13,7 @@
                 @if($userCategories->contains($category))                        
                     <li class="catCheckBoxLi" data-parentId = {{$category->parent_id}} data-catId = {{$category->id}} style="--depth: {{$category->depth}}; @php  if($category->depth >1) echo 'display:none' @endphp" >                      
                         <div class="liDetails">
-                            @if($category->descendants()->count() > 0 )
+                            @if($category->descendants_count > 0 )
                                 <span class="triangelForCategory">
                                     <span class="toggle-icon">&#9664</span>
                                 </span>
@@ -24,7 +24,7 @@
 
                             <input type="checkbox"  name="categorySelected[]" class="catCheckBox"  value="{{$category->id}}" data-id="{{$category->id}}"> {{$category->name}}
                         </div>
-                        @if($category->descendants()->count() == 0)
+                        @if($category->descendants_count == 0)
                             <div class="targetLevelDiv advancedSettingDiv">
                                 <lable for="targetLevel"> درصد هدف:</lable>
                                 <input class="targetLevel" id="targetLevel" name="targetLevels[{{$category->id}}]" type="number" min="0" max="100" value="{{$userCategories->find($category)->pivot->target_level}}">

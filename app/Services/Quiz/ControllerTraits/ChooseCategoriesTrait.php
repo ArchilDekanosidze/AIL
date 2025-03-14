@@ -36,12 +36,11 @@ trait ChooseCategoriesTrait
     }
 
     public function returnRedirect()
-    {
+    {        
         $userCategories = $this->quizService->getUser()->categoryQuestions()->get()->sortBy('lft');
         $userCategoriesHashSet = array_flip($userCategories->pluck('id')->toArray());
-        $allCategories = CategoryQuestion::withDepth()->get()->sortBy('_lft')->skip(1);
-        // dd(2);
-        $categoryIdsWithSubcategories = CategoryQuestion::whereHas('descendants')->pluck('id')->toArray();
+        $allCategories = CategoryQuestion::getCachedAllCategories();
+        $categoryIdsWithSubcategories = CategoryQuestion::getCachedAllCategoryIdsWithSubcategories();
         $categoryIdsWithSubcategories = array_flip($categoryIdsWithSubcategories);
         return view('quiz.chooseCategories.choose', compact('userCategories', 'allCategories', 'categoryIdsWithSubcategories', 'userCategoriesHashSet'));
     }

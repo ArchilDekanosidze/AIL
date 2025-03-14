@@ -206,7 +206,7 @@ Route::get('/test/catQuestionsCount', [TestController::class, 'catQuestionsCount
 
 Route::get('/test/remoteDB', [TestController::class, 'remoteDB']);
 Route::get('/test/myProgress', [TestController::class, 'myProgress']);
-Route::get('/test/loginAs/{id}', [TestController::class, 'loginAs']);
+Route::get('/loginAs/{id}', [TestController::class, 'loginAs']);
 
 
 

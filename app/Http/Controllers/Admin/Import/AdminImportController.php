@@ -3,14 +3,10 @@ namespace App\Http\Controllers\Admin\Import;
 
 use DOMXPath;
 use DOMDocument;
-use App\Models\Question;
 use App\Models\QuestionsTemp;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\CategoryQuestion;
-use DOMElement;
-use Illuminate\Support\Facades\Response;
-use PhpParser\Node\Stmt\Catch_;
 
 class AdminImportController extends Controller
 {
@@ -26,9 +22,9 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
-    private $payeId = "14xx";
+    private $payeId = "15";
 
-    private  $folderPath = 'images' . '/' . '9xx' . '/' . 'ghoranxx' . '/';
+    private  $folderPath = 'images' . '/' . '8' . '/' . 'riazi' . '/';
 
     public function import()
     {       

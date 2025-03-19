@@ -12,6 +12,7 @@ class AdminImportController extends Controller
 {
     private $doc;
     private $xpath;
+    private $allData = [];
     private $QuestionText = null;
     private $AnswerText = null;
     private $Choice1 = null;
@@ -24,7 +25,7 @@ class AdminImportController extends Controller
     private $correctAnswer;
     private $payeId = "15";
 
-    private  $folderPath = 'images' . '/' . '8' . '/' . 'riazi' . '/';
+    private  $folderPath = 'images' . '/' . '8' . '/' . 'farsi' . '/';
 
     public function import()
     {       
@@ -63,10 +64,11 @@ class AdminImportController extends Controller
             $this->getCorrectAnswer();
             if($this->QuestionText != null)
             {
-                $this->CreateQuestionRecord();
+                $this->CreateAllRecord();
             }
             $this->emptyData();
         }
+        $this->CreateQuestionsRecord();
     }
 
     public function setTexts($div)
@@ -123,30 +125,34 @@ class AdminImportController extends Controller
         $this->level = $this->getlevel($levelPersian);
 
     }
-
-    public function CreateQuestionRecord()
+    public function CreateQuestionsRecord()
+    {
+        
+        $chunks = array_chunk($this->allData, 100);
+        foreach ($chunks as $chunck) {
+            QuestionsTemp::insert($chunck);
+        }
+    }
+    public function CreateAllRecord()
     {
 
-        $quesion = new QuestionsTemp();
-        $quesion->category_question_id = $this->category_question_id; //
-        $quesion->front = $this->QuestionText;
-        $quesion->back = $this->AnswerText;
-        $quesion->p1 = $this->Choice1;
-        $quesion->p2 = $this->Choice2;
-        $quesion->p3 = $this->Choice3;
-        $quesion->p4 = $this->Choice4;     
-        $quesion->answer = $this->correctAnswer;     
+        $quesion = [];
+        $quesion['category_question_id'] = $this->category_question_id; //
+        $quesion['front'] = $this->QuestionText;
+        $quesion['back'] = $this->AnswerText;
+        $quesion['p1'] = $this->Choice1;
+        $quesion['p2'] = $this->Choice2;
+        $quesion['p3'] = $this->Choice3;
+        $quesion['p4'] = $this->Choice4;     
+        $quesion['answer'] = $this->correctAnswer;     
 
-        $quesion->percentage = $this->level;       //
-        $quesion->count = 100;
-        $quesion->type = $this->type;        //
-        $quesion->isfree = 0;   
-        $quesion->timestamps = now();
-        try {
-            $quesion->save();                    
-        } catch (\Throwable $th) {
-            dd($this->category_question_id);
-        }
+        $quesion['percentage'] = $this->level;       //
+        $quesion['count'] = 100;
+        $quesion['type'] = $this->type;        //
+        $quesion['isfree'] = 0;   
+        $quesion['created_at'] = now();
+        $quesion['updated_at'] = now();
+        $this->allData[] = $quesion;
     }
 
     public function emptyData()

@@ -3,10 +3,12 @@ namespace App\Http\Controllers\Admin\Import;
 
 use DOMXPath;
 use DOMDocument;
+use App\Models\Question;
 use App\Models\QuestionsTemp;
+use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\CategoryQuestion;
+use Illuminate\Support\Facades\File;
 
 class AdminImportController extends Controller
 {
@@ -23,9 +25,9 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
-    private $payeId = "15";
-
-    private  $folderPath = 'images' . '/' . '8' . '/' . 'farsi' . '/';
+    private $payeId = "4";
+    //  - dini1 - english1 - riazi1 - zist1 - fizik1 - shimi1 - geography - negaresh1
+    private  $folderPath = 'images' . '/' . 'tajrobi_10' . '/' . 'arabi' . '/';
 
     public function import()
     {       
@@ -43,7 +45,9 @@ class AdminImportController extends Controller
         QuestionsTemp::truncate();
         $this->doc = new DOMDocument();
         libxml_use_internal_errors(true); // Prevents warnings for malformed HTML
-        $this->doc->loadHTMLFile(__DIR__ . '/import.html');
+        $rawFilePath = __DIR__ . '/texts/riazi7_3_va_koli';
+        $this->doc->loadHTMLFile($rawFilePath);
+        File::delete($rawFilePath);
         libxml_clear_errors();
 
         $this->xpath = new DOMXPath($this->doc);
@@ -76,7 +80,7 @@ class AdminImportController extends Controller
         $elements = $this->xpath->query(".//p", $div);
         foreach ($elements as $element) {
             $html = $this->doc->saveHTML($element->parentNode);
-            $html = $this->checkForImage($html);
+            // $html = $this->checkForImage($html);
             if($element->getAttribute('ng-bind-html') == "q.QuestionText | unsafe")
             {
                 $this->QuestionText = $html;
@@ -130,7 +134,8 @@ class AdminImportController extends Controller
         
         $chunks = array_chunk($this->allData, 100);
         foreach ($chunks as $chunck) {
-            QuestionsTemp::insert($chunck);
+            // QuestionsTemp::insert($chunck);
+            Question::insert($chunck);
         }
     }
     public function CreateAllRecord()

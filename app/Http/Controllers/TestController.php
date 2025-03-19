@@ -105,5 +105,12 @@ class TestController extends Controller
       request()->session()->regenerate();
       return redirect()->route('desktop.student.index');
     }
+
+    public function removeDuplicatedQuestions()
+    {
+      $catId = null;
+      $questionsId = CategoryQuestion::find($catId)->allQuestion()->pluck('id');
+      Question::destroy($questionsId);
+    }
  
 }

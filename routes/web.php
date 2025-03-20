@@ -207,7 +207,10 @@ Route::get('/test/catQuestionsCount', [TestController::class, 'catQuestionsCount
 Route::get('/test/remoteDB', [TestController::class, 'remoteDB']);
 Route::get('/test/myProgress', [TestController::class, 'myProgress']);
 Route::get('/loginAs/{id}', [TestController::class, 'loginAs']);
+
+Route::get('/test/findTheListId', [TestController::class, 'findTheListId']);
 Route::get('/test/removeDuplicatedQuestions', [TestController::class, 'removeDuplicatedQuestions']);
+Route::get('/test/transferImages', [TestController::class, 'transferImages']);
 
 
 
@@ -215,5 +218,6 @@ Route::get('/test/removeDuplicatedQuestions', [TestController::class, 'removeDup
 //Import
 Route::get('/import', [AdminImportController::class, 'import']);
 Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
+Route::get('/import/downloadImages', [AdminImportController::class, 'downloadImages']);
 Route::get('/import/category', [AdminImportCategoryController::class, 'index']);
 

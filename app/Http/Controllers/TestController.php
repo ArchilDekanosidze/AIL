@@ -6,9 +6,12 @@ use App\Models\User;
 use App\Models\Question;
 use App\Mail\UserRegistered;
 use Illuminate\Http\Request;
+use App\Models\QuestionsTemp;
 use App\Jobs\SendEmailToUsers;
 use App\Models\CategoryQuestion;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use App\Jobs\Notification\Sms\SendSms;
 use App\Services\Desktop\DesktopService;
 use App\Jobs\Notification\Email\SendEmail;
@@ -106,11 +109,31 @@ class TestController extends Controller
       return redirect()->route('desktop.student.index');
     }
 
+    public function findTheListId()
+    {
+      $catId = 2161;
+      $questionsId = CategoryQuestion::find($catId)->allQuestion()->pluck('id')->toArray();
+      dd(min($questionsId));
+    }
+
     public function removeDuplicatedQuestions()
     {
-      $catId = null;
+      $catId = 3020;
       $questionsId = CategoryQuestion::find($catId)->allQuestion()->pluck('id');
       Question::destroy($questionsId);
     }
- 
+
+    public function transferImages() {
+       $sourceFolder = public_path('images');
+       $desTinationFolder = public_path('temp');
+       $files = File::allFiles($sourceFolder);
+       foreach ($files as $file) {
+          $destination = $desTinationFolder . '/' . $file->getFilename();
+          File::move($file->getRealPath(), $destination);
+       } 
+
+    }
+
+
+
 }

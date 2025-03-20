@@ -9,6 +9,7 @@ use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class AdminImportController extends Controller
 {
@@ -26,8 +27,7 @@ class AdminImportController extends Controller
     private $category_question_id;
     private $correctAnswer;
     private $payeId = "4";
-    //  - dini1 - english1 - riazi1 - zist1 - fizik1 - shimi1 - geography - negaresh1
-    private  $folderPath = 'images' . '/' . 'tajrobi_10' . '/' . 'arabi' . '/';
+    private  $folderPath ;
 
     public function import()
     {       
@@ -35,17 +35,25 @@ class AdminImportController extends Controller
         // این دو تای پایینی رو اصلاح کن که بیشترین مقدار کتگوری ای رو نگه داره
         // SELECT * FROM `questions` WHERE `id` NOT IN( SELECT `id` FROM ( SELECT MIN(`id`) as id FROM `questions` GROUP BY `front` ) as temp ); 
         // DELETE FROM `questions` WHERE `id` NOT IN( SELECT `id` FROM ( SELECT MIN(`id`) as id FROM `questions` GROUP BY `front` ) as temp ); 
-        $this->createXpath();
-        $this->sweepDivs();
+        
+        $rawDirectoryPath = __DIR__ . '/texts';
+        $filesName = array_diff(scandir($rawDirectoryPath), ['.', '..']);
+        $filesName = array_slice($filesName, 0, 2);
+        // dd($filesName);
+        foreach ($filesName as $fileName) {           
+            $this->allData = [];
+            $this->createXpath($fileName);
+            $this->sweepDivs();
+        }    
     }
 
 
-    public function createXpath()
+    public function createXpath($fileName)
     {
         QuestionsTemp::truncate();
         $this->doc = new DOMDocument();
         libxml_use_internal_errors(true); // Prevents warnings for malformed HTML
-        $rawFilePath = __DIR__ . '/texts/riazi7_3_va_koli';
+        $rawFilePath = __DIR__ . '/texts/' . $fileName;
         $this->doc->loadHTMLFile($rawFilePath);
         File::delete($rawFilePath);
         libxml_clear_errors();
@@ -328,6 +336,107 @@ class AdminImportController extends Controller
     }
 
 
+    // public function checkForImage($html)
+    // {
+    //     $pos1 = mb_strpos($html, '<span><img class="unique" src=');
+    //     if($pos1  !== false)
+    //     {
+    //         dd(2);
+    //         $pos1 = mb_strpos($html, 'https', $pos1);
+    //         $pos2 = mb_strpos($html, '></span>', $pos1);
+    //         $filePath = mb_substr($html, $pos1, $pos2- $pos1-1);
+    //         $newAddress = $this->saveImageFromWeb($filePath);
+    //         $html =str_replace($filePath, $newAddress, $html);
+    //     }
+    //     return $html;
+    // }
+
+    // public function saveImageFromWeb($imageUrl)
+    // {
+    //     $imageContents = false;
+
+    //     $fileName = basename($imageUrl); // Extracts filename from URL
+    //     $filePath = $this->folderPath . $fileName;
+    //     $savePath = public_path($filePath); // Save in public/images
+    //     if(file_exists($savePath))
+    //     {
+    //         return asset($filePath);
+    //     }
+
+
+
+    //     try {
+    //         $imageContents = file_get_contents($imageUrl);
+    //     } catch (\Throwable $th) {
+    //         dump($imageUrl);
+    //     }
+    
+    //     if($imageContents !== false)
+    //     {
+    //         file_put_contents($savePath, $imageContents);
+    //     }
+
+    //     return asset($filePath);
+    // }
+
+    public function convertPersianToEnglish($number) {
+        $persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        $englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+       
+        return str_replace($persianDigits, $englishDigits, $number);
+    }
+
+
+
+
+
+    public function downloadImages()
+    {
+      // $questions = QuestionsTemp::skip(0)->take(100)->get();
+      $questions = DB::select(
+        <<<SQL
+          SELECT * FROM `questions` 
+          WHERE front LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+          OR  back LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+          OR  p1 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+          OR  p2 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+          OR  p3 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+          OR  p4 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+          limit 100
+         SQL);
+        $questions = Question::hydrate($questions);
+        // dump($questions->count());
+      foreach ($questions as $question) {
+
+        $this->setFolderPath($question);
+
+
+
+        $question->front = $this->checkForImage($question->front);   
+        $question->back = $this->checkForImage($question->back);        
+        $question->p1 = $this->checkForImage($question->p1);        
+        $question->p2 = $this->checkForImage($question->p2);        
+        $question->p3 = $this->checkForImage($question->p3);        
+        $question->p4 = $this->checkForImage($question->p4);   
+        $question->save();        
+      }
+    }
+
+    public function setFolderPath($question)
+    {
+        $catId = $question->category_question_id;
+        $categoryQuestion = CategoryQuestion::find($catId); 
+        $parentsId =   $categoryQuestion->ancestors()->select('id', 'parent_id')->get()->pluck('id')->toArray();
+        $allCatsId = array_merge(array_slice($parentsId, 1), [$catId]);
+        $this->folderPath = implode('/', $allCatsId);
+        $this->folderPath = "images/Questions/" . $this->folderPath . '/';
+        if(!is_dir(public_path($this->folderPath)))
+        {
+          mkdir($this->folderPath, 0777, true);
+        }
+    }
+
+   
     public function checkForImage($html)
     {
         $pos1 = mb_strpos($html, '<span><img class="unique" src=');
@@ -335,9 +444,9 @@ class AdminImportController extends Controller
         {
             $pos1 = mb_strpos($html, 'https', $pos1);
             $pos2 = mb_strpos($html, '></span>', $pos1);
-            $filePath = mb_substr($html, $pos1, $pos2- $pos1-1);
-            $newAddress = $this->saveImageFromWeb($filePath);
-            $html =str_replace($filePath, $newAddress, $html);
+            $imageUrl = mb_substr($html, $pos1, $pos2- $pos1-1);
+            $newAddress = $this->saveImageFromWeb($imageUrl);
+            $html =str_replace($imageUrl, $newAddress, $html);
         }
         return $html;
     }
@@ -351,22 +460,16 @@ class AdminImportController extends Controller
         $savePath = public_path($filePath); // Save in public/images
         if(file_exists($savePath))
         {
-            return asset($filePath);
+          return asset($filePath);
         }
-
 
 
         try {
             $imageContents = file_get_contents($imageUrl);
         } catch (\Throwable $th) {
-            dump($imageUrl);
+            dd($imageUrl);
         }
-
-        // if ($imageContents === false) {
-        //     return "Failed to download image.";
-        // }
     
-
         if($imageContents !== false)
         {
             file_put_contents($savePath, $imageContents);
@@ -375,11 +478,5 @@ class AdminImportController extends Controller
         return asset($filePath);
     }
 
-    public function convertPersianToEnglish($number) {
-        $persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        $englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-       
-        return str_replace($persianDigits, $englishDigits, $number);
-    }
 }
 

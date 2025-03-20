@@ -26,7 +26,7 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
-    private $payeId = "4";
+    private $payeId = "6";
     private  $folderPath ;
 
     public function import()
@@ -392,6 +392,7 @@ class AdminImportController extends Controller
 
     public function downloadImages()
     {
+        // limit 100
       // $questions = QuestionsTemp::skip(0)->take(100)->get();
       $questions = DB::select(
         <<<SQL
@@ -402,10 +403,10 @@ class AdminImportController extends Controller
           OR  p2 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
           OR  p3 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
           OR  p4 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
-          limit 100
+          
          SQL);
         $questions = Question::hydrate($questions);
-        // dump($questions->count());
+        dump($questions->count());
       foreach ($questions as $question) {
 
         $this->setFolderPath($question);
@@ -467,7 +468,8 @@ class AdminImportController extends Controller
         try {
             $imageContents = file_get_contents($imageUrl);
         } catch (\Throwable $th) {
-            dd($imageUrl);
+            dump($imageUrl);
+            return $imageUrl;
         }
     
         if($imageContents !== false)

@@ -17,7 +17,7 @@ class AdminImportCategoryController extends Controller
     private $doc;
     private $xpath;
     private $parentCategory;
-    private $payeId = "6";
+    private $payeId = "22";
 
 
 

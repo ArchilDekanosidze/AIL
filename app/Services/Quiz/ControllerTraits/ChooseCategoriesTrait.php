@@ -29,10 +29,16 @@ trait ChooseCategoriesTrait
 
 
 
-
+ 
     public function PreCheck()
     {
         $this->quizService->checkForEndedQuiz();
+    }
+
+    public function clearCache()
+    {
+        CategoryQuestion::clearCache();
+        dd('cache is Cleared');
     }
 
     public function returnRedirect()

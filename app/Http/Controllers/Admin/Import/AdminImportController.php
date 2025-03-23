@@ -26,31 +26,32 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
-    private $payeId = "6";
+    private $payeId = "22";
     private  $folderPath ;
+    private $questionId  ;
+
 
     public function import()
     {       
         //copy(document.querySelector(.firefox).outerHTML)
-        // این دو تای پایینی رو اصلاح کن که بیشترین مقدار کتگوری ای رو نگه داره
-        // SELECT * FROM `questions` WHERE `id` NOT IN( SELECT `id` FROM ( SELECT MIN(`id`) as id FROM `questions` GROUP BY `front` ) as temp ); 
-        // DELETE FROM `questions` WHERE `id` NOT IN( SELECT `id` FROM ( SELECT MIN(`id`) as id FROM `questions` GROUP BY `front` ) as temp ); 
         
         $rawDirectoryPath = __DIR__ . '/texts';
         $filesName = array_diff(scandir($rawDirectoryPath), ['.', '..']);
-        $filesName = array_slice($filesName, 0, 2);
+        $filesName = array_slice($filesName, 0, 3);
         // dd($filesName);
         foreach ($filesName as $fileName) {           
             $this->allData = [];
             $this->createXpath($fileName);
             $this->sweepDivs();
         }    
+
+        $this->downloadImages();
     }
 
 
     public function createXpath($fileName)
     {
-        QuestionsTemp::truncate();
+        // QuestionsTemp::truncate();
         $this->doc = new DOMDocument();
         libxml_use_internal_errors(true); // Prevents warnings for malformed HTML
         $rawFilePath = __DIR__ . '/texts/' . $fileName;
@@ -142,8 +143,8 @@ class AdminImportController extends Controller
         
         $chunks = array_chunk($this->allData, 100);
         foreach ($chunks as $chunck) {
-            // QuestionsTemp::insert($chunck);
-            Question::insert($chunck);
+            QuestionsTemp::insert($chunck);
+            // Question::insert($chunck);
         }
     }
     public function CreateAllRecord()
@@ -396,7 +397,7 @@ class AdminImportController extends Controller
       // $questions = QuestionsTemp::skip(0)->take(100)->get();
       $questions = DB::select(
         <<<SQL
-          SELECT * FROM `questions` 
+          SELECT * FROM `questions_temps` 
           WHERE front LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
           OR  back LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
           OR  p1 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
@@ -405,9 +406,11 @@ class AdminImportController extends Controller
           OR  p4 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
           
          SQL);
-        $questions = Question::hydrate($questions);
+        $questions = QuestionsTemp::hydrate($questions);
         dump($questions->count());
       foreach ($questions as $question) {
+
+        $this->questionId = $question->id;
 
         $this->setFolderPath($question);
 
@@ -440,7 +443,7 @@ class AdminImportController extends Controller
    
     public function checkForImage($html)
     {
-        $pos1 = mb_strpos($html, '<span><img class="unique" src=');
+        $pos1 = mb_strpos($html, '<span><img class="unique" src="https://tx.quiz24.ir');
         if($pos1  !== false)
         {
             $pos1 = mb_strpos($html, 'https', $pos1);
@@ -456,6 +459,8 @@ class AdminImportController extends Controller
     {
         $imageContents = false;
 
+        // dump($imageUrl);
+
         $fileName = basename($imageUrl); // Extracts filename from URL
         $filePath = $this->folderPath . $fileName;
         $savePath = public_path($filePath); // Save in public/images
@@ -468,7 +473,7 @@ class AdminImportController extends Controller
         try {
             $imageContents = file_get_contents($imageUrl);
         } catch (\Throwable $th) {
-            dump($imageUrl);
+            dump($this->questionId, $imageUrl);
             return $imageUrl;
         }
     

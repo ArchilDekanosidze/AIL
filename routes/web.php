@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\Import\AdminImportController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
+use App\Http\Controllers\Admin\Import\DatabaseExportController;
 use App\Http\Controllers\Category\CategoryQuestionUserController;
 use App\Http\Controllers\Admin\AdminQuestionDescriptiveController;
 use App\Http\Controllers\Admin\Import\AdminImportCategoryController;
@@ -119,6 +120,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/quiz/chooseCategories/student', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.chooseCategories.student');
     Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create'])->name('quiz.create.student');
+    Route::get('/quiz/chooseCategories/student/clearCache', [QuizChooseCategoriesStudentController::class, 'clearCache'])->name('quiz.chooseCategories.student.clearCache');
     Route::get('/quiz/online/{quiz}', [OnlineQuizController::class, 'onlineQuizInProgress'])->name('quiz.online.onlineQuizInProgress');
     Route::post('/quiz/online/showAnswer', [OnlineQuizController::class, 'showAnswer'])->name('quiz.online.showAnswer');
     Route::post('/quiz/online/nextQuestion', [OnlineQuizController::class, 'nextQuestion'])->name('quiz.online.nextQuestion');
@@ -217,7 +219,12 @@ Route::get('/test/transferImages', [TestController::class, 'transferImages']);
 
 //Import
 Route::get('/import', [AdminImportController::class, 'import']);
-Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
 Route::get('/import/downloadImages', [AdminImportController::class, 'downloadImages']);
+Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
+
+
+Route::get('/export/chunck', [DatabaseExportController::class, 'exportDatabase']);
+
+
 Route::get('/import/category', [AdminImportCategoryController::class, 'index']);
 

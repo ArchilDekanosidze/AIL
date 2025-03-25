@@ -485,5 +485,47 @@ class AdminImportController extends Controller
         return asset($filePath);
     }
 
+    public function saveQuestionsTextes()
+    {
+        Question::chunk(100, function($questions ){
+
+            foreach ($questions as $quesion) {
+                if(($quesion->id % 1000) == 0)
+                {
+                    dump($quesion->id);
+                }
+                $saveFilePath = $this->getQuestionFilePath($quesion);
+                $content = [
+                    "front" => $quesion->front ,
+                    "back" => $quesion->back , 
+                    "p1" => $quesion->p1 , 
+                    "p2" => $quesion->p2 , 
+                    "p3" => $quesion->p3 , 
+                    "p4" => $quesion->p4
+                ];
+                file_put_contents($saveFilePath, json_encode($content));
+            }
+        });
+        // $questionText = file_get_contents($saveFilePath);
+        // dd(json_decode($questionText)->back);
+    }
+
+    public function getQuestionFilePath($question)
+    {
+        $questionId = $question->id;
+        $idStr = str_pad($questionId, 7, 0, STR_PAD_LEFT);
+        $pathParts = str_split($idStr);
+        $folderPath = implode('/', $pathParts);
+        $folderPath ="questions/$folderPath/"; 
+        $filePath =  $folderPath. "$questionId.json";
+        if(!is_dir(public_path($folderPath)))
+        {
+          mkdir($folderPath, 0777, true);
+        }
+
+        $saveFilePath = public_path($filePath); // Save in public/images
+        return $saveFilePath;        
+    }
+
 }
 

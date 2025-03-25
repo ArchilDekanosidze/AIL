@@ -6,11 +6,12 @@ use App\Models\Question;
 use App\Services\Traits\ActorTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Quiz\Traits\QuizTrait;
+use App\Services\Traits\HistoryFileTrait;
 
 
 class SaveQuizDataService
 {
-    use QuizTrait, ActorTrait;
+    use QuizTrait, ActorTrait, HistoryFileTrait;
     public $data;
 
 
@@ -76,7 +77,7 @@ class SaveQuizDataService
 
     public function changeQuestion($isCorrect, $question)
     {
-        if($isCorrect)
+        if($isCorrect) 
         {
             $question->percentage =max(($question->percentage * $question->count -1)/$question->count , 1);
         }
@@ -92,10 +93,10 @@ class SaveQuizDataService
     {
         foreach ($categoriesQuestion as $categoryQuestion)
         {                                    
-            $result = $this->newHistory($categoryQuestion, $isCorrect);
-                  
-            $this->data[$categoryQuestion->id] = ['history' => $result["history"] ,
-            'level' =>     $result["level"]          ];            
+            $newLevel = $this->newHistory($categoryQuestion, $isCorrect);
+            $bridgeId = $categoryQuestion->pivot->id;
+
+            $this->data[$categoryQuestion->id] = ['level' =>  $newLevel];            
         }
     }
 
@@ -104,21 +105,36 @@ class SaveQuizDataService
     public function newHistory($categoryQuestion, $isCorrect)
     {
         $this->setInitialData($categoryQuestion);
+
+        $bridgeId = $categoryQuestion->pivot->id;
+        if($this->getHistory($bridgeId) != null)
+        {
+            $oldHistory = $this->getHistory($bridgeId);
+            foreach ($oldHistory as $old) {
+                $history[] = $old;
+            }
+        }
         
-        $history = $this->data[$categoryQuestion->id]['history'];
         $history[] = ["level" => null, "time" => now()->timestamp, "isCorrect" => $isCorrect ? 1 : 0];
         $newLevel = $this->newlevel($categoryQuestion, $history);
         $history[count($history) - 1]['level'] = $newLevel;        
-        $result["level"] = $newLevel;
-        $result["history"] = $history;
-        return $result;
+        // $result["level"] = $newLevel;
+        // $result["history"] = $history;
+        $this->saveHistory($bridgeId, $history);
+
+        return $newLevel;
     }
 
 
     public function newlevel($categoryQuestion, $history)
     {
-
-        $answerHistory =array_map(fn($item) => $item["isCorrect"], $history);
+        try {
+            $answerHistory =array_map(fn($item) => $item['isCorrect'], $history);
+            //code...
+        } catch (\Throwable $th) {
+            dd($history);
+            //throw $th;
+        }
         $newerAnswerHistory = array_slice($answerHistory, -$categoryQuestion->pivot->number_to_change_level);
         $sumAnswerForLevel = 0;
         foreach ($newerAnswerHistory as $answer) {
@@ -144,7 +160,6 @@ class SaveQuizDataService
         {
             return;
         }
-        $this->data[$categoryQuestion->id]['history'] = json_decode($categoryQuestion->pivot->history , true);
         $this->data[$categoryQuestion->id]['level'] = $categoryQuestion->pivot->level ;
     }
 }

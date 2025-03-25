@@ -213,6 +213,10 @@ Route::get('/loginAs/{id}', [TestController::class, 'loginAs']);
 Route::get('/test/findTheListId', [TestController::class, 'findTheListId']);
 Route::get('/test/removeDuplicatedQuestions', [TestController::class, 'removeDuplicatedQuestions']);
 Route::get('/test/transferImages', [TestController::class, 'transferImages']);
+Route::get('/test/dump_autoload', function(){
+    \Artisan::call('dump-autoload');
+    return "Autoload Dupmed successfully";
+});
 
 
 
@@ -220,7 +224,10 @@ Route::get('/test/transferImages', [TestController::class, 'transferImages']);
 //Import
 Route::get('/import', [AdminImportController::class, 'import']);
 Route::get('/import/downloadImages', [AdminImportController::class, 'downloadImages']);
+Route::get('/import/saveQuestionsTextes', [AdminImportController::class, 'saveQuestionsTextes']);
 Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
+
+
 
 
 Route::get('/export/chunck', [DatabaseExportController::class, 'exportDatabase']);

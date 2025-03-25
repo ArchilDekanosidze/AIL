@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Category;
 
 
+use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
 use App\Http\Controllers\Controller;
@@ -24,6 +25,9 @@ class CategoryQuestionUserController extends Controller
     {                   
         $directCats = $this->categoriesQuestionService->getDirectcats($currentCategory);   
         $ancestor = $this->categoriesQuestionService->getAncestor($currentCategory);   
+
+        // $question = Question::find(123);
+        // dd($question->front);
 
         return view('category.categoryQuestion.user.index', compact('currentCategory', 'directCats', 'ancestor'));
     }

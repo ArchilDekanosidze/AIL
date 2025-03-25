@@ -40,6 +40,10 @@ trait CreateQuizTrait
         $this->PreCheck() ;             
 
         $this->selectedQuestions = $this->quizService->createQuestionsForQuiz();
+        if(count($this->selectedQuestions) == 0)
+        {
+            return Redirect::back()->withErrors(['msg' => 'دسته بندی های انتخابی فاقد سوال می باشند. لطفا دسته بندی جدیدی انتخابی کنید']);
+        }
         $this->creatQuiz();    
         return $this->returnRedirect();
     }

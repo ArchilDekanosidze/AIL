@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use Hekmatinasser\Verta\Verta;
 use App\Models\CategoryQuestion;
 use App\Services\Traits\ActorTrait;
+use App\Services\Traits\HistoryFileTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
 class MyProgressService
 {
-    use ActorTrait;
+    use ActorTrait, HistoryFileTrait;
     private $parentCategoryId;
     private $OriginalParentCategory;
     private $userCategories;
@@ -81,7 +82,24 @@ class MyProgressService
         $this->labels = $this->userCategories->pluck('name')->toArray();
         $this->levels = $this->userCategories->pluck('pivot.level')->toArray();
         $this->target_levels = $this->userCategories->pluck('pivot.target_level')->toArray();
-        $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
+        $this->histories = [];
+        foreach ($this->userCategories as $userCategory) {
+            $bridgeId = $userCategory->pivot->id;
+
+            $oldHistory = $this->getHistory($bridgeId);
+            if($oldHistory == null)
+            {
+                $oldHistory[] = ["level" => 1, "time" => now()->timestamp, "isCorrect" => 0];
+                $this->saveHistory($bridgeId, $oldHistory);
+            }
+            foreach ($oldHistory as $old) {
+                $newHistory[] = $old;
+            }
+            $this->histories[]  = $newHistory;
+
+        }
+        // dd($this->target_levels, $this->histories);
+        // $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
     }
     public function fillNullInHistory()
     {
@@ -91,7 +109,10 @@ class MyProgressService
                 $history= [["level" => 1, "time" => now()->timestamp, "isCorrect" =>  0]]; 
                 $data=[];
                 $data[$this->userCategories[$i]->id] = ["history" => $history];
-                $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+                
+                $bridgeId = $this->userCategories[$i]->pivot->id;
+                $this->saveHistory($bridgeId, $data);
+                // $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
                 $this->histories[$i] = json_encode($history);
             }
         }
@@ -100,7 +121,7 @@ class MyProgressService
     public function setAllTimes() {
         // dd($this->histories);
         foreach ($this->histories as $history) {
-            $history = json_decode($history, true);
+            // $history = json_decode($history, true);
             foreach ($history as $cell) {
                 $time =$this->convertTime($cell['time']);
                 $this->allTimes[] = $time;
@@ -121,7 +142,7 @@ class MyProgressService
     {
         for ($i=0; $i<count($this->histories) ; $i++) {
             $history = $this->histories[$i];
-            $history = json_decode($history, true);
+            // $history = json_decode($history, true);
             $flag  = true;
             $prevIndex = -1;
             $tempLevel =[];
@@ -194,8 +215,12 @@ class MyProgressService
     public function createDataSingle()
     {
         $userCategory = $this->getUser()->categoryQuestions()->where("category_question_id", $this->parentCategoryId)->first();
-        $histories = $userCategory->pivot->history;
-        $histories = json_decode($histories, true);
+        
+        $bridgeId = $userCategory->pivot->id;
+        $histories = $this->getHistory($bridgeId);
+
+        // $histories = $userCategory->pivot->history;
+        // $histories = json_decode($histories, true);
         $allTimes = [];
         foreach ($histories as $history) {
            $time =$this->convertTime($history['time']);

@@ -68,6 +68,7 @@ class OnlineQuizController extends Controller
         }
 
         $question = $quizQuestion->question;
+        // dd($question);
 
         return ["question" => $question, "quizQuestion" => $quizQuestion];
     }

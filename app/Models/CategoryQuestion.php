@@ -41,7 +41,6 @@ class CategoryQuestion extends Model
         $categoryIds  = CategoryQuestion::descendantsAndSelf($this->id)->pluck('id');
         $questionCount = Question::whereIn('category_question_id', $categoryIds)->count();
         return $questionCount;
-
     }
 
 

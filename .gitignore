@@ -2,6 +2,8 @@
 /node_modules
 /public/build
 /public/images
+/public/questions
+/public/user_category_question_history
 /public/hot
 /public/storage
 /storage/*.key

@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('category_question_id')->unsigned(); 
-            $table->longText("front");
-            $table->longText("back");
-            $table->longText("p1")->nullable();
-            $table->longText("p2")->nullable();
-            $table->longText("p3")->nullable();
-            $table->longText("p4")->nullable();
+            // $table->longText("front");
+            // $table->longText("back");
+            // $table->longText("p1")->nullable();
+            // $table->longText("p2")->nullable();
+            // $table->longText("p3")->nullable();
+            // $table->longText("p4")->nullable();
             $table->integer("answer")->nullable();
             $table->float('percentage', 15, 8);
             $table->integer('count')->default(100);

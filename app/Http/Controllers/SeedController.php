@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Comment;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as faker;
 
 class SeedController extends Controller
 {
@@ -88,6 +90,37 @@ class SeedController extends Controller
                     $user->categoryQuestions()->syncWithoutDetaching($data);
                 }             
                
+            }
+        }
+    }
+
+
+    public function createComment()
+    {
+        $userId = 1;
+        $catId = 205;
+        $cat = CategoryQuestion::find($catId);
+        $allQuestions = $cat->allQuestion();
+        foreach ($allQuestions as $question) {
+            $questionId = $question->id;
+            for ($i=0; $i < 100; $i++) {   
+                if(Comment::where('question_id', $questionId)->first())
+                {
+                    $parentId = (rand(1,100)<= 80) ? Comment::where('question_id', $questionId)->inRandomOrder()->first()->id : null;
+                }
+                else
+                {
+                    $parentId =  null;
+
+                }          
+                $faker = Faker::create();
+                $body = $faker->sentence();
+                $comment = new Comment();
+                $comment->user_id = $userId;
+                $comment->question_id = $questionId;
+                $comment->parent_id = $parentId;
+                $comment->body = $body;
+                $comment->save();
             }
         }
     }

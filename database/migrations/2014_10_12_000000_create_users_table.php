@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('has_two_factor')->default(false);
             $table->string('password')->nullable();
+            $table->integer('score')->default(0); // Reputation system
             $table->rememberToken();
             $table->timestamps();
         });

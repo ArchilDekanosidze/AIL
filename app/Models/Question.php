@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Vote;
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Question extends Model
 {
@@ -106,4 +108,15 @@ class Question extends Model
         }
         return base_path('../public_html' . ($path ? '/' . $path : ''));
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+
+    public function votes() {
+        return $this->hasMany(Vote::class);
+    }
+
 }

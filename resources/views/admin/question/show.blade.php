@@ -2,6 +2,7 @@
 
 @section('style')
 <link rel="stylesheet" href="{{asset('assets/css/admin/question/show.css')}}">
+
 @endsection
 @section('content')
 <div class="adminCategory main-body">
@@ -19,7 +20,8 @@
                 <a class="editLink" href="{{route('admin.question.descriptive.edit', $question->id)}}">ادیت</a>
             @endif
             <a class="deleteLink" href="{{route('admin.question.delete', $question->id)}}">حذف</a>                        
-        </div>    
+        </div>                  
     </div>
+    @include('partials.comments')
 </div>
 @endsection

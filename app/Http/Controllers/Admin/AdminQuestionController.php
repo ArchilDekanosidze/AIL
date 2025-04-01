@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Comment;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
@@ -19,6 +20,7 @@ class AdminQuestionController extends Controller
     }
     public function show(Question $question)
     {
+        // dd($comments);
         return view('admin.question.show', compact('question'));
     }
 

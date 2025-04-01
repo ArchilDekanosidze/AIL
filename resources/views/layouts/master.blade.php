@@ -43,6 +43,7 @@
     </section>
     @include('layouts.scripts')
     @yield('scripts')
+    @yield('scripts2')
 </body>
 
 </html>

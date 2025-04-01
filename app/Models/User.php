@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Quiz;
+use App\Models\Vote;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Mail\VerificationEmail;
 use App\Mail\ResetPasswordEmail;
@@ -96,6 +98,24 @@ class User extends Authenticatable
     {
         return $this->user_type;
     }
+
+
+    public function questions() {
+        return $this->hasMany(Question::class);
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function votes() {
+        return $this->hasMany(Vote::class);
+    }
+
+    public function incrementScore($points) {
+        $this->increment('score', $points);
+    }
+
 
     
 }

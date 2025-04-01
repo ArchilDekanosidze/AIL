@@ -8,19 +8,23 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Question\VoteController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
 use App\Http\Controllers\Desktop\QuizListController;
 use App\Http\Controllers\Auth\OTP\LoginOTPController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Question\QuestionController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Desktop\myProgressController;
+use App\Http\Controllers\Question\BestReplyController;
 use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\OTP\RegisterOTPController;
 use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\Auth\DesktopChangeNameController;
 use App\Http\Controllers\Desktop\DesktopStudentController;
+use App\Http\Controllers\Profile\ProfileStudentController;
 use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
 use App\Http\Controllers\Admin\Import\AdminImportController;
@@ -133,8 +137,19 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/desktop/getChartResult', [myProgressController::class, 'getChartResult'])->name('desktop.getChartResult');
     Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'setting'])->name('desktop.setting.setting');
 
+    
+    
+    
+    Route::post('/question/comment/newComments', [QuestionController::class, 'newComments'])->name('question.comment.newComments');
+    Route::post('/comment/vote', [VoteController::class, 'vote'])->name('comment.vote');
+    Route::post('/comment/best-reply', [BestReplyController::class, 'best-reply'])->name('comment.best-reply');
+
+
 });
 
+Route::get('/profile/student/{user}', [ProfileStudentController::class, 'index'])->name('profile.student.index');
+
+Route::post('/question/comment/fetchComments', [QuestionController::class, 'fetchComments'])->name('question.comment.fetchComments');
 
 
 
@@ -191,6 +206,7 @@ Route::get('/seeder/User', [SeedController::class, 'createUser']);
 Route::get('/seeder/CategoryQuestion', [SeedController::class, 'createCategoryQuestion']);
 Route::get('/seeder/Question', [SeedController::class, 'createQuestion']);
 Route::get('/seeder/assignCategoryToUser', [SeedController::class, 'assignCategoryToUser']);
+Route::get('/seeder/createComment', [SeedController::class, 'createComment']);
 
 
 //Test

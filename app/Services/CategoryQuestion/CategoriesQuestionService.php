@@ -67,27 +67,38 @@ class CategoriesQuestionService
 
         $parentsId = $this->getParentsIds($currentCategoryId);
         $categoriesId = $categoriesId->merge($parentsId);
+        
+        $allCategories = CategoryQuestion::whereIn('id', $categoriesId)->get();
+        
+        $allUserCategoryQuestion = DB::table('user_category_question')
+        ->where('user_id', $this->getUser()->id)
+        ->whereIn('category_question_id', $categoriesId)
+        ->get();    
 
+        $data = $categoriesId->map(function($id) use($allCategories, $allUserCategoryQuestion){
+            $cat = $allCategories->where('id', $id)->first();
+            $firstUserCategoryQuestion = $allUserCategoryQuestion->where('category_question_id', $id)->first();
+            if(is_null($firstUserCategoryQuestion))
+            {
+                $number_to_change_level = max(50, $cat->question_count);
+            }
+            else
+            {
+                $number_to_change_level = $firstUserCategoryQuestion->number_to_change_level;
+            }
 
-
-        //
-        $data = $categoriesId->map(function($id){
-            return ['user_id' => $this->getUser()->id, 'category_question_id' => $id, 'is_active' => true];
+            // dd($cat);
+            return ['user_id' => $this->getUser()->id,
+                    'category_question_id' => $id,
+                    'is_active' => true,
+                    'number_to_change_level' => $number_to_change_level                                
+            ];
         })->toArray();
 
+        // dd($data);
+
         DB::table('user_category_question')->upsert($data, ['user_id', 'category_question_id']);
-        // $this->getUser()
-        //     ->categoryQuestions()
-        //     ->newPivotStatement()
-        //     ->whereIn('category_question_id', $categoriesId)
-        //     ->upsert(['is_active' => true ]);
-
-
-
-        // $data = $categoriesId->mapWithKeys(function($id){
-        //     return [$id => ['is_active' => true]];
-        // })->toArray();
-        // $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+        
         return true;
     }
 

@@ -93,7 +93,6 @@
             $(".mainQuestionDiv .answerDiv").addClass("hidden");
             $(".mainQuestionDiv .answerDiv").removeClass("show");
             $(".toggleFrontAndBack").text("مشاهده پاسخ")
-            MathBreak()
 
         }      
         
@@ -119,7 +118,6 @@
                     $(".mainQuestionDiv .answerDiv").addClass("hidden");
                     $(".mainQuestionDiv .answerDiv").removeClass("show");
                 }
-                MathBreak()
             })
 
             $(".nextRandomQuestion").click(function(){

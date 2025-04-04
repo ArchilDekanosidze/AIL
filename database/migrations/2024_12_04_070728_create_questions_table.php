@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('tag_id')->nullable();
             $table->bigInteger('category_question_id')->unsigned(); 
             // $table->longText("front");
             // $table->longText("back");
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->boolean('isfree')->default(0);
             $table->timestamps();
             $table->foreign('category_question_id')->references('id')->on('category_questions')->onDelete('cascade');
+            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('set null'); // or 'cascade' if you prefer
         });
     }
 

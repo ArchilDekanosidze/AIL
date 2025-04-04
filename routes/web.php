@@ -12,9 +12,9 @@ use App\Http\Controllers\Question\VoteController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
 use App\Http\Controllers\Desktop\QuizListController;
+use App\Http\Controllers\Question\CommentController;
 use App\Http\Controllers\Auth\OTP\LoginOTPController;
 use App\Http\Controllers\Auth\VerificationController;
-use App\Http\Controllers\Question\QuestionController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Desktop\myProgressController;
 use App\Http\Controllers\Question\BestReplyController;
@@ -115,6 +115,10 @@ Route::get('/category/categoryQuestion/user/index/{currentCategory}', [CategoryQ
 Route::post('/category/categoryQuestion/user/add_category_to_user', [CategoryQuestionUserController::class, 'addCategoryToUser'])->name('category.categoryQuestion.user.add_category_to_user');
 Route::post('/category/categoryQuestion/user/remove_category_from_user', [CategoryQuestionUserController::class, 'removeCategoryFromUser'])->name('category.categoryQuestion.user.remove_category_from_user');
 
+Route::get('/category/categoryQuestion/createCoustionCountForTable', [CategoryQuestionUserController::class, 'createCoustionCountForTable'])->name('category.categoryQuestion.createCoustionCountForTable');
+Route::get('/category/categoryQuestion/addQuestionCategoryToTagTable', [CategoryQuestionUserController::class, 'addQuestionCategoryToTagTable'])->name('category.categoryQuestion.addQuestionCategoryToTagTable');
+Route::get('/category/categoryQuestion/addTagIdToQuestions', [CategoryQuestionUserController::class, 'addTagIdToQuestions'])->name('category.categoryQuestion.addTagIdToQuestions');
+
 
 
 
@@ -140,16 +144,16 @@ Route::middleware(['auth'])->group(function(){
     
     
     
-    Route::post('/question/comment/newComments', [QuestionController::class, 'newComments'])->name('question.comment.newComments');
-    Route::post('/comment/vote', [VoteController::class, 'vote'])->name('comment.vote');
-    Route::post('/comment/best-reply', [BestReplyController::class, 'best-reply'])->name('comment.best-reply');
+    Route::post('/question/comment/newComments', [CommentController::class, 'newComments'])->name('question.comment.newComments');
+    Route::post('/question/comment/vote', [VoteController::class, 'vote'])->name('question.comment.vote');
+    Route::post('/question/comment/best-reply', [BestReplyController::class, 'setBestReply'])->name('question.comment.best-reply');
 
 
 });
 
 Route::get('/profile/student/{user}', [ProfileStudentController::class, 'index'])->name('profile.student.index');
 
-Route::post('/question/comment/fetchComments', [QuestionController::class, 'fetchComments'])->name('question.comment.fetchComments');
+Route::post('/question/comment/fetchComments', [CommentController::class, 'fetchComments'])->name('question.comment.fetchComments');
 
 
 
@@ -233,6 +237,9 @@ Route::get('/test/dump_autoload', function(){
     \Artisan::call('dump-autoload');
     return "Autoload Dupmed successfully";
 });
+
+
+Route::get('/test/updateUserBadge', [TestController::class, 'updateUserBadge']);
 
 
 

@@ -25,6 +25,16 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasTwoFactor, MustVerifyMobile, MustVerifyEmail;
 
+    const SCORE_COMMENT = 50;
+    const SCORE_REPLY = 10;
+    const SCORE_VOTE = 100;
+    const SCORE_VOTEING = 10;
+    const SCORE_SETBESTREPLY = 20;
+    const SCORE_BESTREPLY = 500;
+    const SCORE_INCHATPERMINUTES = 1;
+
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -116,6 +126,12 @@ class User extends Authenticatable
         $this->increment('score', $points);
     }
 
+    public function badges()
+    {
+        return $this->belongsToMany(Tag::class, 'user_badge', 'user_id', 'tag_id')
+                    ->withPivot('badge', 'score')
+                    ->withTimestamps();
+    }
 
     
 }

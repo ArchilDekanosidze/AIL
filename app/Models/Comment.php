@@ -38,4 +38,9 @@ class Comment extends Model
     {
         return $this->belongsTo(Comment::class, 'best_reply_id');
     }
+
+    public function thread()
+    {
+        return $this->hasMany(Comment::class, 'original_id');
+    }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             \Kalnoy\Nestedset\NestedSet::columns($table);
+            $table->bigInteger('question_count')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('parent_id')->nullable();
             $table->text('body');
+            $table->bigInteger('original_id')->nullable();
+            $table->bigInteger('original_user_id')->nullable();
             $table->bigInteger('best_reply_id')->nullable();
             $table->integer('score')->default(0);
             $table->timestamps();

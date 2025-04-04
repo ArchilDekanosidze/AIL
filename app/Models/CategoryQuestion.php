@@ -12,6 +12,26 @@ class CategoryQuestion extends Model
 {
     use HasFactory, NodeTrait;
 
+
+    const SCORE_BRONZ1  =       0.5;
+    const SCORE_BRONZ2  =       1;
+    const SCORE_BRONZ3  =       2;
+    const SCORE_SILVER1 =       4;
+    const SCORE_SILVER2 =       8;
+    const SCORE_SILVER3 =       16;
+    const SCORE_GOLD1 =         32;
+    const SCORE_GOLD2 =         64;
+    const SCORE_GOLD3 =         128;
+    const SCORE_PLATINUM1 =     256;
+    const SCORE_PLATINUM2 =     512;
+    const SCORE_PLATINUM3 =     1024;
+    const SCORE_DIMOND1 =       2048;
+    const SCORE_DIMOND2 =       4096;
+    const SCORE_DIMOND3 =       8192;
+    const SCORE_LEGENDARY1 =    16384;
+    const SCORE_LEGENDARY2 =    32768;
+    const SCORE_LEGENDARY3 =    65536;
+
     protected $fillable = ["name", "parent_id", "depth"];
 
     public function questions()

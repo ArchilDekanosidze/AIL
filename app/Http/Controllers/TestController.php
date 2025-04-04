@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\Question;
 use App\Mail\UserRegistered;
@@ -134,6 +135,52 @@ class TestController extends Controller
 
     }
 
+
+    public function updateUserBadge()
+    {
+      $score = 50;
+      $userId = 1;
+      $tagId = 23;
+      $user = User::find($userId);
+      $userBadge = $user->badges->where('id', $tagId)->first();
+      if(is_null($userBadge))
+      {
+        $newScore = $score;
+      }
+      else
+      {
+        $newScore = $userBadge->pivot->score + $score;
+      }
+      $tag = Tag::find($tagId);
+      $badgeNames = [
+        'bronz1',
+        'bronz2',
+        'bronz3',
+        'silver1',
+        'silver2',
+        'silver3',
+        'gold1',
+        'gold2',
+        'gold3',
+        'platinum1',
+        'platinum2',
+        'platinum3',
+        'dimond1',
+        'dimond2',
+        'dimond3',
+        'legendary1',
+        'legendary2',
+        'legendary3'
+      ];
+      $newBadge = null;
+      foreach ($badgeNames as $badgeName) {
+        if($newScore > $tag->{$badgeName})
+        {
+          $newBadge = $badgeName;
+        }
+      }
+      $user->badges()->syncWithoutDetaching([$tagId => ['score' => $newScore, 'badge' => $newBadge]]);
+    }
 
 
 }

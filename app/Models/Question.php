@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Tag;
 use App\Models\Vote;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
@@ -117,6 +118,11 @@ class Question extends Model
 
     public function votes() {
         return $this->hasMany(Vote::class);
+    }
+
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class);
     }
 
 }

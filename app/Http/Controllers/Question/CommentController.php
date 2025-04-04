@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Question;
 
 
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\Question;
@@ -12,7 +13,7 @@ use App\Models\CategoryQuestion;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
-class QuestionController extends Controller
+class CommentController extends Controller
 {
     public function fetchComments(Request $request)
     {
@@ -50,12 +51,37 @@ class QuestionController extends Controller
         $comment->parent_id = $parent_comment_id;
         $comment->body = $comment_body;
         $comment->save();
+        if($parent_comment_id)
+        {
+            $originalComment = Comment::find($parent_comment_id);
+            $comment->original_id = $originalComment->original_id;
+            $comment->original_user_id = $originalComment->original_user_id;
+            $comment->save();
+
+            $originalUser = User::find($comment->original_user_id);
+            $originalUser->incrementScore(User::SCORE_REPLY);
+            $this->updateUserBadge($originalUser->id, $comment->question->tag_id, User::SCORE_REPLY);
+    
+        }
+        else
+        {
+            $comment->original_id = $comment->id;
+            $comment->original_user_id = $comment->user_id;
+            $comment->save();
+        }
         $successMessages = 'کامنت شما با موفقیت  ثبت شد';
-        $comment->user->incrementScore(50);
+        $comment->user->incrementScore(User::SCORE_COMMENT);
+        $this->updateUserBadge(auth()->user()->id, $comment->question->tag_id, User::SCORE_COMMENT);
         return  ['successMessages' => $successMessages, 'comment' => $this->mapComment($comment)];
     }
 
-    public function mapComment($comment){            
+    public function mapComment($comment){
+        $canMarkAsBest = false;
+        if(($comment->original_user_id  === auth()->user()->id) && ($comment->user_id !== auth()->user()->id))
+        {
+            $canMarkAsBest = true;
+        }       
+       
         return [
             'id' => $comment->id,
             'score' => $comment->score,
@@ -67,11 +93,57 @@ class QuestionController extends Controller
               'body' => $comment->parent ? Str::limit($comment->parent->body, 50) : null
             ],
             'body' => $comment->body,
+            'canMarkAsBest' => $canMarkAsBest , 
+            'original_id' => $comment->original_id,
+            'best_reply_id' => $comment->best_reply_id , 
             'user' => [
                 'id' => $comment->user->id,
                 'name' => $comment->user->name,
                 'profile_url' => route('profile.student.index', $comment->user->id)
             ]
             ];
+    }
+
+    public function updateUserBadge($userId, $tagId, $score)
+    {     
+        $user = User::find($userId);
+        $userBadge = $user->badges->where('id', $tagId)->first();
+        if(is_null($userBadge))
+        {
+          $newScore = $score;
+        }
+        else
+        {
+          $newScore = $userBadge->pivot->score + $score;
+        }
+        $tag = Tag::find($tagId);
+        $badgeNames = [
+          'bronz1',
+          'bronz2',
+          'bronz3',
+          'silver1',
+          'silver2',
+          'silver3',
+          'gold1',
+          'gold2',
+          'gold3',
+          'platinum1',
+          'platinum2',
+          'platinum3',
+          'dimond1',
+          'dimond2',
+          'dimond3',
+          'legendary1',
+          'legendary2',
+          'legendary3'
+        ];
+        $newBadge = null;
+        foreach ($badgeNames as $badgeName) {
+          if($newScore > $tag->{$badgeName})
+          {
+            $newBadge = $badgeName;
+          }
+        }
+        $user->badges()->syncWithoutDetaching([$tagId => ['score' => $newScore, 'badge' => $newBadge]]);
     }
 }

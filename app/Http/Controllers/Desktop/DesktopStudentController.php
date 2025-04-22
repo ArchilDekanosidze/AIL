@@ -12,7 +12,7 @@ use App\Services\Desktop\ControllerTraits\quizListControllerTrait;
 
 class DesktopStudentController extends Controller
 {
-    private $quizService;
+    private $quizService; 
     private $desktopService;
     private $userId;
 

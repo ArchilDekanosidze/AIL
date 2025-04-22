@@ -12,7 +12,7 @@ use Faker\Factory as faker;
 
 class SeedController extends Controller
 {
-    public function index()
+    public function index() 
     {
         $this->createUser();
         $this->createCategoryQuestion();

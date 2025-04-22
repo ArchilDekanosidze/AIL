@@ -28,14 +28,14 @@ use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class TestController extends Controller
 {
-    private $saveQuizDataService;
+    private $saveQuizDataService;   
     private $desktopService;
 
     public function __construct(SaveQuizDataService $saveQuizDataService, DesktopService $desktopService)
     {
         $this->saveQuizDataService = $saveQuizDataService;
         $this->desktopService = $desktopService;
-
+                     
     }
     
     public function index()

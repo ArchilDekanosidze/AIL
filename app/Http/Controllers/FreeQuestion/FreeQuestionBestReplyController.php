@@ -18,7 +18,7 @@ use App\Services\Desktop\ControllerTraits\quizListControllerTrait;
 class FreeQuestionBestReplyController extends Controller
 {    
 
-  private $freeQuestionService;
+  private $freeQuestionService; 
 
   public function __construct(FreeQuestionService $freeQuestionService)
   {

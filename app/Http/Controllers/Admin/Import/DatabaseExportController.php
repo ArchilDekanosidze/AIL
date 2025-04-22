@@ -17,7 +17,7 @@ class DatabaseExportController extends Controller
         $directory = public_path('db/');
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
-        }
+        }  
 
         // Define the chunk size
         $chunkSize = 1000; // Adjust as needed

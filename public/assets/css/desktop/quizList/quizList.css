@@ -1,0 +1,33 @@
+.quizTable
+{
+    font-size: 20px !important;
+    width: 100%;
+}
+.quizTable td
+{
+    padding: 0px 10px;
+}
+.quizTableSmallerScreenWith
+{
+    display: none;
+}
+
+@media only screen and (max-width: 1200px) {
+    .quizTable
+    {
+        display: none;
+    }
+    .quizTableSmallerScreenWith
+    {
+        display: block;
+    }
+    .quizDetail
+    {
+        border: 2px solid gray;
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: aqua;
+    }
+    
+}
+

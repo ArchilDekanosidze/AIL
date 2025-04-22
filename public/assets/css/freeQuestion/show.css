@@ -1,0 +1,138 @@
+
+.ck-editor
+{    
+    width: 100% !important;
+}
+.ck-editor__editable 
+{
+    height: 200px;
+    margin-bottom: 30px;
+}
+
+.newCommentDiv
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+.newCommentDiv .save
+{
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #afe162;
+    margin-bottom: 20px;
+}
+
+
+
+
+.saveNewComment
+{
+    margin-bottom: 20px;
+}
+.loginButtn
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+.freeQuestionScore ,
+.freeQuestionVote , 
+.freeQuestionComment 
+{
+    margin-right: 20px;
+}
+
+.mainQuestionCol
+{
+    display: flex;
+    margin-bottom: 20px;
+}
+.questionCol1
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+}
+
+/* */
+.comments
+{
+    padding: 5px 10px;
+}
+.ck-editor
+{    
+    width: 100% !important;
+}
+.ck-editor__editable 
+{
+    height: 200px;
+    margin-bottom: 30px;
+}
+.newCommentDiv
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+.newCommentDiv .save
+{
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #afe162;
+    margin-bottom: 20px;
+}
+.comment_header
+{
+    display: flex;
+}
+.comment_body
+{
+    display: flex;
+}
+.commentMainCol
+{
+    display: flex;
+    border: 2px solid gray;
+    margin-bottom: 5px;
+
+}
+
+.commentMainCol .col1
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+}
+
+.saveNewComment
+{
+    margin-bottom: 20px;
+}
+.loginButtn
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+/* */

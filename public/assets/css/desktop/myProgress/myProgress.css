@@ -1,0 +1,117 @@
+#myChart
+{
+    width: 60% !important;
+    height: 60% !important;
+    margin: auto;
+}
+.chartHeader
+{
+    display: flex;
+    justify-content: space-around;
+}
+.parentBtn
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    background: #ba84f0;
+    border-radius: 30px;
+    padding: 20px 50px;
+}
+.chartHeader .parentCategoryName
+{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#HistoryChart
+{
+    margin-top: 20px;
+}
+.chooseTimeSpan{
+    display: flex;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    font-size: 20px;
+    align-items: center;
+}
+.chooseTimeSpan .to
+{
+    margin-right: 30px;
+    margin-left: 30px;
+}
+#datePickerFrom ,
+#datePickerTo
+{
+    text-align: left;
+    padding-left: 10px;
+}
+.showRefiendDatabtn
+{
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    background: #ba84f0;
+    border-radius: 30px;
+    padding: 20px 20px;
+    margin-right: 20px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .parentBtn
+    {
+        font-size: 18px;
+        padding: 5px 10px;
+    }
+    .chartHeader .parentCategoryName
+    {
+        font-size: 18px;
+    }
+    .chooseTimeSpan
+    {
+        font-size: 18px;
+        flex-direction: column;
+    }
+    .chooseTimeSpan .from
+    {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: 95%;
+    }
+    .chooseTimeSpan .to
+    {
+        margin-right: 0px;
+        margin-left: 0px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        width: 95%;      
+    }
+    .chooseTimeSpan .spanTime
+    {
+        margin-bottom: 20px;
+    }
+    .showRefiendDatabtn
+    {
+        font-size: 16px;
+        padding: 5px 10px;
+    }
+    #datePickerFrom
+    {
+        width: 200px;
+    }
+    #datePickerTo
+    {
+        width: 200px;
+    }
+}

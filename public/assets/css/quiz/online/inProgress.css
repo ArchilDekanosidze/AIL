@@ -1,0 +1,140 @@
+.onlineQuizInProgress .buttons
+{
+    display: flex;
+    justify-content: space-between;
+    width: inherit;
+}
+.onlineQuizInProgress .buttons .nextPrevAnswer
+{
+    display: flex;
+    justify-content: space-between;
+}
+.onlineQuizInProgress .buttons .nextPrevAnswer .questionToggle
+{
+    margin-right: 50px;
+    margin-left: 50px;
+}
+.endQuizbuttons
+{
+    display: flex;
+    justify-content: end;
+}
+.onlineQuizInProgress  .btn
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    background: #ba84f0;
+    border-radius: 30px;
+    padding: 20px 50px;
+}
+.endQuizbuttons .endQuiz
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    background: #a7f54f;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+.answerDiv
+{
+    display: none;
+}
+
+.questionFront
+{
+    padding: 20px;
+}
+.questionDataDiv,
+.answerDiv
+{
+    font-size: 20px;
+}
+.questionDataDiv .pdiv
+{
+    margin-bottom: 20px;
+    border: 3px solid gray;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+}
+
+.questionDataDiv .pdiv:hover
+{
+    background-color: rgb(185, 245, 185);
+}
+.pCheckBox
+{
+    cursor: pointer;
+    margin-left: 20px;
+}
+.answerDiv
+{
+    padding: 20px;
+}
+.quizInfo
+{
+    margin-bottom: 20px;
+    display: flex;
+}
+.quizInfo .timerMainDiv
+{
+    margin-right: 20px;
+    display: flex;
+}
+.correctAnswer
+{
+    background-color: #32e832;
+}
+
+.wrongAnswer
+{
+    background-color: #f39c55;
+}
+
+
+
+@media only screen and (max-width: 1200px) { 
+    .onlineQuizInProgress .buttons
+    {
+        flex-direction: column;
+        width: 100%;
+    }
+    .onlineQuizInProgress .buttons  .btn,
+    .endQuizbuttons .endQuiz
+    {
+        font-size: 16px;
+        padding: 10px 15px;        
+    }
+    .endQuizbuttons .endQuiz
+    {
+        width: auto;
+    }
+    .endQuizbuttons
+    {
+        justify-content: center;
+    }
+    .onlineQuizInProgress .buttons .nextPrevAnswer .questionToggle
+    {
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+    .questionDataDiv,
+    .answerDiv
+    {
+        font-size: 16px;
+    }
+}
+

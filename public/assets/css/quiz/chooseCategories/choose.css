@@ -1,0 +1,169 @@
+.userLearningChooseCategory ul
+{
+    list-style: none;
+    font-size: 24px;
+    width: fit-content;
+}
+.userLearningChooseCategory ul li
+{
+   cursor: pointer;
+   display: flex;
+}
+.userLearningChooseCategory ul li:hover
+{
+    background: rgb(241, 171, 171);
+}
+
+.userLearningChooseCategory ul li .catCheckBox
+{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.toggle-icon
+{
+    margin-right: 10px;
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transition: transform 0.3s ease;
+    -webkit-transition: transform 0.3s ease;
+    -moz-transition: transform 0.3s ease;
+    -ms-transition: transform 0.3s ease;
+    -o-transition: transform 0.3s ease;
+}
+.triangelForCategory.open .toggle-icon
+{
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+}
+.advancedSettingDiv
+{
+    display: none;
+}
+.userLearningChooseCategory ul li .targetLevelDiv,
+.userLearningChooseCategory ul li .currentLevelDiv,
+.userLearningChooseCategory ul li .number_to_change_levelDiv
+{
+    font-size: 16px;
+    margin-right: 20px;
+}
+.userLearningChooseCategory ul li .targetLevelDiv .targetLevel,
+.userLearningChooseCategory ul li .currentLevelDiv .currentLevel,
+.userLearningChooseCategory ul li .number_to_change_levelDiv .numbers_to_change_level
+
+{
+    width: 70px;
+}
+.userLearningChooseCategory  .mainButton
+{
+    display: flex;
+    margin-top: 40px;
+}
+.userLearningChooseCategory  .btn
+{
+    margin-bottom: 20px;
+    font-size: 20px;
+    display: flex;
+    font-weight: bold;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    background: #ba84f0;
+    border-radius: 30px;
+}
+.userLearningChooseCategory  .startPaperLearning
+{
+    margin-right: 20px;
+}
+.userLearningChooseCategory  .learningSetting
+{
+    margin-right: 20px;
+    margin-left: 20px;
+}
+.learningSettingDiv
+{
+    display: none;
+}
+.learningSettingDirectDiv
+{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 600px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.catCheckBoxLi
+{
+    margin-right: calc(var(--depth,0) * 50px);
+}
+.liDetails
+{
+    display: flex;
+}
+.alignerLi
+{
+    margin-bottom: 0px;
+    width: 28px;
+}
+.minNumberRquire
+{
+    background-color: rgb(243, 75, 75);
+}
+@media only screen and (max-width: 1200px) {
+    .userLearningChooseCategory ul
+    {
+        font-size: 18px;
+        padding-right: 0px;
+    }
+    .userLearningChooseCategory .mainButton
+    {
+        flex-wrap: wrap;
+    }
+  .userLearningChooseCategory .mainButton button
+  {
+    font-size: 18px;
+  }
+  .userLearningChooseCategory .startPaperLearning,
+  .userLearningChooseCategory .learningSetting
+  {
+    margin-right: 0px;
+  }
+  .learningSettingDirectDiv
+  {
+    width: 95%;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  #quizName
+  {
+    width: 200px;
+  }
+  #testCount,
+  #testTime
+  {
+    width: 75px;
+  }
+  .userLearningChooseCategory ul li
+  {
+    display: flex;
+    flex-direction: column;
+  }
+  .catCheckBoxLi
+    {
+        margin-right: calc(var(--depth,0) * 20px);
+    }
+    .alignerLi
+    {
+        width: 24px ;
+    }
+
+}

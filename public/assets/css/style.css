@@ -1,0 +1,434 @@
+@font-face {
+    font-family: IRANSans;
+    src: url('../fonts/IRANSans/IRANSansWeb_Light.woff'),
+    url('../fonts/IRANSans/IRANSansWeb_Light.woff') format('truetype');
+    font-weight: normal;
+  }
+  
+  * {
+      direction: rtl;
+      text-align: right;
+      font-family:IRANSans;
+  }
+  
+  
+  /*
+   **********************************public styles*************************************
+  */
+      .bg-gray{
+          background-color: #404E67;
+          color: #dcdcdc;
+      }
+  
+      .pointer{
+          cursor: pointer;
+      }
+  
+  
+  /*
+   **************************************box styles**********************************
+  */
+      .info-box-body h5{
+          font-size: .9rem;
+          line-height: 1rem;
+      }
+  
+      .info-box-body p{
+          line-height: 1rem;
+          font-size: .7rem;		
+      }
+  
+      .info-box-icon i{
+          font-size: 2rem;
+      }
+  
+      .info-box-footer{
+          font-size: .6rem;
+      }
+  
+  /*
+   ********************************custom backgrounds**********************************
+  */
+  
+  .bg-custom-yellow{
+      background: -webkit-gradient(linear, left top, right top, from(#feb798), to(#fe9365));
+      background: linear-gradient(to right, #feb798, #fe9365);
+  }
+  
+  .bg-custom-green{
+      background: -webkit-gradient(linear, left top, right top, from(#0df3a3), to(#0ac282));
+      background: linear-gradient(to right, #0df3a3, #0ac282);
+  }
+  
+  .bg-custom-pink{
+      background: -webkit-gradient(linear, left top, right top, from(#fe909d), to(#fe5d70));
+      background: linear-gradient(to right, #fe909d, #fe5d70);
+  }
+  
+  .bg-custom-light-green{
+      background: -webkit-gradient(linear, left top, right top, from(#01dbdf), to(#01a9ac));
+      background: linear-gradient(to right, #01dbdf, #01a9ac);
+  }
+  
+  
+  /*
+   ********************************custom font size**********************************
+  */
+  
+  .font-size-10{
+      font-size: 10px;
+  }
+  
+  .font-size-12{
+      font-size: 12px;
+  }
+  
+  .font-size-14{
+      font-size: 14px;
+  }
+  
+  .font-size-16{
+      font-size: 16px;
+  }
+  
+  .font-size-18{
+      font-size: 18px;
+  }
+  
+  
+  /*
+   ********************************body container**********************************
+  */
+  
+  
+  .main-body-container{
+      background-color: #FFFFFF;
+      margin: 1rem 0;
+      border-radius: .25rem;
+      padding: 1rem;
+  }
+  
+  
+  .main-body-container-header h5{
+      font-size: 1.2rem;
+      font-weight: bold;
+  }
+  
+  
+  .main-body-container-header p{
+      font-size: .8rem;
+      color: #777;
+  }
+  
+  .main-body {
+      font-size: 0.8rem;
+  }
+  
+  .main-body table {
+      font-size: 0.75rem;
+  }
+  /* admin posts */
+  .alert_required{
+      color: white !important;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+    
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 3px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+    
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+      margin: 4px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  
+  
+  
+    /* sweet alert reform */
+    .swal2-html-container {
+        text-align: center;
+    }
+  
+  
+    /* toast wrapper */
+      .toast-wrapper {
+          position: fixed;
+          z-index: 9999; 
+          top: 3rem;
+          left: 0;
+          width: 26rem;
+          max-width: 80%;
+          padding: 2rem;
+      }
+
+
+      
+
+
+.main-body {
+    width: 95%;
+    min-height: calc(100vh - 3.5rem);
+    background-color: #f3f3f3;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media only screen and (max-width: 767.98px) {
+   
+    .main-body {
+        width: calc(100% - 4rem);
+        z-index: 1;
+    }
+}
+
+
+.my-header
+{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #01a9ac;
+    padding: 20px 40px;
+}
+
+
+.success-message
+{
+    display: none;
+    background-color: rgb(81, 245, 81);
+    border: 1px solid green;
+    padding: 10px;
+    margin: 10px 0px;
+    position: fixed;
+    right: 100px;
+    top: 50px;
+    width: 500px;
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+    font-size: 32px;
+    text-align: center;
+}
+.failed-message
+{
+    display: none;
+    background-color: rgb(250, 30, 59);
+    border: 1px solid green;
+    padding: 10px;
+    margin: 10px 0px;
+    position: fixed;
+    right: 100px;
+    top: 50px;
+    width: 500px;
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+    font-size: 32px;
+    text-align: center;
+}
+
+.showmodal
+{
+    display: none;
+}
+
+.mainHeader
+{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #01a9ac;
+    padding: 20px 40px;
+    margin-bottom: 20px;
+}
+.breadcrump
+{
+    background-color: red;
+    padding-right: 20px;
+    margin-bottom: 0px;
+}
+
+.hidden
+{
+    display: none !important;
+}
+.show
+{
+    display: flex !important;
+}
+
+.errorFromController
+{
+    background: #ec5454;
+    width: fit-content;
+    padding: 10px 30px;
+    border-radius: 30px;
+}
+
+.successFromController
+{
+    background: #74f143;
+    width: fit-content;
+    padding: 10px 30px;
+    border-radius: 30px;
+}
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+.disabled
+{
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.quizDisabled
+{
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+@media only screen and (max-width: 1200px) {
+    .failed-message,
+    .success-message
+    {
+        padding: 5px;
+        font-size: 16px;
+    }
+    .row
+    {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+}
+
+.rz-align-left
+{
+    text-align: left;
+}
+math{
+    direction: ltr;
+}
+.rz-ltr
+{
+    direction: ltr;
+}
+
+
+/* mjx-container *
+{
+    direction: ltr !important;
+    text-align: left !important;
+}
+mjx-utext
+{
+    white-space: nowrap !important;
+    display: contents !important;
+}
+mjx-msqrt mjx-utext
+{
+    display: inline-block !important;
+} */
+
+
+
+p.ng-binding
+{
+    margin-top: -10px;
+}
+
+math mstyle[dir="rtl"] {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+  
+math mstyle[dir="ltr"] {
+direction: ltr !important;
+text-align: left !important;
+}
+
+math mstyle[dir="rtl"] *{
+    direction: rtl !important;
+    text-align: right !important;
+  }
+  
+math mstyle[dir="ltr"] *{
+direction: ltr !important;
+text-align: left !important;
+}
+
+.mjx-mrow
+{
+    display: none;
+}
+mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi, mtext
+{
+    direction: ltr;
+}
+.math-container  {
+  white-space: normal !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  display: contents;
+  direction: ltr !important;
+}
+

@@ -1,0 +1,47 @@
+.adminCategory .mainDivDirection .btn
+{
+    width: 32%;
+    height: 200px;
+    margin-bottom: 20px;
+    font-size: 25px;
+    display: flex;
+    font-weight: bold;
+    color: yellow;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    background-color: #94c6f3;
+    position: relative;
+}
+.adminCategory .mainDivDirection .btn .catName
+{
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.adminCategory .mainDivDirection
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.adminCategory .mainDivDirection .btn  .cardButtons
+{
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: 20px;
+    padding-left: 20px;
+    font-size: 16px;
+}
+.adminCategory .mainDivDirection .btn  .cardButtons a
+{
+    color: aqua;
+}

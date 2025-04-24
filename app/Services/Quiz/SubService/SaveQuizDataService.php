@@ -53,6 +53,7 @@ class SaveQuizDataService
                 }
             }
         }
+        // dd($this->data);
         if($this->data)
         {
             $this->updateParentCatLevel();
@@ -218,7 +219,14 @@ class SaveQuizDataService
                 $level = $userCategoryQuestions->where('id', $subCat->id)->first();
                 if($level)
                 {
-                    $level = $level->pivot->level;
+                    if(isset($this->data[$subCat->id]))
+                    {
+                        $level = $this->data[$subCat->id]['level'];
+                    }
+                    else
+                    {
+                        $level = $level->pivot->level;
+                    }
                 }
                 else
                 {
@@ -227,7 +235,12 @@ class SaveQuizDataService
                 $totla_question_count += $question_count;
                 $sumLevelCount += $level * $question_count;
             }
+            
             $this->data[$parentId]['level'] =  $sumLevelCount / $totla_question_count;
+            if($parentId == 22)
+            {
+                // dd($totla_question_count, $sumLevelCount,  $sumLevelCount / $totla_question_count);
+            }
         }
        
     }

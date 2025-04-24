@@ -155,7 +155,8 @@ Route::post('/freeQuestion/comment/newComments', [FreeQuestionCommentNewControll
 Route::post('/freeQuestion/freeQuestion/comment/vote', [FreeQuestionCommentVoteController::class, 'vote'])->name('freeQuestion.freeQuestion.comment.vote');
 Route::post('/freeQuestion/best-reply', [FreeQuestionBestReplyController::class, 'setBestReply'])->name('freeQuestion.best-reply');
 
-
+//upload Images
+Route::post('/upload-image', [TestController::class, 'upload']);
 
 
 
@@ -259,8 +260,7 @@ Route::get('/test/upload1', [TestController::class, 'upload1']);
 Route::get('/test/upload2', [TestController::class, 'upload2']);
 
 
-Route::post('/upload-image', [TestController::class, 'upload']);
-Route::post('/ckeditor/upload', [TestController::class, 'upload'])->name('ckeditor.upload');
+// Route::post('/ckeditor/upload', [TestController::class, 'upload'])->name('ckeditor.upload');
 
 //Import
 Route::get('/import', [AdminImportController::class, 'import']);

@@ -27,6 +27,7 @@ use App\Http\Controllers\Desktop\DesktopStudentController;
 use App\Http\Controllers\Profile\ProfileStudentController;
 use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
+use App\Http\Controllers\Upload\CkEditorUploaderController;
 use App\Http\Controllers\Admin\Import\AdminImportController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionController;
@@ -156,11 +157,12 @@ Route::post('/freeQuestion/freeQuestion/comment/vote', [FreeQuestionCommentVoteC
 Route::post('/freeQuestion/best-reply', [FreeQuestionBestReplyController::class, 'setBestReply'])->name('freeQuestion.best-reply');
 
 //upload Images
-Route::post('/upload-image', [TestController::class, 'upload']);
+Route::post('/upload-image', [CkEditorUploaderController::class, 'upload'])->name('ckeditor.upload');
+Route::get('/ckeditor/file/{any}', [CkEditorUploaderController::class, 'urlMaker'])->where('any', '.*')->name('ckeditor.urlMaker');
 
 
 
-
+ 
 
 
 
@@ -256,8 +258,8 @@ Route::get('/test/transferImages', [TestController::class, 'transferImages']);
 
 
 Route::get('/test/updateUserBadge', [TestController::class, 'updateUserBadge']);
-Route::get('/test/upload1', [TestController::class, 'upload1']);
-Route::get('/test/upload2', [TestController::class, 'upload2']);
+// Route::get('/test/upload1', [TestController::class, 'upload1']);
+// Route::get('/test/upload2', [TestController::class, 'upload2']);
 
 
 // Route::post('/ckeditor/upload', [TestController::class, 'upload'])->name('ckeditor.upload');

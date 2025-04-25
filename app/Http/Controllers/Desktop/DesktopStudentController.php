@@ -10,7 +10,7 @@ use App\Services\Desktop\DesktopService;
 use App\Services\Traits\ActorControllerTrait;
 use App\Services\Desktop\ControllerTraits\quizListControllerTrait;
 
-class DesktopStudentController extends Controller
+class DesktopStudentController extends Controller  
 {
     private $quizService; 
     private $desktopService;

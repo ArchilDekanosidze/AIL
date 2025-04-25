@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class StorageManagerService
 {
+    
     public function putFileAsPrivate(string $name, UploadedFile|File $file, string $diskName)
     {
         return Storage::disk($diskName)->putFileAs('', $file, $name);

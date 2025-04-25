@@ -15,7 +15,7 @@ use App\Services\Traits\ActorControllerTrait;
 use App\Services\FreeQuestion\FreeQuestionService;
 use App\Services\Desktop\ControllerTraits\quizListControllerTrait;
 
-class FreeQuestionController extends Controller
+class FreeQuestionController extends Controller 
 {    
     private $freeQuestionService;
 

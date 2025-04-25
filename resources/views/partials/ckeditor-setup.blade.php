@@ -17,7 +17,7 @@
         Bold,
         Italic,
         Font,
-        SimpleUploadAdapter,
+        // SimpleUploadAdapter,
         Image,
         ImageToolbar,
         ImageUpload
@@ -43,6 +43,7 @@
                     })
                     .then(response => response.json())
                     .then(result => {
+                        // console.log(result.url);  // Log the URL to verify it's correct
                         resolve({ default: result.url });
                     })
                     .catch(error => {
@@ -69,7 +70,7 @@
                 plugins: [
                     Essentials, Paragraph, Bold, Italic, Font,
                     Image, ImageToolbar, ImageUpload,
-                    SimpleUploadAdapter
+                    // SimpleUploadAdapter
                 ],
                 toolbar: [
                     'undo', 'redo', '|', 'bold', 'italic', '|',

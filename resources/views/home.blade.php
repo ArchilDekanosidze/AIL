@@ -11,7 +11,7 @@
         <a class="btn btn-primary">گام به گام</a>
         <a class="btn btn-primary" href="{{ route('freeQuestion.index') }}" >سوالات آزاد</a>
         <a class="btn btn-primary">جزوات درسی</a>
-        <a class="btn btn-primary">کتب درسی</a>
+        <a class="btn btn-primary" href="{{route('category.categoryBook.index', 1)}}">کتب درسی</a>
     </div>
 </div>
 @endsection

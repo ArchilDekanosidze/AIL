@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryBook;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\Question;
@@ -124,4 +125,6 @@ class SeedController extends Controller
             }
         }
     }
+
+
 }

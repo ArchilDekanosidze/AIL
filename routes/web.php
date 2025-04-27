@@ -7,6 +7,7 @@ use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\SeedCategoryBookController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Question\VoteController;
 use App\Http\Controllers\User\UserHomeController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Admin\AdminQuestionController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\OTP\RegisterOTPController;
 use App\Http\Controllers\User\UserLearningNewController;
+use App\Http\Controllers\Category\CategoryBookController;
 use App\Http\Controllers\Auth\DesktopChangeNameController;
 use App\Http\Controllers\Desktop\DesktopStudentController;
 use App\Http\Controllers\Profile\ProfileStudentController;
@@ -35,6 +37,7 @@ use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
 use App\Http\Controllers\Admin\Import\AdminImportNewController;
 use App\Http\Controllers\Admin\Import\DatabaseExportController;
+use App\Http\Controllers\Admin\Category\AdminCategoryController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionNewController;
 use App\Http\Controllers\Category\CategoryQuestionUserController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionVoteController;
@@ -161,8 +164,33 @@ Route::post('/upload-image', [CkEditorUploaderController::class, 'upload'])->nam
 Route::get('/ckeditor/file/{any}', [CkEditorUploaderController::class, 'urlMaker'])->where('any', '.*')->name('ckeditor.urlMaker');
 
 
+// madrese books
+Route::get('/category/categoryBook/index/{categoryBook}', [CategoryBookController::class, 'index'])->name('category.categoryBook.index');
 
  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -225,6 +253,17 @@ Route::post('/admin/question/descriptive/update/{question}', [AdminQuestionDescr
 
 
 
+// admin category
+
+Route::get('/admin/category/list/{category}', [AdminCategoryController::class, 'index'])->name('admin.category.category.index');
+Route::get('/admin/category/create', [AdminCategoryController::class, 'create'])->name('admin.category.category.create');
+Route::post('/admin/category/create', [AdminCategoryController::class, 'store'])->name('admin.category.category.store');
+Route::get('/admin/category/category/createSubCat/{categorySelect}', [AdminCategoryController::class, 'createSubCat'])->name('admin.category.category.createSubCat');
+Route::get('/admin/category/category/edit/{currentCategory}', [AdminCategoryController::class, 'edit'])->name('admin.category.category.edit');
+Route::post('/admin/category/category/update/{currentCategory}', [AdminCategoryController::class, 'update'])->name('admin.category.category.update');
+Route::get('/admin/category/category/delete/{currentCategory}', [AdminCategoryController::class, 'delete'])->name('admin.category.category.delete');
+
+
 
 //Seeder
 Route::get('/seeder/index', [SeedController::class, 'index']);
@@ -233,6 +272,10 @@ Route::get('/seeder/CategoryQuestion', [SeedController::class, 'createCategoryQu
 Route::get('/seeder/Question', [SeedController::class, 'createQuestion']);
 Route::get('/seeder/assignCategoryToUser', [SeedController::class, 'assignCategoryToUser']);
 Route::get('/seeder/createComment', [SeedController::class, 'createComment']);
+
+
+Route::get('/seeder/category', [SeedCategoryBookController::class, 'index']);
+Route::get('/seeder/addThreecategory/{category}', [SeedCategoryBookController::class, 'addThreecategory']);
 
 
 //Test

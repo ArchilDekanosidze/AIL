@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('question_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('comment_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('question_id')->nullable()->constrained()->onDelete('cascade'); // or 'set null' if you prefer
+            $table->foreignId('comment_id')->nullable()->constrained()->onDelete('cascade'); // or 'set null' if you prefer
             $table->integer('value'); // +1 for upvote, -1 for downvote
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

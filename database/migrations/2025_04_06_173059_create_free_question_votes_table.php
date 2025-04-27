@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('free_question_votes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('free_question_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key for user, cascading on delete
+            $table->foreignId('free_question_id')->constrained('free_questions')->onDelete('cascade'); // Foreign key for free_question
             $table->integer('value'); // +1 for upvote, -1 for downvote
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

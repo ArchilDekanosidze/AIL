@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('free_question_free_tag', function (Blueprint $table) {
+        Schema::create('book_category_book', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('free_question_id')->constrained('free_questions')->onDelete('cascade');  // Foreign key for free_question
-            $table->foreignId('free_tag_id')->constrained('free_tags')->onDelete('cascade');  // Foreign key for free_tag
+            $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
+            $table->foreignId('category_book_id')->constrained('category_books')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
+            
+            $table->unique(['book_id', 'category_book_id']); // Optional: to avoid duplicate entries
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('free_question_free_tag');
+        Schema::dropIfExists('book_category_book');
     }
 };

@@ -35,6 +35,7 @@ return new class extends Migration
             $table->bigInteger('legendary2');
             $table->bigInteger('legendary3');      
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

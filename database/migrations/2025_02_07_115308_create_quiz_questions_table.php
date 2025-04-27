@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('quiz_questions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("quiz_id");
-            $table->unsignedBigInteger("question_id");
+            $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
             $table->string("user_answer")->nullable();
             $table->integer("place");
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

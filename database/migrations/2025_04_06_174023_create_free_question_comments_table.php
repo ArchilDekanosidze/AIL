@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('free_question_comments', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id');
-            $table->bigInteger('free_question_id')->nullable();
-            $table->bigInteger('parent_id')->nullable();            
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key for user
+            $table->foreignId('free_question_id')->nullable()->constrained('free_questions')->onDelete('cascade'); // Foreign key for free_question
+            $table->foreignId('parent_id')->nullable()->constrained('free_question_comments')->onDelete('set null'); // Foreign key for parent comment (self-referencing)
             $table->text('body')->nullable();
             $table->integer('score')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

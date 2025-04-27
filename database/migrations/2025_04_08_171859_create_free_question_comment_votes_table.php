@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('free_question_comment_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('value'); // +1 for upvote, -1 for downvote
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

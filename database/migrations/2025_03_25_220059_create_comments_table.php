@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('question_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('parent_id')->nullable();
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');  // Foreign key to questions table
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');      // Foreign key to users table
+            $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');  // For replies to comments (self-reference)
             $table->text('body');
-            $table->bigInteger('original_id')->nullable();
-            $table->bigInteger('original_user_id')->nullable();
-            $table->bigInteger('best_reply_id')->nullable();
+            $table->foreignId('original_id')->nullable()->constrained('comments')->onDelete('set null'); // For original comment reference
+            $table->foreignId('original_user_id')->nullable()->constrained('users')->onDelete('set null'); // For original user reference
+            $table->foreignId('best_reply_id')->nullable()->constrained('comments')->onDelete('set null'); // For best reply to the comment
             $table->integer('score')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

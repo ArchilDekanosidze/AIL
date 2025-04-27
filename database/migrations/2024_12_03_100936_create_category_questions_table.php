@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             \Kalnoy\Nestedset\NestedSet::columns($table);
-            $table->bigInteger('question_count')->nullable();
+            $table->bigInteger('question_count')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('category_questions');
     }
 };

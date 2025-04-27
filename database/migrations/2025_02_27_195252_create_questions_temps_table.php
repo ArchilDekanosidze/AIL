@@ -27,6 +27,7 @@ return new class extends Migration
             $table->boolean('isfree')->default(0);
             $table->timestamps();
             $table->foreign('category_question_id')->references('id')->on('category_questions')->onDelete('cascade');
+            $table->softDeletes();
         });
     }
 

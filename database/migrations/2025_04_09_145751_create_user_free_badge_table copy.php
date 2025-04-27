@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('user_free_badge', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('free_tag_id')->nullable();  // Or 'course_id' if you're using courses instead of tags
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('free_tag_id')->nullable()->constrained('free_tags')->onDelete('cascade'); // Nullable foreign key
             $table->string('badge')->nullable();  // E.g., Bronze, Silver, Gold, etc.
             $table->bigInteger('score')->default(0);  // Score for the area (could be a computed score)
-            $table->timestamps();
-        
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade'); // Or 'courses' if using courses
+            $table->timestamps();        
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('user_free_badge');
     }
 };

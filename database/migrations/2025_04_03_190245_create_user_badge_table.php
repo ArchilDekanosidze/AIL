@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('user_badge', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('tag_id')->nullable();  // Or 'course_id' if you're using courses instead of tags
-            $table->string('badge')->nullable();  // E.g., Bronze, Silver, Gold, etc.
-            $table->bigInteger('score')->default(0);  // Score for the area (could be a computed score)
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // foreign key for user
+            $table->foreignId('tag_id')->nullable()->constrained('tags')->onDelete('cascade'); // optional foreign key for tag
+            $table->string('badge')->nullable(); // Badge name (e.g., Bronze, Silver, Gold)
+            $table->bigInteger('score')->default(0); // Score for the area (could be computed)
             $table->timestamps();
-        
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade'); // Or 'courses' if using courses
+            $table->softDeletes(); // Soft delete support
+            
+            // Optionally, you can add a unique constraint on `user_id` and `tag_id` to ensure each user can only have one badge per tag.
+            $table->unique(['user_id', 'tag_id']);
         });
     }
 
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('user_badge');
     }
 };

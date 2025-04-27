@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('score')->default(0); // Reputation system
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

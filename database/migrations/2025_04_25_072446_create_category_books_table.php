@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("name");
             \Kalnoy\Nestedset\NestedSet::columns($table);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

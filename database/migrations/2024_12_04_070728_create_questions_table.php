@@ -13,22 +13,15 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tag_id')->nullable();
-            $table->bigInteger('category_question_id')->unsigned(); 
-            // $table->longText("front");
-            // $table->longText("back");
-            // $table->longText("p1")->nullable();
-            // $table->longText("p2")->nullable();
-            // $table->longText("p3")->nullable();
-            // $table->longText("p4")->nullable();
+            $table->foreignId('tag_id')->nullable()->constrained('tags')->onDelete('set null'); // tag_id references tags table
+            $table->foreignId('category_question_id')->constrained('category_questions')->onDelete('cascade'); // category_question_id references category_questions table
             $table->integer("answer")->nullable();
             $table->float('percentage', 15, 8);
             $table->integer('count')->default(100);
             $table->string('type')->default('test');
             $table->boolean('isfree')->default(0);
             $table->timestamps();
-            $table->foreign('category_question_id')->references('id')->on('category_questions')->onDelete('cascade');
-            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('set null'); // or 'cascade' if you prefer
+            $table->softDeletes();
         });
     }
 

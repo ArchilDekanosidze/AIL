@@ -18,11 +18,11 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->float('level')->default(1);
             $table->float('target_level')->default(100);
-            // $table->text('history')->nullable();
-            $table->integer('number_to_change_level')->default(25);
+            $table->integer('number_to_change_level')->default(10);
             $table->timestamps();
-
-            $table->unique(['user_id', 'category_question_id']);
+            
+            $table->unique(['user_id', 'category_question_id']);            
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_question');
+        Schema::dropIfExists('user_category_question');
     }
 };

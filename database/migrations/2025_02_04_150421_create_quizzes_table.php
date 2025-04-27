@@ -21,12 +21,11 @@ return new class extends Migration
             $table->integer("rightAnswers")->nullable();
             $table->integer("wrongAnswers")->nullable();
             $table->integer("notAnswers")->nullable();
-            $table->integer("finalPercentage")->nullable();
-
-            
+            $table->integer("finalPercentage")->nullable();            
 
             $table->timestamp("started_at");
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

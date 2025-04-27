@@ -12,8 +12,8 @@ class Book extends Model
 
     protected $fillable = ['title', 'image', 'file', 'year', 'code'];
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(CategoryBook::class);
+        return $this->belongsToMany(CategoryBook::class, 'book_category_book');
     }
 }

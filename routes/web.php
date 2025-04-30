@@ -7,13 +7,13 @@ use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialController;
-use App\Http\Controllers\SeedCategoryBookController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Question\VoteController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
 use App\Http\Controllers\Desktop\QuizListController;
 use App\Http\Controllers\Question\CommentController;
+use App\Http\Controllers\SeedCategoryBookController;
 use App\Http\Controllers\Auth\OTP\LoginOTPController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -38,6 +38,7 @@ use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
 use App\Http\Controllers\Admin\Import\AdminImportNewController;
 use App\Http\Controllers\Admin\Import\DatabaseExportController;
 use App\Http\Controllers\Admin\Category\AdminCategoryController;
+use App\Http\Controllers\Admin\Import\AdminImportBookController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionNewController;
 use App\Http\Controllers\Category\CategoryQuestionUserController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionVoteController;
@@ -326,5 +327,8 @@ Route::get('/import/category', [AdminImportCategoryController::class, 'index']);
 Route::get('/import/addQuestionCategoryToTagTable', [AdminImportNewController::class, 'addQuestionCategoryToTagTable'])->name('category.categoryQuestion.addQuestionCategoryToTagTable');
 Route::get('/import/addTagIdToQuestions', [AdminImportNewController::class, 'addTagIdToQuestions'])->name('category.categoryQuestion.addTagIdToQuestions');
 Route::get('/import/createCoustionCountForTable', [AdminImportNewController::class, 'createCoustionCountForTable'])->name('category.categoryQuestion.createCoustionCountForTable');
+
+// import book
+Route::get('/import/book', [AdminImportBookController::class, 'import'])->name('category.book.import');
 
 

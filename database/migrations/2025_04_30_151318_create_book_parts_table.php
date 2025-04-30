@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('book_parts', function (Blueprint $table) {
             $table->id();
-            $table->string("title");
-            $table->string("image")->nullable();
-            $table->string("fileName");
-            $table->text("fileUrl");
-            $table->string("fileSize");
-            $table->string("year");
-            $table->string("code");
-            $table->string("chap_url");
+            $table->string('name');
+            $table->string('url');
+            $table->string('size');
+            $table->foreignId('book_id')->constrained()->onDelete('cascade'); // Foreign key to the `books` table
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('book_parts');
     }
 };

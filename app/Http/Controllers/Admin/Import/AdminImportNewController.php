@@ -17,13 +17,21 @@ use App\Services\CategoryQuestion\CategoriesQuestionService;
 class AdminImportNewController extends Controller
 {
     private $categoriesQuestionService;
-    private $payeId = "18";  
+    private $payeId = "16";  
 
 
 
     public function __construct(CategoriesQuestionService $categoriesQuestionService)
     {
         $this->categoriesQuestionService = $categoriesQuestionService;
+    }
+
+    public function beforeUpload()
+    {
+        $this->createCoustionCountForTable();
+        $this->addQuestionCategoryToTagTable();
+        $this->addTagIdToQuestions();
+
     }
     
     public function createCoustionCountForTable()

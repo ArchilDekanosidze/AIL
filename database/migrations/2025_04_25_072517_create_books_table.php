@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string("title");
-            $table->string("image")->nullable();
-            $table->string("fileName");
-            $table->text("fileUrl");
-            $table->string("fileSize");
+            $table->text("image")->nullable();
+            $table->string("fileName")->nullable();
+            $table->text("fileUrl")->nullable();
+            $table->string("fileSize")->nullable();
             $table->string("year");
             $table->string("code");
             $table->string("chap_url");

@@ -53,6 +53,7 @@ trait ChooseCategoriesTrait
         // $allCategories = CategoryQuestion::getCachedAllCategories();
         $categoryIdsWithSubcategories = CategoryQuestion::getCachedAllCategoryIdsWithSubcategories();
         $categoryIdsWithSubcategories = array_flip($categoryIdsWithSubcategories);
+        // dd($userCategories[0]);
         return view('quiz.chooseCategories.choose', compact('userCategories', 'allCategories', 'categoryIdsWithSubcategories', 'userCategoriesHashSet'));
     }
 

@@ -46,12 +46,14 @@ use App\Http\Controllers\Admin\AdminQuestionDescriptiveController;
 use App\Http\Controllers\Admin\Import\AdminImportCategoryController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionCommentController;
 use App\Http\Controllers\Quiz\QuizChooseCategoriesStudentController;
+use App\Http\Controllers\Admin\Import\AdminImportKanoonSoalController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionBestReplyController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionCommentNewController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingEmailController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionCommentVoteController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingMobileController;
+use App\Http\Controllers\Admin\Import\AdminImportKanoonCategoryController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingTwoFactorController;
 
 Route::get('/', [UserHomeController::class, 'index'])->name('home');
@@ -324,11 +326,15 @@ Route::get('/import/category', [AdminImportCategoryController::class, 'index']);
 
 
 //Import new
+Route::get('/import/beforeUpload', [AdminImportNewController::class, 'beforeUpload'])->name('category.categoryQuestion.beforeUpload');
 Route::get('/import/addQuestionCategoryToTagTable', [AdminImportNewController::class, 'addQuestionCategoryToTagTable'])->name('category.categoryQuestion.addQuestionCategoryToTagTable');
 Route::get('/import/addTagIdToQuestions', [AdminImportNewController::class, 'addTagIdToQuestions'])->name('category.categoryQuestion.addTagIdToQuestions');
 Route::get('/import/createCoustionCountForTable', [AdminImportNewController::class, 'createCoustionCountForTable'])->name('category.categoryQuestion.createCoustionCountForTable');
 
 // import book
 Route::get('/import/book', [AdminImportBookController::class, 'import'])->name('category.book.import');
+Route::get('/import/kanoon/nemooneSoal/category', [AdminImportKanoonCategoryController::class, 'categoryImport'])->name('kanoon.nemooneSoal.category.import');
+Route::get('/import/kanoon/nemooneSoal/soal', [AdminImportKanoonSoalController::class, 'soalImport'])->name('kanoon.nemooneSoal.soal.import');
+Route::get('/import/kanoon/nemooneSoal/saveHtml', [AdminImportKanoonSoalController::class, 'saveHtml'])->name('kanoon.nemooneSoal.soal.saveHtml');
 
 

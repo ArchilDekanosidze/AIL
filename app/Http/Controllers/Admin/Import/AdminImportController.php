@@ -9,6 +9,7 @@ use App\Models\CategoryQuestion;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class AdminImportController extends Controller
@@ -26,7 +27,7 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
-    private $payeId = "18";
+    private $payeId = "16";
     private  $folderPath ;
     private $questionId  ;
 
@@ -347,7 +348,10 @@ class AdminImportController extends Controller
                 "p3" => $question->p3 , 
                 "p4" => $question->p4
             ];
-            file_put_contents($saveFilePath, json_encode($content));
+            $disk =Storage::disk('questions') ;                                  
+            $disk->put($saveFilePath,json_encode($content));
+            // dd($saveFilePath);
+            // file_put_contents($saveFilePath, json_encode($content));
 
             // dd($newQuestion);
 
@@ -532,19 +536,25 @@ class AdminImportController extends Controller
 
     public function getQuestionFilePath($question)
     {
+        // $questionId = $question->id;
+        // $idStr = str_pad($questionId, 7, 0, STR_PAD_LEFT);
+        // $pathParts = str_split($idStr);
+        // $folderPath = implode('/', $pathParts);
+        // $folderPath ="questions/$folderPath/"; 
+        // $filePath =  $folderPath. "$questionId.json";
+        // if(!is_dir(public_path($folderPath)))
+        // {
+        //   mkdir($folderPath, 0777, true);
+        // }
+
+        // $saveFilePath = public_path($filePath); // Save in public/images
+        // return $saveFilePath;      
+        
         $questionId = $question->id;
-        $idStr = str_pad($questionId, 7, 0, STR_PAD_LEFT);
+        $idStr = str_pad($questionId, 7, '0', STR_PAD_LEFT);
         $pathParts = str_split($idStr);
         $folderPath = implode('/', $pathParts);
-        $folderPath ="questions/$folderPath/"; 
-        $filePath =  $folderPath. "$questionId.json";
-        if(!is_dir(public_path($folderPath)))
-        {
-          mkdir($folderPath, 0777, true);
-        }
-
-        $saveFilePath = public_path($filePath); // Save in public/images
-        return $saveFilePath;        
+        return "{$folderPath}/{$questionId}.json"; // Storage path
     }
 
 }

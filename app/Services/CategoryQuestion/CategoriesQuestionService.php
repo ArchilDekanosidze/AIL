@@ -80,7 +80,8 @@ class CategoriesQuestionService
             $firstUserCategoryQuestion = $allUserCategoryQuestion->where('category_question_id', $id)->first();
             if(is_null($firstUserCategoryQuestion))
             {
-                $number_to_change_level = max(50, $cat->question_count);
+                // $number_to_change_level = max(50, $cat->question_count);
+                 $number_to_change_level = 10;
             }
             else
             {

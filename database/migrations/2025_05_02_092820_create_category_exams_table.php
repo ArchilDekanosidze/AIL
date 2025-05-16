@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('book_parts', function (Blueprint $table) {
+        Schema::create('category_exams', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('url');
-            $table->string('size');
-            $table->foreignId('book_id')->constrained()->onDelete('cascade'); // Foreign key to the `books` table
+            $table->string("name");
+            $table->text("url")->nullable();            
+            \Kalnoy\Nestedset\NestedSet::columns($table);
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('book_parts');
+        Schema::dropIfExists('category_exams');
     }
 };

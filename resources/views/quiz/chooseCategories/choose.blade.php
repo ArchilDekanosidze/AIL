@@ -83,6 +83,7 @@
             return [
                 'target_level' => $item->pivot->target_level,
                 'number_to_change_level' => $item->pivot->number_to_change_level,
+                'level' => $item->pivot->level
             ];
         }));
     </script>
@@ -247,6 +248,7 @@
                 if (toggle.hasClass('open')) {
                     // Fetch subcategories if not already loaded
                     subcategories = Ajax(url, data)  
+
                      mainLi = '';
                     subcategories.forEach(sub => {
                         if (!userCategoriesHashSet.hasOwnProperty(sub.id)) return; // skip unauthorized

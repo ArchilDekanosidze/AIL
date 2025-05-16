@@ -23,22 +23,31 @@ class AdminImportBookController extends Controller
 
    public function import(StorageManagerService $storageManagerService)
    {
-        // $lastBook = Book::orderBy('id', 'desc')->first();
-        // $lastUrl = $lastBook->chap_url;
-        // $lastUrlId = basename(parse_url($lastUrl, PHP_URL_PATH)); 
-        // $lastUrlId = $lastUrlId +1;
-        $lastUrlId = 1;
-        for ($i=$lastUrlId; $i < 14000; $i++) { 
+        $lastBook = Book::orderBy('id', 'desc')->first();  
+        if($lastBook)
+        {
+            $lastBookId = $lastBook->id;      
+            $lastBook->delete();
+        }
+        else
+        {
+            $lastBookId = 1;
+        }
+
+        // $lastBookId = 5092;
+
+        for ($i=$lastBookId; $i < 14000; $i++) { 
             dump($i);
             $this->urlId = $i;
             $this->initialize();        
             $this->getTitle();
-            if($this->title != "صفحه مورد نظر یافت نشد.")
+            if($this->title != "صفحه مورد نظر یافت نشد." && $this->title != "دسترسی ممنوع است")
             {
                 $this->getYear();
                 $this->getCode();
                 $this->getImage();
                 $this->getBookParts();
+                $this->book->id = $i;
                 $this->book->save();
                 $this->saveBookParts();
                 $this->getDooreh();
@@ -51,7 +60,7 @@ class AdminImportBookController extends Controller
    public function initialize()
    {
         $this->chap_url = 'http://chap.sch.ir/books/' . $this->urlId;
-        $response = Http::retry(300, 5000)->timeout(0)->get($this->chap_url);
+        $response = Http::get($this->chap_url);
         $this->book = new Book();
         $this->book->chap_url = $this->chap_url;
         $dom = new \DOMDocument();
@@ -196,7 +205,11 @@ class AdminImportBookController extends Controller
                 $subCat = CategoryBook::where('name', $lineage[$i])->where('parent_id', $baseCat->id)->first();
                 $baseCat = $subCat;
             }  
-            $categoryIds[] = $baseCat->id;         
+            try {
+                $categoryIds[] = $baseCat->id;                                     
+            } catch (\Throwable $th) {
+                dd($baseCat, $lineage);
+            }            
         }
 
         $this->book->categories()->syncWithoutDetaching($categoryIds);

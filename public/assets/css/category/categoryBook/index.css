@@ -1,0 +1,40 @@
+
+
+#search-button {
+  padding: 8px 16px;
+  background-color: #1d4ed8;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+#search-result {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.book-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 1px 7px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.field-content
+{
+    display: flex;
+    justify-content: center;
+}
+.views-field-field-book-code
+{
+    display: flex;
+    justify-content: center;
+}
+#category-selectors
+{
+    margin-bottom: 20px;
+}

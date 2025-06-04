@@ -1,0 +1,49 @@
+.firstRow
+{
+    display: flex;
+    justify-content: center;
+    background-color: #8e8edb;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    margin-bottom: 20px;
+}
+.firstRow p
+{
+  margin-top: auto;
+  margin-bottom: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 20px;
+}
+.secondRow
+{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  font-size: 18px;
+}
+.thirdRow .field-label
+{
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.thirdRow table
+{
+  width: 100%;
+  font-size: 18px;
+}
+
+.forthRow .field-label
+{
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.forthRow table
+{
+  width: 100%;
+  font-size: 18px;
+}
+

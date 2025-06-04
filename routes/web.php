@@ -8,6 +8,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Category\BookController;
 use App\Http\Controllers\Question\VoteController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
@@ -55,6 +56,10 @@ use App\Http\Controllers\FreeQuestion\FreeQuestionCommentVoteController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingMobileController;
 use App\Http\Controllers\Admin\Import\AdminImportKanoonCategoryController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingTwoFactorController;
+use App\Http\Controllers\Admin\Import\AdminImportGambeGamCategoryPadarsFirstLevelController;
+use App\Http\Controllers\Admin\Import\AdminImportGambeGamCategoryPadarsForthLevelController;
+use App\Http\Controllers\Admin\Import\AdminImportGambeGamCategoryPadarsThirdLevelController;
+use App\Http\Controllers\Admin\Import\AdminImportGambeGamCategoryPadarsSecondLevelController;
 
 Route::get('/', [UserHomeController::class, 'index'])->name('home');
 
@@ -168,9 +173,11 @@ Route::get('/ckeditor/file/{any}', [CkEditorUploaderController::class, 'urlMaker
 
 
 // madrese books
-Route::get('/category/categoryBook/index/{categoryBook}', [CategoryBookController::class, 'index'])->name('category.categoryBook.index');
+Route::get('/categories/categoryBook/index', [CategoryBookController::class, 'index'])->name('category.categoryBook.index');
+Route::get('/categories/categoryBook/children/{parentId}', [CategoryBookController::class, 'getChildren'])->name('category.categoryBook.getChildren');
+Route::match(['get', 'post'], '/categories/categoryBook/getBooks', [CategoryBookController::class, 'getBooks'])->name('category.categoryBook.getBooks'); 
 
- 
+Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
 
 
 
@@ -337,4 +344,10 @@ Route::get('/import/kanoon/nemooneSoal/category', [AdminImportKanoonCategoryCont
 Route::get('/import/kanoon/nemooneSoal/soal', [AdminImportKanoonSoalController::class, 'soalImport'])->name('kanoon.nemooneSoal.soal.import');
 Route::get('/import/kanoon/nemooneSoal/saveHtml', [AdminImportKanoonSoalController::class, 'saveHtml'])->name('kanoon.nemooneSoal.soal.saveHtml');
 
+// import GamBeGam
+
+Route::get('/import/gambegam/padars/level1', [AdminImportGambeGamCategoryPadarsFirstLevelController::class, 'categoryImport'])->name('category.gambegam.padars.1.import');
+Route::get('/import/gambegam/padars/level2', [AdminImportGambeGamCategoryPadarsSecondLevelController::class, 'categoryImport'])->name('category.gambegam.padars.2.import');
+Route::get('/import/gambegam/padars/level3', [AdminImportGambeGamCategoryPadarsThirdLevelController::class, 'categoryImport'])->name('category.gambegam.padars.3.import');
+Route::get('/import/gambegam/padars/level4', [AdminImportGambeGamCategoryPadarsForthLevelController::class, 'categoryImport'])->name('category.gambegam.padars.4.import');
 

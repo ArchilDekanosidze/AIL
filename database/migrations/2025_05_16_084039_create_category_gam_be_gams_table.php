@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_exams', function (Blueprint $table) {
+        Schema::create('category_gam_be_gams', function (Blueprint $table) {
             $table->id();
             $table->string("name");
             $table->text("url")->nullable();            
@@ -20,12 +20,12 @@ return new class extends Migration
             $table->softDeletes();
         });
     }
- 
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_exams');
+        Schema::dropIfExists('category_gam_be_gams');
     }
 };

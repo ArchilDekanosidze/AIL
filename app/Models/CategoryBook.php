@@ -15,7 +15,12 @@ class CategoryBook extends Model
  
     public function books()
     {
-        return $this->belongsToMany(Book::class, 'book_category_book');
+        return $this->belongsToMany(
+            Book::class,
+            'book_category_book',          // Pivot table name
+            'category_book_id',            // Foreign key on pivot pointing to CategoryBook
+            'book_id'                      // Foreign key on pivot pointing to Book
+        );
     }
 
     public function path()

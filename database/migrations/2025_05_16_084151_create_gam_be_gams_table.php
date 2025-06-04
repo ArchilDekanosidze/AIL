@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('exams', function (Blueprint $table) {
+        Schema::create('gam_be_gams', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_exam_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('category_gam_be_gam_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('title'); 
             $table->text('url'); 
-            $table->unsignedTinyInteger('has_answer')->default(0); 
-            $table->string('school_type')->nullable(); 
-            $table->string('state')->nullable(); 
-            $table->string('city')->nullable(); 
+            $table->text('file')->nullable(); 
             $table->timestamps();
             $table->softDeletes();
-        }); 
+        });
     }
 
     /**
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('exams');
+        Schema::dropIfExists('gam_be_gams');
     }
 };

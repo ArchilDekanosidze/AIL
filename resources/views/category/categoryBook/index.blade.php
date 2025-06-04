@@ -146,16 +146,7 @@
         });
 
 
-            $('#search-button').click();
-
-
-
-
-
-
-
-            
-
+            $('#search-button').click();    
 
         });
     </script>

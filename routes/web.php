@@ -25,6 +25,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\OTP\RegisterOTPController;
 use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\Category\CategoryBookController;
+use App\Http\Controllers\Category\CategoryExamController;
 use App\Http\Controllers\Auth\DesktopChangeNameController;
 use App\Http\Controllers\Desktop\DesktopStudentController;
 use App\Http\Controllers\Profile\ProfileStudentController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
 use App\Http\Controllers\Upload\CkEditorUploaderController;
 use App\Http\Controllers\Admin\Import\AdminImportController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
+use App\Http\Controllers\Category\CategoryGambeGamController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionController;
 use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
@@ -176,12 +178,18 @@ Route::get('/ckeditor/file/{any}', [CkEditorUploaderController::class, 'urlMaker
 Route::get('/categories/categoryBook/index', [CategoryBookController::class, 'index'])->name('category.categoryBook.index');
 Route::get('/categories/categoryBook/children/{parentId}', [CategoryBookController::class, 'getChildren'])->name('category.categoryBook.getChildren');
 Route::match(['get', 'post'], '/categories/categoryBook/getBooks', [CategoryBookController::class, 'getBooks'])->name('category.categoryBook.getBooks'); 
-
 Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
 
+// gam be gam
+Route::get('/categories/categoryGamBeGam/index', [CategoryGambeGamController::class, 'index'])->name('category.categoryGamBeGam.index');
+Route::match(['get', 'post'], '/categories/categoryGambeGam/gams', [CategoryGambeGamController::class, 'getGambeGams'])->name('category.categoryGambeGam.getGambeGams');
+Route::get('/categories/categoryGambeGam/children/{parentId}', [CategoryGambeGamController::class, 'getChildren'])->name('category.getGambeGams.getChildren');
 
+//exam
 
-
+Route::get('/categories/categoryExam/index', [CategoryExamController::class, 'index'])->name('category.categoryExam.index');
+Route::match(['get', 'post'], '/categories/categoryExam/gams', [CategoryExamController::class, 'getExam'])->name('category.categoryExam.getExam');
+Route::get('/categories/categoryExam/children/{parentId}', [CategoryExamController::class, 'getChildren'])->name('category.categoryExam.getChildren');
 
 
 

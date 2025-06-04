@@ -9,7 +9,7 @@ class GamBeGam extends Model
 {
     use HasFactory;
 
-        public function categoryGamBeGam()
+    public function categoryGamBeGam()
     {
         return $this->belongsTo(CategoryGamBeGam::class);
     }

@@ -189,8 +189,8 @@ Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show')
 Route::get('/categories/categoryGamBeGam/index', [CategoryGambeGamController::class, 'index'])->name('category.categoryGamBeGam.index');
 Route::match(['get', 'post'], '/categories/categoryGambeGam/gams', [CategoryGambeGamController::class, 'getGambeGams'])->name('category.categoryGambeGam.getGambeGams');
 Route::get('/categories/categoryGambeGam/children/{parentId}', [CategoryGambeGamController::class, 'getChildren'])->name('category.getGambeGams.getChildren');
-
-//exam
+ 
+//exam   
 
 Route::get('/categories/categoryExam/index', [CategoryExamController::class, 'index'])->name('category.categoryExam.index');
 Route::match(['get', 'post'], '/categories/categoryExam/exams', [CategoryExamController::class, 'getExam'])->name('category.categoryExam.getExam');

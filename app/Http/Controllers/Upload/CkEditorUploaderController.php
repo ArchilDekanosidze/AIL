@@ -10,14 +10,14 @@ use App\Services\Uploader\Image\ImageInterventionService;
  
 
 
-class CkEditorUploaderController extends Controller
+class CkEditorUploaderController extends Controller 
 {
     public function upload(Request $request, ImageInterventionService $imageInterventionService)
     {
         if ($request->hasFile('upload')) { 
             $file = $request->file('upload');
             // $imageInterventionService->setExclusiveDirectory('images/ckeditor');
-            $imageInterventionService->setKeepAspectRatio();
+            $imageInterventionService->setKeepAspectRatio(); 
             $imageInterventionService->setDisk('ckeditor');
             $filename = $imageInterventionService->save($file);  
             $url = Storage::url($filename);

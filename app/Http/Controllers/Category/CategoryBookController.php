@@ -12,7 +12,7 @@ class CategoryBookController extends Controller
 {
     public function index()
     {                   
-        return view('category.categoryBook.index');
+        return view('category.categoryBook.index'); 
     }
 
     public function getChildren($parentId)

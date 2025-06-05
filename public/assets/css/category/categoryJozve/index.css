@@ -1,0 +1,85 @@
+
+
+#search-button {
+  padding: 8px 16px;
+  background-color: #1d4ed8;  
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+#search-result {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 16px;
+}
+
+.book-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 1px 7px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.field-content
+{
+    display: flex;
+    justify-content: center;
+}
+.views-field-field-book-code
+{
+    display: flex;
+    justify-content: center;
+}
+#category-selectors
+{
+    margin-bottom: 20px;
+}
+
+.pa-book-info-item  img
+{
+  width: 200px;
+  height: 200px;
+}
+.sp-font-large-new2
+{
+  font-size: 18px;
+  text-align: center;
+}
+
+.examfile
+{
+  background-color: rgb(240, 217, 217);
+  padding: 10px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.downloadfile
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.examTitle
+{
+  text-align: center;
+}
+.examTags .label
+{
+    background-color: #a3e6a3;
+    border-radius: 5px;
+    padding: 2px 3px;
+}
+a.downloadfile {
+    text-decoration: none;
+}
+
+a.downloadfile:hover {
+    text-decoration: none;
+}

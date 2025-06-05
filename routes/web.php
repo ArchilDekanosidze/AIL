@@ -11,12 +11,15 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Category\BookController;
 use App\Http\Controllers\Question\VoteController;
 use App\Http\Controllers\User\UserHomeController;
+use App\Http\Controllers\Category\JozveController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
+use App\Http\Controllers\Category\FreeCatController;
 use App\Http\Controllers\Desktop\QuizListController;
 use App\Http\Controllers\Question\CommentController;
 use App\Http\Controllers\SeedCategoryBookController;
 use App\Http\Controllers\Auth\OTP\LoginOTPController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Category\FreeFileController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Desktop\myProgressController;
 use App\Http\Controllers\Question\BestReplyController;
@@ -26,7 +29,9 @@ use App\Http\Controllers\Auth\OTP\RegisterOTPController;
 use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\Category\CategoryBookController;
 use App\Http\Controllers\Category\CategoryExamController;
+use App\Http\Controllers\Category\CategoryFreeController;
 use App\Http\Controllers\Auth\DesktopChangeNameController;
+use App\Http\Controllers\Category\CategoryJozveController;
 use App\Http\Controllers\Desktop\DesktopStudentController;
 use App\Http\Controllers\Profile\ProfileStudentController;
 use App\Http\Controllers\Quiz\CreateQuizStudentController;
@@ -188,11 +193,24 @@ Route::get('/categories/categoryGambeGam/children/{parentId}', [CategoryGambeGam
 //exam
 
 Route::get('/categories/categoryExam/index', [CategoryExamController::class, 'index'])->name('category.categoryExam.index');
-Route::match(['get', 'post'], '/categories/categoryExam/gams', [CategoryExamController::class, 'getExam'])->name('category.categoryExam.getExam');
+Route::match(['get', 'post'], '/categories/categoryExam/exams', [CategoryExamController::class, 'getExam'])->name('category.categoryExam.getExam');
 Route::get('/categories/categoryExam/children/{parentId}', [CategoryExamController::class, 'getChildren'])->name('category.categoryExam.getChildren');
 
+//jozve
 
+Route::get('/categories/categoryJozve/index', [CategoryJozveController::class, 'index'])->name('category.categoryJozve.index');
+Route::match(['get', 'post'], '/categories/categoryJozve/jozves', [CategoryJozveController::class, 'getJozve'])->name('category.categoryJozve.getJozve');
+Route::get('/categories/categoryJozve/children/{parentId}', [CategoryJozveController::class, 'getChildren'])->name('category.categoryJozve.getChildren');
+Route::post('/jozves', [JozveController::class, 'store'])->name('jozves.store');
+Route::get('/jozve/download/{jozve}', [JozveController::class, 'download'])->name('jozve.download');
 
+//freeCat
+
+Route::get('/categories/categoryFree/index', [CategoryFreeController::class, 'index'])->name('category.categoryFree.index');
+Route::match(['get', 'post'], '/categories/categoryFree/freeFile', [CategoryFreeController::class, 'getFreeFile'])->name('category.categoryFree.getFreeFile');
+Route::get('/categories/categoryFree/children/{parentId}', [CategoryFreeController::class, 'getChildren'])->name('category.categoryFree.getChildren');
+Route::post('/freeFile', [FreeFileController::class, 'store'])->name('freeFile.store');
+Route::get('/freeFile/download/{freeFile}', [FreeFileController::class, 'download'])->name('freeFile.download');
 
 
 
@@ -316,6 +334,10 @@ Route::get('/loginAs/{id}', [TestController::class, 'loginAs']);
 Route::get('/test/findTheListId', [TestController::class, 'findTheListId']);
 Route::get('/test/removeDuplicatedQuestions', [TestController::class, 'removeDuplicatedQuestions']);
 Route::get('/test/transferImages', [TestController::class, 'transferImages']);
+
+Route::get('/test/createJozveCategory', [TestController::class, 'createJozveCategory']);
+Route::get('/test/createFreeCategory', [TestController::class, 'createFreeCategory']);
+
 
 
 Route::get('/test/updateUserBadge', [TestController::class, 'updateUserBadge']);

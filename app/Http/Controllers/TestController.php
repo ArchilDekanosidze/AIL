@@ -7,7 +7,10 @@ use App\Models\User;
 use App\Models\Question;
 use Illuminate\Http\File;
 use App\Mail\UserRegistered;
+use App\Models\CategoryExam;
+use App\Models\CategoryFree;
 use Illuminate\Http\Request;
+use App\Models\CategoryJozve;
 use App\Models\QuestionsTemp;
 use App\Jobs\SendEmailToUsers;
 use App\Models\CategoryQuestion;
@@ -248,6 +251,44 @@ class TestController extends Controller
       }
 
       return response()->json(['uploaded' => 0]);
+  }
+
+  public function createJozveCategory()
+  {
+    // CategoryJozve::truncate();
+    $firstLevels = CategoryExam::where('parent_id', 1)->get();
+    $jozveCat = new CategoryJozve();
+    $jozveCat->name = 'دسته بندی';
+    $jozveCat->save();
+    foreach ($firstLevels as $firstLevel) {
+      tap(CategoryJozve::create(['name' => $firstLevel->name]), fn($node) => $node->appendToNode($jozveCat)->save());
+    }
+    foreach ($firstLevels as $firstLevel) {      
+          $secondLeves = CategoryExam::where('parent_id', $firstLevel->id)->get();
+          $mainCat = CategoryJozve::where('name', $firstLevel->name)->first();
+          foreach ($secondLeves as $secondLeve) {
+            tap(CategoryJozve::create(['name' => $secondLeve->name]), fn($node) => $node->appendToNode($mainCat)->save());
+          }
+    }
+  }
+
+  public function createFreeCategory()
+  {
+    // CategoryFree::truncate();
+    $firstLevels = CategoryExam::where('parent_id', 1)->get();
+    $freeCat = new CategoryFree();
+    $freeCat->name = 'دسته بندی';
+    $freeCat->save();
+    foreach ($firstLevels as $firstLevel) {
+      tap(CategoryFree::create(['name' => $firstLevel->name]), fn($node) => $node->appendToNode($freeCat)->save());
+    }
+    foreach ($firstLevels as $firstLevel) {      
+          $secondLeves = CategoryExam::where('parent_id', $firstLevel->id)->get();
+          $mainCat = CategoryFree::where('name', $firstLevel->name)->first();
+          foreach ($secondLeves as $secondLeve) {
+            tap(CategoryFree::create(['name' => $secondLeve->name]), fn($node) => $node->appendToNode($mainCat)->save());
+          }
+    }
   }
 
 

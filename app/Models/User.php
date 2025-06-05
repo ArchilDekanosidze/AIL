@@ -5,8 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Quiz;
 use App\Models\Vote;
+use App\Models\Jozve;
 use App\Models\Comment;
 use App\Models\FreeTag;
+use App\Models\FreeFile;
 use App\Models\FreeQuestion;
 use Illuminate\Http\Request;
 use App\Mail\VerificationEmail;
@@ -156,6 +158,16 @@ class User extends Authenticatable
         return $this->belongsToMany(FreeTag::class, 'user_free_badge', 'user_id', 'free_tag_id')
                     ->withPivot('badge', 'score')
                     ->withTimestamps();
+    }
+
+    public function jozves()
+    {
+        return $this->hasMany(Jozve::class);
+    }
+
+    public function freeFiles()
+    {
+        return $this->hasMany(FreeFile::class);
     }
 
     

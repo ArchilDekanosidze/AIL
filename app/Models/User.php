@@ -9,11 +9,14 @@ use App\Models\Jozve;
 use App\Models\Comment;
 use App\Models\FreeTag;
 use App\Models\FreeFile;
+use App\Models\Chat\Message;
 use App\Models\FreeQuestion;
 use Illuminate\Http\Request;
+use App\Models\Chat\Reaction;
 use App\Mail\VerificationEmail;
 use App\Mail\ResetPasswordEmail;
 use App\Models\CategoryQuestion;
+use App\Models\Chat\Conversation;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use App\Jobs\Notification\Email\SendEmail;
@@ -170,5 +173,19 @@ class User extends Authenticatable
         return $this->hasMany(FreeFile::class);
     }
 
-    
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'chat_conversation_participants', 'user_id', 'conversation_id')
+                    ->withPivot('role')
+                    ->withTimestamps();
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function reactions()
+    {
+        return $this->hasMany(Reaction::class);
+    }
 }

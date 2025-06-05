@@ -5,21 +5,27 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\Chat\MessageController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Category\BookController;
+use App\Http\Controllers\Chat\ReactionController;
 use App\Http\Controllers\Question\VoteController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\Category\JozveController;
+use App\Http\Controllers\Chat\AttachmentController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
 use App\Http\Controllers\Category\FreeCatController;
+use App\Http\Controllers\Chat\ParticipantController;
 use App\Http\Controllers\Desktop\QuizListController;
 use App\Http\Controllers\Question\CommentController;
 use App\Http\Controllers\SeedCategoryBookController;
 use App\Http\Controllers\Auth\OTP\LoginOTPController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Category\FreeFileController;
+use App\Http\Controllers\Chat\ConversationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Desktop\myProgressController;
 use App\Http\Controllers\Question\BestReplyController;
@@ -214,9 +220,36 @@ Route::get('/freeFile/download/{freeFile}', [FreeFileController::class, 'downloa
 
 
 
+//chat
 
 
+Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
 
+    // General Chat Page
+    Route::get('/', [ChatController::class, 'index'])->name('index');
+
+    // Conversations
+    Route::resource('conversations', ConversationController::class)->only([
+        'index', 'store', 'show', 'destroy'
+    ]);
+
+    // Participants
+    Route::post('conversations/{conversation}/participants', [ParticipantController::class, 'store'])->name('participants.store');
+    Route::delete('conversations/{conversation}/participants/{user}', [ParticipantController::class, 'destroy'])->name('participants.destroy');
+
+    // Messages
+    Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+
+    // Attachments
+    Route::post('messages/{message}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download');
+
+    // Reactions
+    Route::post('messages/{message}/reactions', [ReactionController::class, 'store'])->name('reactions.store');
+    Route::get('messages/{message}/reactions', [ReactionController::class, 'index'])->name('reactions.index');
+});
 
 
 

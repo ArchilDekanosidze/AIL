@@ -6,6 +6,7 @@
 @section('content')
 <div class="userHome main-body">
     <div class="mainDivDirection">
+        <a class="btn btn-primary" href="{{route('chat.index')}}">چت روم</a>
         <a class="btn btn-primary" href="{{route('category.categoryQuestion.user.index', 1)}}">بانک سوالات</a>
         <a class="btn btn-primary" href="{{ route('freeQuestion.index') }}" >سوالات آزاد</a>
         <a class="btn btn-primary" href="{{route('category.categoryExam.index')}}">نمونه آزمون های کتبی</a>

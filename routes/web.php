@@ -233,15 +233,17 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
         'index', 'store', 'show', 'destroy'
     ]);
 
+    
     // Participants
     Route::post('conversations/{conversation}/participants', [ParticipantController::class, 'store'])->name('participants.store');
     Route::delete('conversations/{conversation}/participants/{user}', [ParticipantController::class, 'destroy'])->name('participants.destroy');
-
+    
     // Messages
     Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages');
     Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
-
+    
     // Attachments
     Route::post('messages/{message}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
     Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download');

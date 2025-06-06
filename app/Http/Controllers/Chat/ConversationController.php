@@ -17,6 +17,8 @@ class ConversationController extends Controller
         $conversations = Conversation::whereHas('participants', function ($q) use ($user) {
             $q->where('user_id', $user->id);
         })->latest()->get();
+        dd(2);
+
 
         return view('chat.conversations.index', compact('conversations'));
     }
@@ -66,7 +68,11 @@ class ConversationController extends Controller
     // Show a specific conversation
     public function show($id)
     {
-        $conversation = Conversation::with('participants.user')->findOrFail($id);
+        $conversation = Conversation::with([
+            'messages.sender', // or 'messages.user' if you kept the name
+            'messages.attachments',
+            'participants.user'
+        ])->findOrFail($id);
 
         // Check if current user is part of it
         if (!$conversation->participants->contains('user_id', Auth::id())) {

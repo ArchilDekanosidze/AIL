@@ -9,6 +9,8 @@ use App\Models\Chat\MessageAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Hekmatinasser\Verta\Verta;
+
 
 class MessageController extends Controller
 {
@@ -16,57 +18,93 @@ class MessageController extends Controller
     public function index($conversationId)
     {
         $conversation = Conversation::with('participants')->findOrFail($conversationId);
-        $this->authorize('view', $conversation);
+        // $this->authorize('view', $conversation);
 
-        $messages = Message::with('user', 'attachments', 'parent')
-            ->where('conversation_id', $conversationId)
-            ->orderBy('created_at')
-            ->get();
+        // $messages = Message::with('sender', 'attachments', 'parent')
+        //     ->where('conversation_id', $conversationId)
+        //     ->orderBy('created_at')
+        //     ->get();
 
-        return view('chat.messages.index', compact('conversation', 'messages'));
+        return view('chat.messages.index', compact('conversation'));
+        
+    }
+
+    public function getMessages(Request $request, Conversation $conversation)
+    {
+        $beforeId = $request->query('before');
+
+        $query = $conversation->messages()
+            ->with(['sender', 'attachments'])
+            ->orderByDesc('id')
+            ->limit(10);
+
+        if ($beforeId) {
+            $query->where('id', '<', $beforeId);
+        }
+
+        $messages = $query->get()->reverse()->values();
+
+        $transformed = $messages->map(function ($message) {
+            return [
+                'id' => $message->id,
+                'sender' => [
+                    'id' => $message->sender->id ?? null,
+                    'name' => $message->sender->name ?? 'Unknown',
+                ],
+                'content' => $message->content,
+                'created_at' => (new Verta($message->created_at))->formatDifference(), // ✅ Verta time ago
+                'attachments' => $message->attachments->map(function ($att) {
+                    return [
+                        'id' => $att->id,
+                        'file_path' => $att->file_path,
+                        'download_url' => route('chat.attachments.download', $att->id),
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json($transformed);
     }
 
     // Store a new message
-    public function store(Request $request, $conversationId)
+    public function store(Request $request, Conversation $conversation)
     {
-        $request->validate([
-            'content' => 'nullable|string|max:5000',
-            'parent_id' => 'nullable|exists:messages,id',
-            'attachments.*' => 'file|max:10240', // Max 10MB per file
-        ]);
-
-        $conversation = Conversation::findOrFail($conversationId);
-        $this->authorize('view', $conversation);
-
-        // Save the message
-        $message = Message::create([
-            'conversation_id' => $conversation->id,
-            'user_id' => Auth::id(),
+        $message = $conversation->messages()->create([
+            'sender_id' => auth()->id(),
             'content' => $request->input('content'),
-            'parent_id' => $request->input('parent_id'),
         ]);
 
-        // Save attachments (if any)
+        // Save attachments...
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('chat/attachments', 'private');
-                MessageAttachment::create([
-                    'message_id' => $message->id,
-                    'file_path' => $path,
-                    'file_type' => $file->getClientMimeType(),
-                ]);
+                $path = $file->store('attachments', 'public');
+                $message->attachments()->create(['file_path' => $path]);
             }
         }
 
-        return redirect()->route('chat.messages.index', $conversation->id)
-            ->with('success', 'پیام با موفقیت ارسال شد.');
+        $message->load('sender', 'attachments');
+
+        return response()->json([
+            'id' => $message->id,
+            'sender_name' => $message->sender->name,
+            'content' => $message->content,
+            'attachments' => $message->attachments->map(function ($att) {
+                return [
+                    'id' => $att->id,
+                    'filename' => basename($att->file_path),
+                    'download_url' => route('chat.attachments.download', $att->id),
+                ];
+            }),
+            'created_at' => $message->created_at->diffForHumans(),
+        ]);
     }
+
 
     // Download attachment securely
     public function downloadAttachment($attachmentId)
     {
         $attachment = MessageAttachment::findOrFail($attachmentId);
-        $this->authorize('view', $attachment->message->conversation);
+        // $this->authorize('view', $attachment->message->conversation);
 
         return Storage::disk('private')->download($attachment->file_path);
     }

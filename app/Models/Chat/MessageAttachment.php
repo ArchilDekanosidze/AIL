@@ -9,6 +9,8 @@ class MessageAttachment extends Model
 {
     use HasFactory;
 
+    protected $table = 'chat_message_attachments'; // ✅ Fixes the table name
+
     protected $fillable = ['message_id', 'file_path', 'file_type'];
 
     public function message()

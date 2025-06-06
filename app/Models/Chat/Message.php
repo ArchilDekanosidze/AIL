@@ -14,9 +14,9 @@ class Message extends Model
 
      protected $fillable = [
         'conversation_id',
-        'user_id',
-        'body',
-        'parent_id'
+        'sender_id',
+        'content',
+        'reply_to_message_id'
     ];
 
     public function conversation()
@@ -26,7 +26,7 @@ class Message extends Model
 
     public function sender()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
     public function attachments()

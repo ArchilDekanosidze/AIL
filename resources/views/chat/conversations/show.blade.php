@@ -38,6 +38,7 @@
 <script>
     $(document).ready(function() {
         // JS for chat messages
+        
     });
 </script>
 @endsection

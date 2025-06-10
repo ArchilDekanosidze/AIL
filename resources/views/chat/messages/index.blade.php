@@ -31,6 +31,7 @@
 @endsection
 
 @section('scripts')
+@vite('resources/js/app.js') {{-- This MUST come before using window.Echo --}}
 <script>
     $(document).ready(function () {
         const box = document.getElementById('messagesBox');
@@ -74,6 +75,7 @@
 </script>
 <script>
     $(document).ready(function () {
+        
         const $box = $('#messagesBox');
         const conversationId = $box.data('conversation-id');
         let earliestMessageId = null;
@@ -139,6 +141,36 @@
             }
         });
     });
+
+
 </script>
+
+<script>
+    $(document).ready(function () {
+        const conversationId = $('#messagesBox').data('conversation-id');
+
+        if (typeof window.Echo !== 'undefined') {
+            window.Echo.private(`chat.conversation.${conversationId}`)
+                .listen('MessageSent', (e) => {
+                    $('#messagesBox').append(`
+                        <div class="message-item" style="margin-bottom: 10px;">
+                            <strong>${e.sender.name}</strong>
+                            <p>${e.content}</p>
+                            ${e.attachments.map(att => `
+                                <a href="${att.download_url}" target="_blank">${att.file_path.split('/').pop()}</a><br>
+                            `).join('')}
+                            <small>Just now</small>
+                        </div>
+                    `);
+
+                    const box = document.getElementById('messagesBox');
+                    if (box) box.scrollTop = box.scrollHeight;
+                });
+        } else {
+            console.error('window.Echo is not defined');
+        }
+    });
+</script>
+
 
 @endsection

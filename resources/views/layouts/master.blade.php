@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     @include('layouts.head-tag')
     @yield('head-tag')
     @yield('style')

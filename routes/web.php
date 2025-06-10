@@ -2,9 +2,11 @@
 
 
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
+use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialController;
@@ -221,7 +223,7 @@ Route::get('/freeFile/download/{freeFile}', [FreeFileController::class, 'downloa
 
 
 //chat
-
+Broadcast::routes(['middleware' => ['auth']]);
 
 Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
 
@@ -252,9 +254,6 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
     Route::post('messages/{message}/reactions', [ReactionController::class, 'store'])->name('reactions.store');
     Route::get('messages/{message}/reactions', [ReactionController::class, 'index'])->name('reactions.index');
 });
-
-
-
 
 
 
@@ -372,6 +371,11 @@ Route::get('/test/transferImages', [TestController::class, 'transferImages']);
 
 Route::get('/test/createJozveCategory', [TestController::class, 'createJozveCategory']);
 Route::get('/test/createFreeCategory', [TestController::class, 'createFreeCategory']);
+
+Route::get('/test-auth', function () {
+    return Auth::check() ? 'Logged in' : 'Not logged in';
+});
+
 
 
 

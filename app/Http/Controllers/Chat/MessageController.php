@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Chat;
 
-use App\Http\Controllers\Controller;
-use App\Models\Chat\Conversation;
+use App\Events\MessageSent;
 use App\Models\Chat\Message;
-use App\Models\Chat\MessageAttachment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Hekmatinasser\Verta\Verta;
+use App\Models\Chat\Conversation;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Chat\MessageAttachment;
+use Illuminate\Support\Facades\Storage;
 
 
 class MessageController extends Controller
@@ -83,6 +84,8 @@ class MessageController extends Controller
         }
 
         $message->load('sender', 'attachments');
+
+        broadcast(new MessageSent($message))->toOthers();
 
         return response()->json([
             'id' => $message->id,

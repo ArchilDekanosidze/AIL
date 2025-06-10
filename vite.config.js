@@ -8,4 +8,13 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+     server: {
+        watch: {
+            ignored: [
+                '**/public/images/**',
+                '**/storage/**',
+                '**/vendor/**', // ✅ add this line
+            ],
+        },
+    },
 });

@@ -1,0 +1,10 @@
+.chatHeader
+{
+    display: flex;
+    justify-content: space-between;
+}
+.chatHeader p
+{
+    text-align: left;
+    cursor: pointer;
+}

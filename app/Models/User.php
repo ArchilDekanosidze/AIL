@@ -64,6 +64,7 @@ class User extends Authenticatable
         'mobile_verified_at',
         'email',
         'email_verified_at',
+        'avatar',
         'password',
     ];
 

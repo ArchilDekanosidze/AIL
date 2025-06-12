@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 class MessageController extends Controller
 {
     // Show all messages in a conversation
-    public function index($conversationId)
+    public function index($conversationId) // done
     {
         $conversation = Conversation::with('participants')->findOrFail($conversationId);
         // $this->authorize('view', $conversation);
@@ -30,7 +30,7 @@ class MessageController extends Controller
         
     }
 
-    public function getMessages(Request $request, Conversation $conversation)
+    public function getMessages(Request $request, Conversation $conversation) // done
     {
         $beforeId = $request->query('before');
 
@@ -68,7 +68,7 @@ class MessageController extends Controller
     }
 
     // Store a new message
-    public function store(Request $request, Conversation $conversation)
+    public function store(Request $request, Conversation $conversation)  // done
     {
         $message = $conversation->messages()->create([
             'sender_id' => auth()->id(),
@@ -78,7 +78,7 @@ class MessageController extends Controller
         // Save attachments...
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('attachments', 'public');
+                $path = $file->store('chat/attachments', 'private');
                 $message->attachments()->create(['file_path' => $path]);
             }
         }
@@ -100,15 +100,5 @@ class MessageController extends Controller
             }),
             'created_at' => $message->created_at->diffForHumans(),
         ]);
-    }
-
-
-    // Download attachment securely
-    public function downloadAttachment($attachmentId)
-    {
-        $attachment = MessageAttachment::findOrFail($attachmentId);
-        // $this->authorize('view', $attachment->message->conversation);
-
-        return Storage::disk('private')->download($attachment->file_path);
     }
 }

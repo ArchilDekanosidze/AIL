@@ -1,20 +1,23 @@
  @extends('layouts.master')
 
 @section('style')
-<link rel="stylesheet" href="{{ asset('assets/css/category/categoryBook/index.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/chat/home/index.css') }}">
 @endsection
 
 @section('content')
 <div class="CategoryBook main-body">    
     <div class="mainDivDirection">
-        <h3 class="mb-3">لیست گفت‌وگوها</h3>
+        <div class="chatHeader">
+            <h3 class="mb-3">لیست گفت‌وگوها</h3>
+            <a href="{{ route('chat.create') }}">گفت و گوی جدید</a>
+        </div>
         <ul class="list-group">
             @forelse($conversations as $conversation)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="{{ route('chat.messages.index', $conversation->id) }}">
                         {{ $conversation->title ?? 'بدون عنوان' }}
                     </a>
-                    <span class="badge bg-secondary">{{ $conversation->type }}</span>
+                    {{-- <span class="badge bg-secondary">{{ $conversation->type }}</span> --}}
                 </li>
             @empty
                 <li class="list-group-item">هیچ گفت‌وگویی یافت نشد.</li>

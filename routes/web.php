@@ -228,12 +228,17 @@ Broadcast::routes(['middleware' => ['auth']]);
 Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
 
     // General Chat Page
-    Route::get('/', [ChatController::class, 'index'])->name('index');
+    Route::get('/', [ChatController::class, 'index'])->name('index'); // done
+    Route::get('/create', [ChatController::class, 'create'])->name('create');  // done
+    Route::get('/search-users', [ChatController::class, 'searchUsers'])->name('search-users');  //done
+    Route::post('/start-conversation', [ChatController::class, 'startConversation'])->name('startConversation');
+
 
     // Conversations
-    Route::resource('conversations', ConversationController::class)->only([
-        'index', 'store', 'show', 'destroy'
-    ]);
+    Route::get('conversations', [ConversationController::class, 'index'])->name('chat.conversations.index');
+    Route::post('conversations', [ConversationController::class, 'store'])->name('chat.conversations.store');
+    Route::get('conversations/{conversation}', [ConversationController::class, 'show'])->name('chat.conversations.show');
+    Route::delete('conversations/{conversation}', [ConversationController::class, 'destroy'])->name('chat.conversations.destroy');
 
     
     // Participants
@@ -241,14 +246,14 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
     Route::delete('conversations/{conversation}/participants/{user}', [ParticipantController::class, 'destroy'])->name('participants.destroy');
     
     // Messages
-    Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index');
-    Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages');
-    Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');
-    Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+    Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index'); // done
+    Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages');  //done
+    Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');  //done
+    Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');  
     
     // Attachments
-    Route::post('messages/{message}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
-    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download');
+    // Route::post('messages/{message}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download'); //done
 
     // Reactions
     Route::post('messages/{message}/reactions', [ReactionController::class, 'store'])->name('reactions.store');

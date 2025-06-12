@@ -12,7 +12,7 @@ class AttachmentController extends Controller
     /**
      * Download an attachment securely.
      */
-    public function download($id)
+    public function download($id) // ok
     {
         $attachment = MessageAttachment::with('message.conversation')->findOrFail($id);
 

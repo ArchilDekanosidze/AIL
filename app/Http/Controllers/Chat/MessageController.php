@@ -16,21 +16,17 @@ use Illuminate\Support\Facades\Storage;
 class MessageController extends Controller
 {
     // Show all messages in a conversation
-    public function index($conversationId) // done
+    public function index($conversationId)
     {
         $conversation = Conversation::with('participants')->findOrFail($conversationId);
         // $this->authorize('view', $conversation);
 
-        // $messages = Message::with('sender', 'attachments', 'parent')
-        //     ->where('conversation_id', $conversationId)
-        //     ->orderBy('created_at')
-        //     ->get();
 
         return view('chat.messages.index', compact('conversation'));
         
     }
 
-    public function getMessages(Request $request, Conversation $conversation) // done
+    public function getMessages(Request $request, Conversation $conversation) 
     {
         $beforeId = $request->query('before');
 
@@ -68,7 +64,7 @@ class MessageController extends Controller
     }
 
     // Store a new message
-    public function store(Request $request, Conversation $conversation)  // done
+    public function store(Request $request, Conversation $conversation)  
     {
         $message = $conversation->messages()->create([
             'sender_id' => auth()->id(),

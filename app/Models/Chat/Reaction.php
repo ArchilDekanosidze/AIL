@@ -12,7 +12,7 @@ class Reaction extends Model
 
     protected $table = 'chat_message_reactions'; // ✅ Fixes the table name
 
-    protected $fillable = ['message_id', 'user_id', 'reaction'];
+    protected $fillable = ['message_id', 'user_id', 'emoji'];
 
     public function message()
     {

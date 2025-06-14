@@ -28,6 +28,7 @@ return new class extends Migration
             // Optional last read message ID to track read status
             $table->foreignId('last_read_message_id')->nullable()->constrained('chat_messages')->onDelete('set null');
 
+            $table->timestamp('joined_at')->useCurrent(); // Automatically set join time
             $table->timestamps();
             $table->softDeletes();
 

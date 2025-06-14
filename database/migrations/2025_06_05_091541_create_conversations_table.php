@@ -19,6 +19,8 @@ return new class extends Migration
             
             // Conversation type: simple, group, channel
             $table->enum('type', ['simple', 'group', 'channel'])->default('simple');
+            $table->boolean('is_private')->default(true); 
+            $table->string('slug')->unique()->nullable();
             
             // Optional: owner/admin of conversation (nullable for simple)
             $table->foreignId('owner_id')->nullable()->constrained('users')->onDelete('set null');

@@ -9,6 +9,7 @@ use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Chat\GroupController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Chat\MessageController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -228,32 +229,32 @@ Broadcast::routes(['middleware' => ['auth']]);
 Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
 
     // General Chat Page
-    Route::get('/', [ChatController::class, 'index'])->name('index'); // done
-    Route::get('/create', [ChatController::class, 'create'])->name('create');  // done
-    Route::get('/search-users', [ChatController::class, 'searchUsers'])->name('search-users');  //done
+    Route::get('/', [ChatController::class, 'index'])->name('index'); 
+    Route::get('/create', [ChatController::class, 'create'])->name('create');  
+    Route::get('/search-users', [ChatController::class, 'searchUsers'])->name('search-users');  
     Route::post('/start-conversation', [ChatController::class, 'startConversation'])->name('startConversation');
 
 
-    // Conversations
-    Route::get('conversations', [ConversationController::class, 'index'])->name('chat.conversations.index');
-    Route::post('conversations', [ConversationController::class, 'store'])->name('chat.conversations.store');
-    Route::get('conversations/{conversation}', [ConversationController::class, 'show'])->name('chat.conversations.show');
-    Route::delete('conversations/{conversation}', [ConversationController::class, 'destroy'])->name('chat.conversations.destroy');
+    Route::get('groups/create-group', [GroupController::class, 'create'])->name('groups.create');
+    Route::post('groups/create-group', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('groups/{conversation}/add-users', [GroupController::class, 'addUsersForm'])->name('groups.add-users');
+    Route::post('groups/{conversation}/add-users', [GroupController::class, 'addUsers'])->name('groups.add-users.store');
+
 
     
     // Participants
-    Route::post('conversations/{conversation}/participants', [ParticipantController::class, 'store'])->name('participants.store');
-    Route::delete('conversations/{conversation}/participants/{user}', [ParticipantController::class, 'destroy'])->name('participants.destroy');
+    // Route::post('conversations/{conversation}/participants', [ParticipantController::class, 'store'])->name('participants.store');  
+    // Route::delete('conversations/{conversation}/participants/{user}', [ParticipantController::class, 'destroy'])->name('participants.destroy');  
     
     // Messages
-    Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index'); // done
-    Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages');  //done
-    Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');  //done
+    Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index'); 
+    Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages'); 
+    Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');  
     Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');  
     
     // Attachments
     // Route::post('messages/{message}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
-    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download'); //done
+    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download'); 
 
     // Reactions
     Route::post('messages/{message}/reactions', [ReactionController::class, 'store'])->name('reactions.store');

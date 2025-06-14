@@ -15,9 +15,10 @@
             <div id="userResults"></div>
 
             <div class="action-buttons">
-                <button class="btn-group">New Group</button>
-                <button class="btn-channel">New Channel</button>
+                <button class="btn-group" data-type="group">New Group</button>
+                <button class="btn-channel" data-type="channel">New Channel</button>
             </div>
+
         </div>
     </div>
 </div>
@@ -65,5 +66,9 @@
         });
     });
 
+    $('.action-buttons button').on('click', function () {
+        const type = $(this).data('type');
+        window.location.href = `/chat/groups/create-group?type=${type}`;
+    });
 </script>
 @endsection

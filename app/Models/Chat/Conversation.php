@@ -14,7 +14,7 @@ class Conversation extends Model
     
     protected $table = 'chat_conversations';
 
-    protected $fillable = ['type', 'title', 'created_by'];
+    protected $fillable = ['type', 'title', 'created_by', 'is_private', 'slug', 'owner_id'];
 
     public function participants()
     {

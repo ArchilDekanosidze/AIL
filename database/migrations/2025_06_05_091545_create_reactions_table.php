@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
             // Reaction type, e.g. emoji code or name like "like", "❤️", "😂"
-            $table->string('reaction');
+            $table->string('emoji');
 
             $table->timestamps();
 

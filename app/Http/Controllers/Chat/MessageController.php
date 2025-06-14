@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Chat;
 
-use App\Events\MessageSent;
 use App\Models\Chat\Message;
 use Illuminate\Http\Request;
 use Hekmatinasser\Verta\Verta;
+use App\Events\Chat\MessageSent;
 use App\Models\Chat\Conversation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;

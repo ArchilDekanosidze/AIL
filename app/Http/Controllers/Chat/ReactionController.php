@@ -7,7 +7,7 @@ use App\Models\Chat\Message;
 use App\Models\Chat\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Events\MessageReactionUpdated; // Make sure to import your event
+use App\Events\Chat\MessageReactionUpdated; // Make sure to import your event
 
 class ReactionController extends Controller
 {
@@ -71,12 +71,12 @@ class ReactionController extends Controller
         // Broadcast an event to all connected clients in the conversation to update the UI in real-time
         // The toOthers() method ensures the event is not broadcast back to the client that triggered it,
         // as their UI is updated immediately by the success callback of the AJAX request.
-        // broadcast(new MessageReactionUpdated(
-        //     $message->id,
-        //     $user->id,
-        //     $request->emoji,
-        //     $status
-        // ))->toOthers();
+        broadcast(new MessageReactionUpdated(
+            $message->id,
+            $user->id,
+            $request->emoji,
+            $status
+        ))->toOthers();
 
         // Return a success response
         return response()->json(['status' => $status]);

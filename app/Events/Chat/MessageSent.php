@@ -1,6 +1,6 @@
 <?php
+namespace App\Events\Chat;
 
-namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -35,7 +35,7 @@ class MessageSent implements ShouldBroadcast
             'sender' => [
                 'id' => $this->message->sender->id,
                 'name' => $this->message->sender->name,
-            ],
+            ], 
             'created_at' => $this->message->created_at->toDateTimeString(),
             'attachments' => $this->message->attachments->map(function($att) {
                 return [

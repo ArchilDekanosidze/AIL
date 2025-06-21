@@ -8,15 +8,15 @@
 <div class="CategoryBook main-body">    
     <div class="mainDivDirection">
         <div class="chat-create-box">
-            <h2 class="text-xl font-semibold mb-4">Start a New Chat</h2>
+            <h2 class="text-xl font-semibold mb-4">شروع گفت و گوی جدید</h2>
 
-            <input type="text" id="userSearchInput" class="search-input" placeholder="Search for users...">
+            <input type="text" id="userSearchInput" class="search-input" placeholder="جست و جو ...">
 
             <div id="userResults"></div>
 
             <div class="action-buttons">
-                <button class="btn-group" data-type="group">New Group</button>
-                <button class="btn-channel" data-type="channel">New Channel</button>
+                <button class="btn-group" data-type="group">گروه جدید</button>
+                <button class="btn-channel" data-type="channel">کانال جدید</button>
             </div>
 
         </div>

@@ -14,9 +14,9 @@
         <ul class="list-group">
             @forelse($conversations as $conversation)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="{{ route('chat.messages.index', $conversation->id) }}">
-                        {{ $conversation->title ?? 'بدون عنوان' }}
-                    </a>
+                <a href="{{ route('chat.messages.index', $conversation->id) }}">
+                    {{ $conversation->display_title }} {{-- Use the new display_title --}}
+                </a>
                     {{-- <span class="badge bg-secondary">{{ $conversation->type }}</span> --}}
                 </li>
             @empty

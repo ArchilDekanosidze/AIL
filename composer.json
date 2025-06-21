@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "beyondcode/laravel-websockets": "^1.15",
         "guzzlehttp/guzzle": "^7.2",
         "hekmatinasser/verta": "^8.4",
         "intervention/image": "^3.11",
@@ -14,7 +15,10 @@
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.8",
-        "pusher/pusher-php-server": "^7.2"
+        "react/event-loop": "^1.5",
+        "react/http": "^1.11",
+        "react/promise": "^3.2",
+        "react/socket": "^1.16"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",
@@ -72,6 +76,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

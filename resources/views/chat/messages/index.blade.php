@@ -44,7 +44,6 @@
 @endsection
 
 @section('scripts')
-@vite('resources/js/app.js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {{-- Ensure jQuery is loaded if not already by master --}}
 
 <script>
@@ -214,11 +213,12 @@
         });
 
         // --- Real-time Message Updates ---
+        
         if (typeof window.Echo !== 'undefined') {
             window.Echo.private(`chat.conversation.${conversationId}`)
-                .listen('MessageSent', (e) => {
-                    renderMessage(e.message, false); // Use the new render function, assuming 'e.message' is the full message object
-                    fetchAndRenderReactions(e.message.id); // Load reactions for the new real-time message
+                .listen('.MessageSent', (message) => {
+                    renderMessage(message, false);
+                    fetchAndRenderReactions(message.id);
                     $messagesBox.scrollTop($messagesBox[0].scrollHeight);
                 })
                 // Add a listener for reaction updates
@@ -229,7 +229,11 @@
         } else {
             console.error('window.Echo is not defined. Real-time features might not work.');
         }
+
+
     });
+
+
 
     // --- Reaction Functionality (outside document.ready for organization) ---
     $(document).ready(function() {

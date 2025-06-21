@@ -9,6 +9,13 @@ export default defineConfig({
         }),
     ],
      server: {
+        cors: true,
+        origin: 'http://localhost',
+        host: 'localhost',
+        port: 5173,
+        hmr: {
+            host: 'localhost',
+        },
         watch: {
             ignored: [
                 '**/public/images/**',

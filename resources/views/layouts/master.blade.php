@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    @vite('resources/js/app.js')
+
     @include('layouts.head-tag')
     @yield('head-tag')
     @yield('style')

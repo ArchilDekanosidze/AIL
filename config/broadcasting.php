@@ -46,14 +46,32 @@ return [
         //         // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
         //     ],
         // ],
+        // 'pusher' => [
+        //     'driver' => 'pusher',
+        //     'key' => env('PUSHER_APP_KEY'),
+        //     'secret' => env('PUSHER_APP_SECRET'),
+        //     'app_id' => env('PUSHER_APP_ID'),
+        //     'options' => [
+        //         'cluster' => env('PUSHER_APP_CLUSTER'),
+        //         'useTLS' => true, // ✅ Turn off TLS if you're on HTTP locally                
+        //     ],
+        // ],
+
         'pusher' => [
             'driver' => 'pusher',
             'key' => env('PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
-            'app_id' => env('PUSHER_APP_ID'),
+            'app_id' => env('PUSHER_APP_ID'), // Laravel Websockets doesn't strictly need this, but it can stay.
             'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true, // ✅ Turn off TLS if you're on HTTP locally                
+                'cluster' => env('PUSHER_APP_CLUSTER'), // This can be anything for local websockets, or removed.
+                'host' => '127.0.0.1', // IMPORTANT: This tells Echo to connect locally
+                'port' => 6001,      // IMPORTANT: This is the default Websockets port
+                'scheme' => 'http',  // Use http for local development without SSL
+                'encrypted' => false, // Set to true if you set up SSL for Websockets
+                'curl_options' => [ // You might remove this block if not needed
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_SSL_VERIFYPEER => 0,
+                ],
             ],
         ],
 

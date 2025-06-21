@@ -55,4 +55,20 @@ class MessageReactionUpdated implements ShouldBroadcast
     // {
     //     return 'reaction.updated'; // Then listen for .listen('.reaction.updated')
     // }
+
+
+    public function broadcastWith(): array
+    {
+        return [
+            'message_id' => $this->message_id,
+            'user_id' => $this->user_id,
+            'emoji' => $this->emoji,
+            'status' => $this->status, // 'added', 'removed', or 'changed'
+        ];
+    }
+
+    public function broadcastAs()
+    {
+        return 'MessageReactionUpdated';
+    }
 }

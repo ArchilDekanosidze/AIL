@@ -222,7 +222,8 @@
                     $messagesBox.scrollTop($messagesBox[0].scrollHeight);
                 })
                 // Add a listener for reaction updates
-                .listen('MessageReactionUpdated', (e) => {
+                .listen('.MessageReactionUpdated', (e) => {
+                     console.log('Reaction updated event received:', e);
                     // e.messageId, e.userId, e.emoji, e.status
                     fetchAndRenderReactions(e.message_id); // Re-fetch all reactions for the message
                 });

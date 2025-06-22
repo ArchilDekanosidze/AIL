@@ -250,6 +250,7 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
     Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index'); 
     Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages'); 
     Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');  
+    Route::put('messages/{message}', [MessageController::class, 'update'])->name('messages.update');
     Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');  
     
     // Attachments

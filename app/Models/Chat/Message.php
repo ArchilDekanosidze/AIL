@@ -5,10 +5,11 @@ namespace App\Models\Chat;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Message extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'chat_messages'; // ✅ Fixes the table name
 
@@ -16,8 +17,16 @@ class Message extends Model
         'conversation_id',
         'sender_id',
         'content',
-        'reply_to_message_id'
+        'reply_to_message_id',
+        'deleted_for_user_ids'
     ];
+
+    protected $casts = [
+        'edited_at' => 'datetime', // Cast edited_at to a datetime object
+        'deleted_at' => 'datetime', // Cast deleted_at to a datetime object for soft deletes
+        'deleted_for_user_ids' => 'array', // <-- THIS IS THE CRITICAL LINE
+    ];
+
 
     public function conversation()
     {

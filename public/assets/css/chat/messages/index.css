@@ -77,3 +77,90 @@
 .add-reaction-btn:hover {
     color: #000;
 }
+
+
+
+/* Delete Confirmation Modal Overlay */
+.delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Ensure it's above other elements */
+}
+
+/* Delete Confirmation Modal Content */
+.delete-modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.delete-modal-content h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.delete-modal-content p {
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 1em;
+}
+
+.delete-modal-buttons {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px; /* Space between buttons */
+}
+
+.delete-modal-buttons button {
+    width: 100%; /* Full width buttons */
+    padding: 10px 15px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid transparent; /* Default border */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.delete-modal-buttons #deleteForEveryoneBtn {
+    background-color: #dc3545; /* Red for destructive action */
+    color: white;
+}
+
+.delete-modal-buttons #deleteForEveryoneBtn:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.delete-modal-buttons #deleteForMyselfBtn {
+    background-color: #6c757d; /* Grey for secondary action */
+    color: white;
+}
+
+.delete-modal-buttons #deleteForMyselfBtn:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.delete-modal-buttons #cancelDeleteBtn {
+    background-color: #f8f9fa; /* Light background for cancel */
+    color: #343a40;
+    border-color: #ced4da;
+}
+
+.delete-modal-buttons #cancelDeleteBtn:hover {
+    background-color: #e2e6ea;
+    border-color: #d3d9df;
+}

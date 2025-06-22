@@ -18,11 +18,13 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+
+Broadcast::channel('user.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
+
 Broadcast::channel('chat.conversation.{conversationId}', function ($user, $conversationId) {
     // Check if $user is a participant in the conversation
-//  return true;
-
-
     return $user->conversations()->where('chat_conversations.id', $conversationId)->exists();
 });
 

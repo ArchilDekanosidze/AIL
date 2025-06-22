@@ -4,83 +4,71 @@ namespace App\Http\Controllers\Chat;
 
 use App\Models\Chat\Message;
 use Illuminate\Http\Request;
-use Hekmatinasser\Verta\Verta; // Keep this for your date formatting
+use Hekmatinasser\Verta\Verta;
 use App\Events\Chat\MessageSent;
-use App\Events\Chat\MessageDeleted; // Add this import if you implement MessageDeleted event
+use App\Events\Chat\MessageEdited; // <-- NEW: Import MessageEdited event
+use App\Events\Chat\MessageDeleted; // <-- Keep this import
 use App\Models\Chat\Conversation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Chat\MessageAttachment;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Database\Eloquent\SoftDeletes; // You need this trait for soft deletes in models
 
 class MessageController extends Controller
 {
     // Show all messages in a conversation
-    public function index($conversationId) // Keep your existing $conversationId parameter
+    public function index($conversationId)
     {
-        // Use findOrFail for consistency, and eager load participants
         $conversation = Conversation::with('participants.user')->findOrFail($conversationId);
-        // $this->authorize('view', $conversation); // Keep your authorization if active
 
-        // Ensure the authenticated user is a participant in this conversation
         if (!$conversation->participants->contains('user_id', Auth::id())) {
             abort(403, 'You are not a participant in this conversation.');
         }
 
         $user = Auth::user();
 
-        // --- Start: Logic for display_title (Copied from previous suggestion) ---
         if (!empty($conversation->title) && $conversation->type !== 'private') {
             $conversation->display_title = $conversation->title;
         } else {
-            // Filter out the current user to find other participants
             $otherParticipants = $conversation->participants->filter(function ($participant) use ($user) {
                 return $participant->user_id !== $user->id;
             });
 
             if ($otherParticipants->count() > 0) {
                 if ($conversation->type === 'private') {
-                    // For 1-to-1 private chats, show the other participant's name
                     $conversation->display_title = $otherParticipants->first()->user->name ?? 'Unknown User';
                 } else if ($conversation->type === 'group' || $conversation->type === 'channel') {
-                    // For groups/channels without a title, list a few participant names
                     $names = $otherParticipants->take(3)->pluck('user.name')->toArray();
                     if (!empty($names)) {
                         $conversation->display_title = implode(', ', $names) . ($otherParticipants->count() > 3 ? '...' : '');
                     } else {
-                        // Fallback if no other participants (e.g., self-chat in a group/channel context)
                         $conversation->display_title = ucfirst($conversation->type) . ' Chat';
                     }
                 } else {
-                    // General fallback for unhandled types or edge cases
                     $conversation->display_title = 'Chat Conversation';
                 }
             } else {
-                // This case handles a conversation where the current user is the only participant
-                // (e.g., a self-chat, or a group/channel not yet joined by others)
                 $conversation->display_title = 'My Chat';
             }
         }
-        // --- End: Logic for display_title ---
 
         return view('chat.messages.index', compact('conversation'));
     }
 
     public function getMessages(Request $request, Conversation $conversation)
     {
-        // Ensure the authenticated user is a participant
         if (!$conversation->participants->contains('user_id', Auth::id())) {
             return response()->json([], 403);
         }
 
         $beforeId = $request->query('before');
+        $currentUserId = Auth::id(); // Get current user ID for filtering 'deleted_for_user_ids'
 
-        // --- Start: Updated query for reactions ---
         $query = $conversation->messages()
-            ->with(['sender', 'attachments', 'reactions.user']) // Added 'reactions.user' eager load
+            ->with(['sender', 'attachments', 'reactions.user'])
             ->orderByDesc('id')
-            ->limit(20); // Increased limit to 20 as previously suggested
+            ->limit(20);
 
         if ($beforeId) {
             $query->where('id', '<', $beforeId);
@@ -88,15 +76,17 @@ class MessageController extends Controller
 
         $messages = $query->get()->reverse()->values();
 
-        // --- Start: Transformation and Reaction Grouping Logic ---
-        $transformed = $messages->map(function ($message) {
+        $transformed = $messages->filter(function($message) use ($currentUserId) {
+            // Filter out messages soft-deleted (deleted_at is not null) AND
+            // messages where current user ID is in deleted_for_user_ids
+            return is_null($message->deleted_at) && !in_array($currentUserId, $message->deleted_for_user_ids ?? []);
+        })->map(function ($message) {
             $groupedReactions = $message->reactions
                 ->groupBy('emoji')
                 ->map(function ($group) {
                     return [
                         'emoji' => $group->first()->emoji,
                         'count' => $group->count(),
-                        // Map users for each reaction bubble
                         'users' => $group->map(function ($reaction) {
                             return [
                                 'id' => $reaction->user->id,
@@ -106,7 +96,6 @@ class MessageController extends Controller
                     ];
                 })->values()->toArray();
 
-            // Determine if current user has reacted and with which emoji
             $currentUserReaction = $message->reactions->firstWhere('user_id', Auth::id());
             $currentUserReactionEmoji = $currentUserReaction ? $currentUserReaction->emoji : null;
 
@@ -117,120 +106,195 @@ class MessageController extends Controller
                     'name' => $message->sender->name ?? 'Unknown',
                 ],
                 'content' => $message->content,
-                'created_at' => (new Verta($message->created_at))->formatDifference(), // Keep Verta formatting
+                'created_at' => (new Verta($message->created_at))->formatDifference(),
+                'edited_at' => $message->edited_at ? (new Verta($message->edited_at))->formatDifference() : null, // <-- Include edited_at
                 'attachments' => $message->attachments->map(function ($att) {
                     return [
                         'id' => $att->id,
-                        'file_path' => $att->file_path, // Consider if you want to expose full path or just filename
+                        'file_path' => $att->file_path,
                         'download_url' => route('chat.attachments.download', $att->id),
                     ];
                 }),
-                'reactions' => $groupedReactions,          // Add grouped reactions
-                'current_user_reaction' => $currentUserReactionEmoji, // Add current user's reaction emoji
+                'reactions' => $groupedReactions,
+                'current_user_reaction' => $currentUserReactionEmoji,
             ];
-        });
-        // --- End: Transformation and Reaction Grouping Logic ---
+        })->values(); // Re-index the collection after filtering
 
         return response()->json($transformed);
     }
 
-    // Store a new message
     public function store(Request $request, Conversation $conversation)
     {
-        // Ensure user is participant
         if (!$conversation->participants->contains('user_id', Auth::id())) {
             return response()->json(['message' => 'You cannot send messages to this conversation.'], 403);
         }
 
         $request->validate([
-            'content' => 'required_without_all:attachments', // Ensure message content OR attachments are present
-            'attachments.*' => 'file|max:10240', // Max 10MB per file, adjust as needed
+            'content' => 'required_without_all:attachments',
+            'attachments.*' => 'file|max:10240',
         ]);
 
         $message = $conversation->messages()->create([
             'sender_id' => auth()->id(),
             'content' => $request->input('content'),
+            'edited_at' => null, // New messages are not edited
+            'deleted_for_user_ids' => [], // New messages are not deleted for anyone
         ]);
 
-        // Save attachments...
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                // Ensure 'public' disk is specified if you want public access for downloads
                 $path = $file->store('chat_attachments', 'public');
                 $message->attachments()->create([
                     'file_path' => $path,
-                    'file_name' => $file->getClientOriginalName(), // Store original filename
+                    'file_name' => $file->getClientOriginalName(),
                     'file_type' => $file->getMimeType(),
                     'file_size' => $file->getSize(),
                 ]);
             }
         }
 
-        // Eager load sender and attachments for broadcasting and response
         $message->load('sender', 'attachments');
 
-        // For MessageSent event payload, ensure it has `reactions` and `current_user_reaction`
-        // New messages have no reactions initially.
-        $message->reactions = []; // Initialize empty array for reactions
-        $message->current_user_reaction = null; // No user reaction on new message
-
-        // Pass the conversation object to the event if needed by broadcastOn or broadcastWith
-        // Make sure MessageSent broadcastWith() extracts the necessary data from $message.
-        // If your MessageSent event's broadcastWith() returns the entire $message model,
-        // then the `reactions` and `current_user_reaction` properties set above will be included.
-        broadcast(new MessageSent($message))->toOthers();
-
-        // Return the full message object for immediate display on sender's side
-        // This response should match what `getMessages` returns for a single message for consistency.
-        return response()->json([
+        // Prepare message data for broadcasting, ensuring it matches frontend renderMessage expectations
+        $messageData = [
             'id' => $message->id,
+            'conversation_id' => $conversation->id, // <--- ENSURE THIS LINE IS PRESENT AND CORRECT
             'sender' => [
                 'id' => $message->sender->id ?? null,
                 'name' => $message->sender->name ?? 'Unknown',
             ],
             'content' => $message->content,
-            'created_at' => (new Verta($message->created_at))->formatDifference(), // Keep Verta formatting
+            'created_at' => (new Verta($message->created_at))->formatDifference(),
+            'edited_at' => null, // New messages are not edited
             'attachments' => $message->attachments->map(function ($att) {
                 return [
                     'id' => $att->id,
-                    'file_path' => $att->file_path, // Or just filename if preferred
+                    'file_path' => $att->file_path,
                     'download_url' => route('chat.attachments.download', $att->id),
                 ];
-            }),
+            })->toArray(),
             'reactions' => [], // New messages have no reactions
-            'current_user_reaction' => null, // New messages have no current user reaction
-        ]);
+            'current_user_reaction' => null, // No current user reaction
+            'deleted_at' => null, // Ensure these are null for new message
+            'deleted_for_user_ids' => [],
+        ];
+
+        broadcast(new MessageSent($messageData))->toOthers(); // Pass the array
+
+        return response()->json($messageData); // Return the same array to sender
     }
 
-    // --- Start: destroy method (copied from previous suggestion) ---
     /**
-     * Remove the specified message from storage.
+     * Update the specified message in storage.
+     * This method handles the "edit message" functionality.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Chat\Message  $message
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Message $message)
+    public function update(Request $request, Message $message)
     {
-        // Ensure only the sender can delete their own message
-        // Or if you want admins/owner to delete any message, add that logic
+        // Authorization: Only the sender can edit their own message
         if ($message->sender_id !== Auth::id()) {
-            abort(403, 'You are not authorized to delete this message.');
+            return response()->json(['message' => 'You are not authorized to edit this message.'], 403);
         }
 
-        // Delete associated attachments from storage
-        foreach ($message->attachments as $attachment) {
-            Storage::disk('public')->delete($attachment->file_path);
-        }
+        // Validate the request
+        $request->validate([
+            'content' => 'required|string|max:5000', // Adjust max length as needed
+        ]);
 
-        $conversationId = $message->conversation_id; // Get ID before deletion for broadcast
+        // Update message content and set edited_at timestamp
+        $message->content = $request->input('content');
+        $message->edited_at = now(); // Set the current timestamp when message is edited
+        $message->save();
 
-        $message->delete();
+        // Reload necessary relationships for the broadcast and response
+        $message->load('sender', 'attachments', 'reactions.user');
 
-        // Broadcast a MessageDeleted event for real-time update
-        // Make sure you have App\Events\Chat\MessageDeleted imported and defined.
-        broadcast(new MessageDeleted($message->id, $conversationId))->toOthers();
+        // Transform the message for consistent frontend consumption
+        $transformedMessage = [
+            'id' => $message->id,
+            'conversation_id' => $message->conversation_id, // <--- ADDED FOR BROADCASTING
+            'sender' => [
+                'id' => $message->sender->id ?? null,
+                'name' => $message->sender->name ?? 'Unknown',
+            ],
+            'content' => $message->content,
+            'created_at' => (new Verta($message->created_at))->formatDifference(),
+            'edited_at' => (new Verta($message->edited_at))->formatDifference(), // Formatted edited_at
+            'attachments' => $message->attachments->map(function ($att) {
+                return [
+                    'id' => $att->id,
+                    'file_path' => $att->file_path,
+                    'download_url' => route('chat.attachments.download', $att->id),
+                ];
+            })->toArray(),
+            'reactions' => $message->reactions->groupBy('emoji')->map(function ($group) {
+                return [
+                    'emoji' => $group->first()->emoji,
+                    'count' => $group->count(),
+                    'users' => $group->map(fn($reaction) => ['id' => $reaction->user->id, 'name' => $reaction->user->name])->values()->toArray(),
+                ];
+            })->values()->toArray(),
+            'current_user_reaction' => $message->reactions->firstWhere('user_id', Auth::id())?->emoji,
+        ];
 
-        return response()->json(['message' => 'Message deleted successfully']);
+        // Broadcast an event that the message was updated
+        broadcast(new MessageEdited($transformedMessage))->toOthers();
+
+        return response()->json(['message' => 'Message updated successfully', 'updated_message' => $transformedMessage]);
     }
-    // --- End: destroy method ---
+
+    /**
+     * Remove the specified message from storage based on deletion type.
+     * This method handles both "delete for everyone" and "delete for myself".
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Chat\Message  $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, Message $message)
+    {
+        $currentUserId = Auth::id();
+
+        // Authorization: Only the sender or an admin can initiate deletion
+        if ($message->sender_id !== $currentUserId /* || Auth::user()->hasRole('admin') */) {
+            return response()->json(['message' => 'You are not authorized to delete this message.'], 403);
+        }
+
+        $deletionType = $request->input('deletion_type'); // 'for_everyone' or 'for_me'
+        $conversationId = $message->conversation_id;
+
+        if ($deletionType === 'for_everyone') {
+            // Delete associated attachments from storage
+            foreach ($message->attachments as $attachment) {
+                Storage::disk('public')->delete($attachment->file_path);
+            }
+            // Soft delete the message globally
+            $message->delete(); // This sets deleted_at
+
+            // Broadcast to all clients in the conversation
+            broadcast(new MessageDeleted($message->id, $conversationId, 'for_everyone', $currentUserId))->toOthers();
+
+        } elseif ($deletionType === 'for_me') {
+            // Add current user's ID to the deleted_for_user_ids array
+            $deletedFor = $message->deleted_for_user_ids ?? [];
+            if (!in_array($currentUserId, $deletedFor)) {
+                $deletedFor[] = $currentUserId;
+            }
+            $message->deleted_for_user_ids = $deletedFor;
+            $message->save();
+
+            // Broadcast ONLY to the specific user who performed 'delete for myself'
+            // We need a specific listener for this if you want it to appear as deleted
+            // only on their screen without a full page refresh.
+            // For others, the message should remain visible as the database `deleted_at` is null.
+            broadcast(new MessageDeleted($message->id, $conversationId, 'for_me', $currentUserId));
+        } else {
+            return response()->json(['message' => 'Invalid deletion type.'], 400);
+        }
+
+        return response()->json(['message' => 'Message deletion processed successfully.']);
+    }
 }

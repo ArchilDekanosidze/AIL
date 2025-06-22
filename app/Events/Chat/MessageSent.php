@@ -17,10 +17,9 @@ class MessageSent implements ShouldBroadcast
 
     public $message;
 
-    public function __construct(Message $message)
-    {
-        $this->message = $message;
-    }
+    public function __construct(
+        public array $messageData // <-- CRITICAL CHANGE: accept an array
+    ) {}
 
     public function broadcastAs()
     {
@@ -29,26 +28,11 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.conversation.' . $this->message->conversation_id);
+        return new PrivateChannel('chat.conversation.' . $this->messageData['conversation_id']);
     }
 
     public function broadcastWith()
     {
-        return [
-            'id' => $this->message->id,
-            'content' => $this->message->content,
-            'sender' => [
-                'id' => $this->message->sender->id,
-                'name' => $this->message->sender->name,
-            ], 
-            'created_at' => $this->message->created_at->toDateTimeString(),
-            'attachments' => $this->message->attachments->map(function($att) {
-                return [
-                    'id' => $att->id,
-                    'file_path' => $att->file_path,
-                    'download_url' => route('chat.attachments.download', $att->id),
-                ];
-            }),
-        ];
+        return [ 'message' => $this->messageData ];
     }
 }

@@ -33,9 +33,10 @@ return new class extends Migration
             $table->json('metadata')->nullable();
 
             // Whether the message is edited or deleted
-            $table->boolean('is_edited')->default(false);
-            $table->boolean('is_deleted')->default(false);
+            $table->timestamp('edited_at')->nullable();
 
+            $table->softDeletes(); // This adds a 'deleted_at' timestamp column
+            $table->json('deleted_for_user_ids')->default('[]');
             $table->timestamps();
         });
     }

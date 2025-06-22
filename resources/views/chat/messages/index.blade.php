@@ -66,14 +66,20 @@
     const currentUserId = {{ Auth::id() }};
     const conversationId = $('#messagesBox').data('conversation-id');
 
+
+    // Ensure currentUserId and conversationId are globally accessible in this script scope
+    // (These lines should be outside your renderMessage function, at the top of your script block)
+    // const currentUserId = {{ Auth::id() }};
+    // const conversationId = $('#messagesBox').data('conversation-id');
+
     // Helper function to render a single message with reactions
     function renderMessage(msg, prepend = false) {
         // This check ensures we don't try to render messages that are (globally) deleted
         // or deleted for the current user during initial load or `MessageSent` event.
         // `MessageDeleted` event listener will handle existing messages.
+        // If the message is globally soft-deleted OR deleted for the current user,
+        // and it's already in the DOM, replace it with a placeholder.
         if (msg.deleted_at || (msg.deleted_for_user_ids && msg.deleted_for_user_ids.includes(currentUserId))) {
-            // If the message exists and is marked as deleted for the current user,
-            // ensure it's removed or replaced with a placeholder.
             const $existingMessage = $(`.message-item[data-id="${msg.id}"]`);
             if ($existingMessage.length) {
                 renderDeletedMessagePlaceholder(msg.id); // Use the placeholder logic
@@ -83,10 +89,13 @@
 
         // IMPORTANT: Ensure 'reactions' is an array, as your backend sends it as such.
         const reactions = msg.reactions || [];
+        // Assuming msg.current_user_reaction is directly the emoji string or null
         const currentUserReactionEmoji = msg.current_user_reaction || null;
 
         let reactionsHtml = '';
         if (reactions.length > 0) {
+            // Sort reactions by count (most popular first) for consistency
+            reactions.sort((a, b) => b.count - a.count);
             for (const emojiData of reactions) {
                 const isUserReactedWithThis = currentUserReactionEmoji === emojiData.emoji;
                 reactionsHtml += `
@@ -106,17 +115,73 @@
         // Determine if the current user is the sender to show edit/delete buttons
         const isSender = (currentUserId === msg.sender?.id);
 
+        // --- START OF ATTACHMENT RENDERING LOGIC ---
+        const attachmentsHtml = (msg.attachments || []).map(att => {
+            // `att.file_path` should now be a publicly accessible URL (e.g., /storage/...)
+            const downloadUrl = `/chat/attachments/${att.id}/download`; // Your dedicated download route
+
+            const mimeType = att.mime_type || ''; // Ensure mime_type is available
+            const fileName = att.file_name || 'Download File'; // Ensure file_name is available
+            let attachmentDisplay = '';
+
+            if (mimeType.startsWith('image/')) {
+                // It's an image
+                attachmentDisplay = `
+                    <div class="message-attachment-item image-attachment">
+                        <a href="${downloadUrl}" target="_blank" title="Download ${fileName}">
+                            <img src="${att.file_path}" alt="${fileName}" loading="lazy" class="attachment-image">
+                        </a>
+                        <div class="attachment-filename">${fileName}</div>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                    </div>
+                `;
+            } else if (mimeType.startsWith('video/')) {
+                // It's a video
+                // If you have a video thumbnail (poster) URL from backend, use att.thumbnail_url || ''
+                attachmentDisplay = `
+                    <div class="message-attachment-item video-attachment">
+                        <video controls preload="none" class="attachment-video">
+                            <source src="${att.file_path}" type="${mimeType}">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="attachment-filename">${fileName}</div>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                    </div>
+                `;
+            }else if (mimeType.startsWith('audio/')) { // <--- NEW: Handle Audio Files
+                // It's an audio file
+                attachmentDisplay = `
+                    <div class="message-attachment-item audio-attachment">
+                        <audio controls preload="none" class="attachment-audio">
+                            <source src="${att.file_path}" type="${mimeType}">
+                            Your browser does not support the audio tag.
+                        </audio>
+                        <div class="attachment-filename">${fileName}</div>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                    </div>
+                `;
+            } 
+            else {
+                // It's another type of file (PDF, Doc, etc.)
+                attachmentDisplay = `
+                    <div class="message-attachment-item file-attachment">
+                        <a href="${downloadUrl}" target="_blank" class="message-attachment-link">
+                            ${fileName}
+                        </a>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                    </div>
+                `;
+            }
+            return attachmentDisplay;
+        }).join(''); // Join all generated HTML snippets
+        // --- END OF ATTACHMENT RENDERING LOGIC ---
+
         const messageHtml = `
             <div class="message-item" data-id="${msg.id}">
                 <div class="message-content">
                     <strong>${msg.sender?.name || 'Unknown'}:</strong>
                     <p class="message-text">${msg.content}</p>
-                    ${(msg.attachments || []).map(att =>
-                        `<a href="/chat/attachments/${att.id}/download" target="_blank" class="message-attachment-link">
-                            ${att.file_path.split('/').pop()}
-                        </a><br>`
-                    ).join('')}
-                </div>
+                    ${attachmentsHtml} </div>
                 <div class="message-meta">
                     <small>${msg.created_at}</small> ${editedDisplay}
                     ${isSender ? `<button class="btn btn-sm btn-info edit-message-btn" data-id="${msg.id}" data-content="${encodeURIComponent(msg.content)}">Edit</button>` : ''}
@@ -129,22 +194,25 @@
             </div>
         `;
 
-        // --- CRITICAL CHANGE BLOCK START ---
+        // --- CRITICAL CHANGE BLOCK START (for replacing/appending messages) ---
         const $existingMessage = $(`.message-item[data-id="${msg.id}"]`);
+        const $messagesBox = $('#messagesBox'); // Ensure this is accessible or passed
 
         if ($existingMessage.length) {
             // If the message already exists, replace its entire HTML content.
+            // This handles edits and initial loads where a message might be marked as deleted.
             $existingMessage.replaceWith(messageHtml);
         } else {
             // If it's a new message, append or prepend based on the flag.
             if (prepend) {
-                $('#messagesBox').prepend(messageHtml);
+                $messagesBox.prepend(messageHtml);
             } else {
-                $('#messagesBox').append(messageHtml);
+                $messagesBox.append(messageHtml);
             }
         }
         // --- CRITICAL CHANGE BLOCK END ---
-    }
+}
+
 
     // Function to replace a message with a deleted placeholder
     function renderDeletedMessagePlaceholder(messageId) {

@@ -17,8 +17,10 @@ return new class extends Migration
             // Link to message
             $table->foreignId('message_id')->constrained('chat_messages')->onDelete('cascade');
 
+            $table->string('file_name')->nullable();
             // Attachment type: image, video, voice, file etc.
-            $table->enum('type', ['image', 'video', 'voice', 'file'])->default('file');
+            $table->string('mime_type')->nullable();
+            $table->unsignedBigInteger('file_size')->nullable();
 
             // File path or URL to the stored attachment
             $table->string('file_path');

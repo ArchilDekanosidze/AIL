@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Chat;
 
+use Illuminate\Support\Str;
 use App\Models\Chat\Message;
 use Illuminate\Http\Request;
 use Hekmatinasser\Verta\Verta;
 use App\Events\Chat\MessageSent;
-use App\Events\Chat\MessageEdited; // <-- NEW: Import MessageEdited event
-use App\Events\Chat\MessageDeleted; // <-- Keep this import
 use App\Models\Chat\Conversation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Chat\MessageAttachment;
 use Illuminate\Support\Facades\Storage;
+use App\Events\Chat\MessageDeleted; // <-- Keep this import
+use App\Events\Chat\MessageEdited; // <-- NEW: Import MessageEdited event
 use Illuminate\Database\Eloquent\SoftDeletes; // You need this trait for soft deletes in models
 
 class MessageController extends Controller
@@ -111,7 +112,10 @@ class MessageController extends Controller
                 'attachments' => $message->attachments->map(function ($att) {
                     return [
                         'id' => $att->id,
-                        'file_path' => $att->file_path,
+                        'file_path' => route('chat.attachments.view', $att->id), // <--- Use the new 'view' route for display
+                        'file_name' => $att->file_name, // Include file_name
+                        'mime_type' => $att->mime_type, // Include mime_type
+                        'file_size' => $att->file_size, // Include file_size
                         'download_url' => route('chat.attachments.download', $att->id),
                     ];
                 }),
@@ -143,11 +147,31 @@ class MessageController extends Controller
 
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
-                $path = $file->store('chat_attachments', 'public');
+                    // Get current date and time
+                $now = now(); // Uses Carbon, which is part of Laravel
+                $year = $now->format('Y');      // e.g., 2025
+                $month = $now->format('m');     // e.g., 06
+                $day = $now->format('d');       // e.g., 22
+                $hour = $now->format('H');      // e.g., 15 (24-hour format)
+                $minute = $now->format('i');    // e.g., 21
+                // Define the base directory structure within 'chat_attachments'
+                $baseDirectory = "chat_attachments/{$year}/{$month}/{$day}/{$hour}/{$minute}";
+                // Generate a unique filename to prevent conflicts, preserving the original extension
+                // Using Str::uuid() is highly recommended for robust uniqueness.
+                $originalExtension = $file->getClientOriginalExtension();
+                $uniqueFileName = Str::uuid() . '.' . $originalExtension; // e.g., 'a1b2c3d4-e5f6-...f7g8.jpg'
+
+                // Construct the full path that will be stored in the database
+                $fullFilePathInStorage = "{$baseDirectory}/{$uniqueFileName}";
+
+                // Store the file using putFileAs, specifying the directory and the new filename
+                // The 'private' disk means it will be saved in storage/app/
+                Storage::disk('private')->putFileAs($baseDirectory, $file, $uniqueFileName);
+
                 $message->attachments()->create([
-                    'file_path' => $path,
+                    'file_path' => $fullFilePathInStorage,
                     'file_name' => $file->getClientOriginalName(),
-                    'file_type' => $file->getMimeType(),
+                    'mime_type' => $file->getMimeType(),
                     'file_size' => $file->getSize(),
                 ]);
             }
@@ -167,9 +191,12 @@ class MessageController extends Controller
             'created_at' => (new Verta($message->created_at))->formatDifference(),
             'edited_at' => null, // New messages are not edited
             'attachments' => $message->attachments->map(function ($att) {
-                return [
+               return [
                     'id' => $att->id,
-                    'file_path' => $att->file_path,
+                    'file_path' => route('chat.attachments.view', $att->id), // <--- Use the new 'view' route for display
+                    'file_name' => $att->file_name, // Include file_name
+                    'mime_type' => $att->mime_type, // Include mime_type
+                    'file_size' => $att->file_size, // Include file_size
                     'download_url' => route('chat.attachments.download', $att->id),
                 ];
             })->toArray(),
@@ -224,9 +251,12 @@ class MessageController extends Controller
             'created_at' => (new Verta($message->created_at))->formatDifference(),
             'edited_at' => (new Verta($message->edited_at))->formatDifference(), // Formatted edited_at
             'attachments' => $message->attachments->map(function ($att) {
-                return [
+              return [
                     'id' => $att->id,
-                    'file_path' => $att->file_path,
+                    'file_path' => route('chat.attachments.view', $att->id), // <--- Use the new 'view' route for display
+                    'file_name' => $att->file_name, // Include file_name
+                    'mime_type' => $att->mime_type, // Include mime_type
+                    'file_size' => $att->file_size, // Include file_size
                     'download_url' => route('chat.attachments.download', $att->id),
                 ];
             })->toArray(),
@@ -269,7 +299,7 @@ class MessageController extends Controller
         if ($deletionType === 'for_everyone') {
             // Delete associated attachments from storage
             foreach ($message->attachments as $attachment) {
-                Storage::disk('public')->delete($attachment->file_path);
+                Storage::disk('private')->delete($attachment->file_path);
             }
             // Soft delete the message globally
             $message->delete(); // This sets deleted_at

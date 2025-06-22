@@ -256,6 +256,7 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
     // Attachments
     // Route::post('messages/{message}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
     Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download'); 
+    Route::get('/attachments/{attachment}/view', [AttachmentController::class, 'serveAttachment'])->name('attachments.view'); // Give it a name for easy URL generation
 
     // Reactions
     Route::post('messages/{message}/reactions', [ReactionController::class, 'store'])->name('reactions.store');

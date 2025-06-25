@@ -22,12 +22,15 @@ class MessageController extends Controller
     public function index($conversationId)
     {
         $conversation = Conversation::with('participants.user')->findOrFail($conversationId);
+        $user = Auth::user();
 
-        if (!$conversation->participants->contains('user_id', Auth::id())) {
-            abort(403, 'You are not a participant in this conversation.');
+        $isParticipant = $user && $conversation->participants->contains('user_id', $user->id);
+
+        // If conversation is private, user must be participant
+        if ($conversation->type === 'private' && !$isParticipant) {
+            abort(403, 'This is a private conversation.');
         }
 
-        $user = Auth::user();
 
         if (!empty($conversation->title) && $conversation->type !== 'private') {
             $conversation->display_title = $conversation->title;
@@ -59,9 +62,14 @@ class MessageController extends Controller
 
     public function getMessages(Request $request, Conversation $conversation)
     {
-        if (!$conversation->participants->contains('user_id', Auth::id())) {
+        $user = Auth::user();
+        $isParticipant = $user && $conversation->participants->contains('user_id', $user->id);
+
+        // Guests can read public/group/channel messages
+        if ($conversation->type === 'private' && !$isParticipant) {
             return response()->json([], 403);
         }
+
 
         $beforeId = $request->query('before');
         $currentUserId = Auth::id(); // Get current user ID for filtering 'deleted_for_user_ids'
@@ -129,9 +137,12 @@ class MessageController extends Controller
 
     public function store(Request $request, Conversation $conversation)
     {
-        if (!$conversation->participants->contains('user_id', Auth::id())) {
+        $user = Auth::user();
+
+        if (!$user || !$conversation->participants->contains('user_id', $user->id)) {
             return response()->json(['message' => 'You cannot send messages to this conversation.'], 403);
         }
+
 
         $request->validate([
             'content' => 'required_without_all:attachments',

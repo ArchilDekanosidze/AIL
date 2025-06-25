@@ -39,6 +39,35 @@
 
             <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Send</button>
         </form>
+
+        @php
+            $user = Auth::user();
+            $participant = $user ? $conversation->participants->firstWhere('user_id', $user->id) : null;
+        @endphp
+        
+        <div id="message-access-info">
+            @guest
+                <div class="alert alert-info text-center">
+                    Please <a href="{{ route('auth.login') }}">log in</a> to send messages.
+                </div>
+            @else
+                @if ($conversation->type !== 'private' && !$participant)
+                    <div class="text-center">
+                        <form method="POST" action="{{ route('chat.conversation.participants.join', $conversation->id) }}">
+                            @csrf
+                            <button type="submit" class="btn btn-primary">Join {{ ucfirst($conversation->type) }}</button>
+                        </form>
+                    </div>
+                @elseif ($conversation->type === 'channel' && !in_array($participant->role, ['admin', 'superadmin']))
+                    <div class="alert alert-warning text-center">
+                        Only admins can send messages in this channel.
+                    </div>
+                @endif
+            @endguest
+        </div>
+
+       
+
     </div>
 </div>
 @endsection
@@ -61,10 +90,43 @@
 {{-- Ensure jQuery is loaded. If your layouts.master already loads it, you can remove this. --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
 <script>
+    window.currentUserId = @json(Auth::id());    
+    window.conversationType = @json($conversation->type);
+
+
+    window.isParticipant = @json($participant !== null);
+    window.userRole = @json($participant->role ?? null); // null, 'member', 'admin', 'superadmin'
+</script>
+
+
+
+<script>
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const sendBox = document.getElementById('messageForm');
+        const isGuest = !window.currentUserId;
+        const isParticipant = window.isParticipant;
+        const conversationType = window.conversationType;
+        const role = window.userRole;
+
+        if (isGuest) {
+            sendBox.style.display = 'none';
+        } else if (!isParticipant && conversationType !== 'private') {
+            sendBox.style.display = 'none'; // Show join form instead
+        } else if (conversationType === 'channel' && !['admin', 'superadmin'].includes(role)) {
+            sendBox.style.display = 'none'; // Not allowed to send in channel
+        } else {
+            sendBox.style.display = 'block'; // Can send messages
+        }
+    });
+
     // Ensure currentUserId and conversationId are globally accessible in this script scope
-    const currentUserId = {{ Auth::id() }};
+    const currentUserId = @json(Auth::id());
     const conversationId = $('#messagesBox').data('conversation-id');
+
 
 
     // Ensure currentUserId and conversationId are globally accessible in this script scope
@@ -197,21 +259,43 @@
         // --- CRITICAL CHANGE BLOCK START (for replacing/appending messages) ---
         const $existingMessage = $(`.message-item[data-id="${msg.id}"]`);
         const $messagesBox = $('#messagesBox'); // Ensure this is accessible or passed
+        const $newMessage = $(messageHtml); // <-- wrap string in jQuery object
 
         if ($existingMessage.length) {
             // If the message already exists, replace its entire HTML content.
             // This handles edits and initial loads where a message might be marked as deleted.
-            $existingMessage.replaceWith(messageHtml);
+            $existingMessage.replaceWith($newMessage);
         } else {
             // If it's a new message, append or prepend based on the flag.
             if (prepend) {
-                $messagesBox.prepend(messageHtml);
+                $messagesBox.prepend($newMessage);
             } else {
-                $messagesBox.append(messageHtml);
+                $messagesBox.append($newMessage);
             }
         }
+
+       disableReactionButtonsIfNeeded($newMessage[0]); // Pass DOM element
         // --- CRITICAL CHANGE BLOCK END ---
-}
+    }
+
+    function disableReactionButtonsIfNeeded(messageElement) {
+        if (!messageElement) return;
+
+        const isGuest = !window.currentUserId;
+        const isNotParticipant = !window.isParticipant;
+
+        if (isGuest || isNotParticipant) {
+            messageElement.querySelectorAll('.add-reaction-btn').forEach(button => {
+                button.disabled = true;
+                button.classList.add('opacity-50', 'cursor-not-allowed');
+                button.title = "Login and join to react";
+            });
+        }
+    }
+
+
+
+
 
 
     // Function to replace a message with a deleted placeholder
@@ -495,7 +579,12 @@
 
         // --- Real-time Message Updates (Echo Listeners) ---
         if (typeof window.Echo !== 'undefined') {
-            window.Echo.private(`chat.conversation.${conversationId}`)
+            const channelType = @json($conversation->type === 'private' ? 'private' : 'public');
+            const chatChannel = channelType === 'private'
+                ? window.Echo.private(`chat.conversation.${conversationId}`)
+                : window.Echo.channel(`chat.conversation.${conversationId}`);
+
+            chatChannel
                 .listen('.MessageSent', (e) => { // 'e' contains the message object
                     console.log('MessageSent event received:', e);
                     renderMessage(e.message, false);

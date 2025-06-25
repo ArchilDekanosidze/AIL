@@ -2,13 +2,15 @@
 
 namespace App\Events\Chat;
 
+use App\Models\Chat\Message;
+use App\Models\Chat\Conversation;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageReactionUpdated implements ShouldBroadcast
 {
@@ -37,24 +39,22 @@ class MessageReactionUpdated implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        // This line is crucial: it needs to correctly fetch the conversation ID
-        // Make sure your Message model has a 'chat_conversation_id' foreign key
-        // or whatever column links a message to its conversation.
-        $message = \App\Models\Chat\Message::find($this->message_id);
+        $message = Message::find($this->message_id);
+
         if ($message) {
-            return [
-                new PrivateChannel('chat.conversation.' . $message->conversation_id),
-            ];
+            $conversation = Conversation::find($message->conversation_id);
+
+            if ($conversation && $conversation->type !== 'private') {
+                return [new Channel('chat.conversation.' . $conversation->id)];
+            }
+
+            return [new PrivateChannel('chat.conversation.' . $conversation->id)];
         }
-        // Fallback or error handling if message not found (shouldn't happen if fired correctly)
-        return []; 
+
+        return [];
     }
 
-    // Optional: You can define broadcastAs if you want a different event name
-    // public function broadcastAs()
-    // {
-    //     return 'reaction.updated'; // Then listen for .listen('.reaction.updated')
-    // }
+
 
 
     public function broadcastWith(): array

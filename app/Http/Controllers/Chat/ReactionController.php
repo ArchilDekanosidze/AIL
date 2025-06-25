@@ -109,9 +109,9 @@ class ReactionController extends Controller
             ->toArray(); // Convert to array for final JSON response
 
         // Determine if the current authenticated user has reacted to this message, and if so, with which emoji
-        $currentUserReaction = $message->reactions
-                                        ->where('user_id', $user->id)
-                                        ->first();
+        $currentUserReaction = $user
+            ? $message->reactions->where('user_id', $user->id)->first()
+            : null;
 
         return response()->json([
             'message_id' => $messageId,

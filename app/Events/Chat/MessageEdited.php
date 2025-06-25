@@ -2,13 +2,14 @@
 
 namespace App\Events\Chat;
 
+use App\Models\Chat\Conversation;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageEdited implements ShouldBroadcast
 {
@@ -31,8 +32,13 @@ class MessageEdited implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        // Broadcast on a private channel specific to the conversation.
-        // Ensure $this->messageData['conversation_id'] is present in the array.
+        // Load conversation type
+        $conversation = Conversation::find($this->messageData['conversation_id']);
+
+        if ($conversation && $conversation->type !== 'private') {
+            return new Channel('chat.conversation.' . $conversation->id);
+        }
+
         return new PrivateChannel('chat.conversation.' . $this->messageData['conversation_id']);
     }
 

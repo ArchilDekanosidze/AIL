@@ -226,7 +226,7 @@ Route::get('/freeFile/download/{freeFile}', [FreeFileController::class, 'downloa
 //chat
 Broadcast::routes(['middleware' => ['auth']]);
 
-Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
+Route::prefix('chat')->name('chat.')->group(function () {
 
     // General Chat Page
     Route::get('/', [ChatController::class, 'index'])->name('index'); 
@@ -245,7 +245,10 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
     // Participants
     // Route::post('conversations/{conversation}/participants', [ParticipantController::class, 'store'])->name('participants.store');  
     // Route::delete('conversations/{conversation}/participants/{user}', [ParticipantController::class, 'destroy'])->name('participants.destroy');  
+    Route::post('conversations/{conversation}/join', [ParticipantController::class, 'store'])->name('conversation.participants.join');  
+
     
+
     // Messages
     Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index'); 
     Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages'); 

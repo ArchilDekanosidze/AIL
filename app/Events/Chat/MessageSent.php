@@ -2,14 +2,15 @@
 namespace App\Events\Chat;
 
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use App\Models\Chat\Message;
+use App\Models\Chat\Conversation;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageSent implements ShouldBroadcast
 {
@@ -28,7 +29,23 @@ class MessageSent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.conversation.' . $this->messageData['conversation_id']);
+        // Access conversation_id from messageData array, not from $this->message
+        $conversationId = $this->messageData['conversation_id'] ?? null;
+
+        if (!$conversationId) {
+            // If no conversation_id, fallback or throw error
+            return [];
+        }
+
+        $conversation = Conversation::find($conversationId);
+
+        if ($conversation && $conversation->type !== 'private') {
+            // Public channel for group/channel
+            return [new Channel('chat.conversation.' . $conversation->id)];
+        }
+
+        // Private channel for private conversation
+        return [new PrivateChannel('chat.conversation.' . $conversationId)];
     }
 
     public function broadcastWith()

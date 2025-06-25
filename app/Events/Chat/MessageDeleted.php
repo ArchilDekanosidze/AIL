@@ -2,13 +2,14 @@
 
 namespace App\Events\Chat;
 
+use App\Models\Chat\Conversation;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageDeleted implements ShouldBroadcast
 {
@@ -37,10 +38,20 @@ class MessageDeleted implements ShouldBroadcast
     public function broadcastOn()
     {
         if ($this->deletionType === 'for_me') {
-            return new PrivateChannel('user.' . $this->userId); // User-specific private channel
+            // Private channel for user-specific deletion notification
+            return new PrivateChannel('user.' . $this->userId);
         }
 
-        return new PrivateChannel('chat.conversation.' . $this->conversationId); // Conversation-specific private channel
+        // Load conversation to check type
+        $conversation = Conversation::find($this->conversationId);
+
+        if ($conversation && $conversation->type !== 'private') {
+            // Public channel for non-private conversation deletion (visible to guests)
+            return new Channel('chat.conversation.' . $this->conversationId);
+        }
+
+        // Default: private channel for private conversations
+        return new PrivateChannel('chat.conversation.' . $this->conversationId);
     }
 
     /**

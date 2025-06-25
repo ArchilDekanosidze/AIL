@@ -38,7 +38,7 @@ class ChatController extends Controller
                 });
 
                 if ($otherParticipants->count() > 0) {
-                    if ($conversation->type === 'simple') {
+                    if ($conversation->type === 'private') {
                         // For 1-to-1 private chats, show the other participant's name
                         $conversation->display_title = $otherParticipants->first()->user->name ?? 'Unknown User';
                     } else if ($conversation->type === 'group' || $conversation->type === 'channel') {
@@ -99,7 +99,7 @@ class ChatController extends Controller
             // Create new conversation
             $conversation = Conversation::create([
                 'title' => null, // or auto generate title
-                'type' => 'simple'
+                'type' => 'private'
             ]);
             $conversation->participants()->create([
                 'user_id' => $authUser->id,

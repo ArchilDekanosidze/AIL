@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             
             // Conversation type: simple, group, channel
-            $table->enum('type', ['simple', 'group', 'channel'])->default('simple');
+            $table->enum('type', ['private', 'group', 'channel'])->default('simple');
             $table->boolean('is_private')->default(true); 
             $table->string('slug')->unique()->nullable();
             

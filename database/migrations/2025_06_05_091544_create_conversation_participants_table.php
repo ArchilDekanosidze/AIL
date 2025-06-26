@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
             // Participant role in the conversation
-            $table->enum('role', ['member', 'admin', 'owner'])->default('member');
+            $table->enum('role', ['member', 'admin', 'super_admin'])->default('member');
 
             // Status flags
             $table->boolean('is_muted')->default(false);

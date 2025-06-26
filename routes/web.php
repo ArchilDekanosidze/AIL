@@ -243,9 +243,23 @@ Route::prefix('chat')->name('chat.')->group(function () {
 
     
     // Participants
-    // Route::post('conversations/{conversation}/participants', [ParticipantController::class, 'store'])->name('participants.store');  
-    // Route::delete('conversations/{conversation}/participants/{user}', [ParticipantController::class, 'destroy'])->name('participants.destroy');  
-    Route::post('conversations/{conversation}/join', [ParticipantController::class, 'store'])->name('conversation.participants.join');  
+    Route::post('conversations/{conversation}/join', [ParticipantController::class, 'join'])->name('conversation.participants.join');  
+    
+    // Manage Participants Page
+    Route::get('conversations/{conversation}/manage-users', [ParticipantController::class, 'manage'])->name('participants.manage');
+    Route::get('conversations/{conversation}/search-participants', [ParticipantController::class, 'searchParticipants'])->name('participants.search');
+    Route::get('conversations/{conversation}/participants/search-user-row', [ParticipantController::class, 'searchUserRow'])->name('participants.searchUserRow');
+    // Promote / Demote Admin
+    Route::post('conversations/{conversation}/promote/{user}', [ParticipantController::class, 'promote'])->name('participants.promote');
+    Route::post('conversations/{conversation}/demote/{user}', [ParticipantController::class, 'demote'])->name('participants.demote');
+
+    // Mute / Unmute
+    Route::post('conversations/{conversation}/mute/{user}', [ParticipantController::class, 'mute'])->name('participants.mute');
+    Route::post('conversations/{conversation}/unmute/{user}', [ParticipantController::class, 'unmute'])->name('participants.unmute');
+
+    // Ban / Unban
+    Route::post('conversations/{conversation}/ban/{user}', [ParticipantController::class, 'ban'])->name('participants.ban');
+    Route::post('conversations/{conversation}/unban/{user}', [ParticipantController::class, 'unban'])->name('participants.unban');
 
     
 

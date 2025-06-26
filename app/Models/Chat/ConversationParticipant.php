@@ -12,7 +12,7 @@ class ConversationParticipant extends Model
 
     protected $table = 'chat_conversation_participants';
 
-    protected $fillable = ['conversation_id', 'user_id', 'role'];
+    protected $fillable = ['conversation_id', 'user_id', 'role', 'is_muted', 'is_banned', 'last_read_message_id'];
 
     public function conversation()
     {

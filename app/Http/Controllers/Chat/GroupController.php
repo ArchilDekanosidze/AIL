@@ -42,7 +42,7 @@ class GroupController extends Controller
         // Add current user as participant
         $conversation->participants()->create([
             'user_id' => auth()->id(),
-            'role' => 'admin', // optional
+            'role' => 'super_admin', // optional
         ]);
 
         return redirect()->route('chat.groups.add-users', $conversation->id);

@@ -26,6 +26,9 @@ class MessageController extends Controller
 
         $isParticipant = $user && $conversation->participants->contains('user_id', $user->id);
 
+        $participant = $conversation->participants->where('user_id', $user->id)->first();
+        $currentUserRole = $participant?->role ?? 'guest';
+
         // If conversation is private, user must be participant
         if ($conversation->type === 'private' && !$isParticipant) {
             abort(403, 'This is a private conversation.');
@@ -56,8 +59,7 @@ class MessageController extends Controller
                 $conversation->display_title = 'My Chat';
             }
         }
-
-        return view('chat.messages.index', compact('conversation'));
+        return view('chat.messages.index', compact('conversation', 'currentUserRole'));
     }
 
     public function getMessages(Request $request, Conversation $conversation)

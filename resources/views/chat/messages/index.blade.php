@@ -8,6 +8,11 @@
 @section('content')
 <div class="CategoryBook main-body">
     <div class="mainDivDirection">
+        @if ($conversation->type !== 'private' && in_array($currentUserRole, ['admin', 'super_admin']))
+            <a href="{{ route('chat.participants.manage', $conversation->id) }}" class="btn btn-secondary">
+                Manage Users
+            </a>
+        @endif
         {{-- Using $conversation->display_title as discussed previously --}}
         <h2>Conversation: {{ $conversation->display_title ?? 'Private Chat' }}</h2>
 

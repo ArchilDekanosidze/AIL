@@ -8,6 +8,7 @@ use App\Models\Chat\Conversation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Events\Chat\ParticipantStatusUpdated;
 
 class ParticipantController extends Controller
 {
@@ -71,6 +72,8 @@ public function manage(Request $request, Conversation $conversation)
     }
 
     $participants = $query->get();
+
+    
 
     if ($authParticipant->role === 'super_admin') {
         $participants = $participants->sortByDesc(fn($p) => $p->role === 'admin' ? 1 : 0)->values();
@@ -154,6 +157,8 @@ public function searchParticipants(Request $request, Conversation $conversation)
         $participant = $conversation->participants()->where('user_id', $user->id)->firstOrFail();
         $participant->update(['is_muted' => true]);
 
+        broadcast(new ParticipantStatusUpdated($conversation->id, $user->id, 'muted'));
+
         return back()->with('success', 'User muted.');
     }
 
@@ -173,6 +178,10 @@ public function searchParticipants(Request $request, Conversation $conversation)
 
         $participant = $conversation->participants()->where('user_id', $user->id)->firstOrFail();
         $participant->update(['is_banned' => true]);
+
+
+        broadcast(new ParticipantStatusUpdated($conversation->id, $user->id, 'banned'));
+
 
         return back()->with('success', 'User banned.');
     }

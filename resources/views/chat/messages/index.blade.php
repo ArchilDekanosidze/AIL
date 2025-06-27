@@ -99,10 +99,9 @@
 <script>
     window.currentUserId = @json(Auth::id());    
     window.conversationType = @json($conversation->type);
-
-
     window.isParticipant = @json($participant !== null);
     window.userRole = @json($participant->role ?? null); // null, 'member', 'admin', 'superadmin'
+    window.isMuted = {{ $participant && $participant->is_muted ? 'true' : 'false' }};
 </script>
 
 
@@ -116,15 +115,22 @@
         const isParticipant = window.isParticipant;
         const conversationType = window.conversationType;
         const role = window.userRole;
+        const isMuted = window.isMuted;
 
         if (isGuest) {
             sendBox.style.display = 'none';
         } else if (!isParticipant && conversationType !== 'private') {
-            sendBox.style.display = 'none'; // Show join form instead
+            sendBox.style.display = 'none'; // Not joined in public group
         } else if (conversationType === 'channel' && !['admin', 'superadmin'].includes(role)) {
-            sendBox.style.display = 'none'; // Not allowed to send in channel
+            sendBox.style.display = 'none'; // Channels: only admins can send
+        } else if (isMuted) {
+            sendBox.style.display = 'none'; // Muted users can't send
+            const mutedNotice = document.createElement('div');
+            mutedNotice.className = 'alert alert-warning mt-2';
+            mutedNotice.innerText = 'You are muted and cannot send messages.';
+            sendBox.parentNode.insertBefore(mutedNotice, sendBox);
         } else {
-            sendBox.style.display = 'block'; // Can send messages
+            sendBox.style.display = 'block'; // Can send
         }
     });
 
@@ -346,6 +352,18 @@
         let earliestMessageId = null;
         let loading = false;
         let noMore = false;
+
+
+        Echo.private(`chat.${window.currentUserId}`)
+        .listen('ParticipantStatusUpdated', (e) => {
+            if (e.status === 'banned' && e.conversation_id === conversationId) {
+                window.location.href = '/chat'; // or a toast then redirect
+            }
+            if (e.status === 'muted' && e.conversation_id === conversationId) {
+                $('#messageBoxContainer').remove(); // or hide with .hide()
+                $('#mutedNotice').show();
+            }
+        });
 
         function loadMessages(before = null, prepend = false) {
             if (loading || noMore) return;
@@ -756,5 +774,8 @@
             }
         });
     });
+
+
+
 </script>
 @endsection

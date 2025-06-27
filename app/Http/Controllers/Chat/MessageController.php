@@ -59,6 +59,10 @@ class MessageController extends Controller
                 $conversation->display_title = 'My Chat';
             }
         }
+        $participant = $conversation->participants()->where('user_id', auth()->id())->first();
+        if ($participant->is_banned) {
+            return view('chat.messages.banned', compact('conversation'));
+        }
         return view('chat.messages.index', compact('conversation', 'currentUserRole'));
     }
 
@@ -139,6 +143,10 @@ class MessageController extends Controller
 
     public function store(Request $request, Conversation $conversation)
     {
+
+        if (Auth::user()->is_muted || Auth::user()->is_banned) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $user = Auth::user();
 
         if (!$user || !$conversation->participants->contains('user_id', $user->id)) {
@@ -234,6 +242,11 @@ class MessageController extends Controller
      */
     public function update(Request $request, Message $message)
     {
+
+        if (Auth::user()->is_muted || Auth::user()->is_banned) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         // Authorization: Only the sender can edit their own message
         if ($message->sender_id !== Auth::id()) {
             return response()->json(['message' => 'You are not authorized to edit this message.'], 403);
@@ -300,6 +313,10 @@ class MessageController extends Controller
     public function destroy(Request $request, Message $message)
     {
         $currentUserId = Auth::id();
+
+        if (Auth::user()->is_muted || Auth::user()->is_banned) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
         // Authorization: Only the sender or an admin can initiate deletion
         if ($message->sender_id !== $currentUserId /* || Auth::user()->hasRole('admin') */) {

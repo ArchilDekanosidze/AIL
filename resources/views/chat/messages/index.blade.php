@@ -98,6 +98,7 @@
 
 <script>
     window.currentUserId = @json(Auth::id());    
+    window.currentUserRole = @json($currentUserRole);
     window.conversationType = @json($conversation->type);
     window.isParticipant = @json($participant !== null);
     window.userRole = @json($participant->role ?? null); // null, 'member', 'admin', 'superadmin'
@@ -147,6 +148,8 @@
 
     // Helper function to render a single message with reactions
     function renderMessage(msg, prepend = false) {
+        const currentRole = window.currentUserRole;
+
         // This check ensures we don't try to render messages that are (globally) deleted
         // or deleted for the current user during initial load or `MessageSent` event.
         // `MessageDeleted` event listener will handle existing messages.
@@ -249,6 +252,43 @@
         }).join(''); // Join all generated HTML snippets
         // --- END OF ATTACHMENT RENDERING LOGIC ---
 
+
+
+
+        let messageActionsHtml = '';
+        const senderRole = msg.sender?.role ?? 'member';
+        const senderId = msg.sender?.id;
+
+        const isTargetMember = senderRole === 'member';
+        const isTargetAdmin = senderRole === 'admin';
+
+        const canManage = (
+            (currentRole === 'super_admin' && senderId !== currentUserId) ||
+            (currentRole === 'admin' && isTargetMember && senderId !== currentUserId)
+        );
+
+        if (isSender) {
+            messageActionsHtml += `<button class="btn btn-sm btn-info edit-message-btn" data-id="${msg.id}" data-content="${encodeURIComponent(msg.content)}">Edit</button>`;
+            messageActionsHtml += `<button class="btn btn-sm btn-danger delete-message-btn" data-id="${msg.id}">Delete</button>`;
+        } else if (canManage) {
+            // Only allow manage actions if NOT self
+            if (msg.sender?.is_banned) {
+                messageActionsHtml += `<button class="btn btn-sm btn-outline-danger unban-user-btn" data-user-id="${senderId}">Unban</button>`;
+            } else {
+                messageActionsHtml += `<button class="btn btn-sm btn-danger ban-user-btn" data-user-id="${senderId}">Ban</button>`;
+            }
+
+            if (msg.sender?.is_muted) {
+                messageActionsHtml += `<button class="btn btn-sm btn-outline-warning unmute-user-btn" data-user-id="${senderId}">Unmute</button>`;
+            } else {
+                messageActionsHtml += `<button class="btn btn-sm btn-warning mute-user-btn" data-user-id="${senderId}">Mute</button>`;
+            }
+
+            // Delete option (e.g., global delete by admin)
+            messageActionsHtml += `<button class="btn btn-sm btn-outline-secondary delete-message-btn" data-id="${msg.id}">Delete</button>`;
+        }
+
+
         const messageHtml = `
             <div class="message-item" data-id="${msg.id}">
                 <div class="message-content">
@@ -257,8 +297,7 @@
                     ${attachmentsHtml} </div>
                 <div class="message-meta">
                     <small>${msg.created_at}</small> ${editedDisplay}
-                    ${isSender ? `<button class="btn btn-sm btn-info edit-message-btn" data-id="${msg.id}" data-content="${encodeURIComponent(msg.content)}">Edit</button>` : ''}
-                    ${isSender ? `<button class="btn btn-sm btn-danger delete-message-btn" data-id="${msg.id}">Delete</button>` : ''}
+                    ${messageActionsHtml}
                     <button class="add-reaction-btn" data-message-id="${msg.id}">+</button>
                 </div>
                 <div class="reactions-summary" id="reactions-summary-${msg.id}">
@@ -266,6 +305,7 @@
                 </div>
             </div>
         `;
+
 
         // --- CRITICAL CHANGE BLOCK START (for replacing/appending messages) ---
         const $existingMessage = $(`.message-item[data-id="${msg.id}"]`);

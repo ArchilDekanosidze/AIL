@@ -20,6 +20,7 @@ use App\Models\Chat\Conversation;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use App\Jobs\Notification\Email\SendEmail;
+use App\Models\Chat\ConversationParticipant;
 use App\Services\Auth\Traits\HasTwoFactor;
 use App\Services\Auth\Traits\MustVerifyEmail;
 use App\Services\Auth\Traits\MustVerifyMobile;
@@ -188,5 +189,10 @@ class User extends Authenticatable
     public function reactions()
     {
         return $this->hasMany(Reaction::class);
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(ConversationParticipant::class);
     }
 }

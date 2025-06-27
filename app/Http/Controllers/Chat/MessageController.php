@@ -81,7 +81,9 @@ class MessageController extends Controller
         $currentUserId = Auth::id(); // Get current user ID for filtering 'deleted_for_user_ids'
 
         $query = $conversation->messages()
-            ->with(['sender', 'attachments', 'reactions.user'])
+            ->with(['sender.participants' => function ($q) use ($conversation) {
+                $q->where('conversation_id', $conversation->id);
+            }, 'attachments', 'reactions.user'])
             ->orderByDesc('id')
             ->limit(20);
 
@@ -119,6 +121,9 @@ class MessageController extends Controller
                 'sender' => [
                     'id' => $message->sender->id ?? null,
                     'name' => $message->sender->name ?? 'Unknown',
+                    'role' => optional($message->sender->participants->first())->role ?? 'member',
+                    'is_banned' => (bool) optional($message->sender->participants->first())->is_banned,
+                    'is_muted' => (bool) optional($message->sender->participants->first())->is_mut
                 ],
                 'content' => $message->content,
                 'created_at' => (new Verta($message->created_at))->formatDifference(),

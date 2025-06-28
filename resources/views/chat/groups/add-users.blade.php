@@ -85,7 +85,7 @@
                 return;
             }
 
-            $.get('/chat/search-users', { q: query }, function (users) {
+            $.get('/chat/groups/search-users', { q: query }, function (users) {
                 let html = '';
                 users.forEach(user => {
                     // Only display users not already selected

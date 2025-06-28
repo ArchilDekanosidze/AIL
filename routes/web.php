@@ -233,14 +233,18 @@ Route::prefix('chat')->name('chat.')->group(function () {
     Route::get('create', [ChatController::class, 'create'])->name('create');  
     Route::get('search-entities', [ChatController::class, 'searchEntities'])->name('search-entities');  
     Route::post('start-conversation', [ChatController::class, 'startConversation'])->name('startConversation');
+    Route::post('toggle-ban-user', [ChatController::class, 'toggleBanUser'])->name('toggle-ban-user');
+
 
 
     Route::get('groups/create-group', [GroupController::class, 'create'])->name('groups.create');
     Route::post('groups/create-group', [GroupController::class, 'store'])->name('groups.store');
     Route::get('groups/{conversation}/add-users', [GroupController::class, 'addUsersForm'])->name('groups.add-users');
     Route::post('groups/{conversation}/add-users', [GroupController::class, 'addUsers'])->name('groups.add-users.store');
-    Route::get('groups/{conversation}/search-users-form', [GroupController::class, 'searchUsersForm'])->name('groups.search-users-form');
-    Route::get('groups/{conversation}/search-users', [GroupController::class, 'searchUsers'])->name('groups.search-users');
+    Route::get('groups/search-users', [GroupController::class, 'searchUsers'])->name('groups.search-users');
+
+    Route::get('groups/{conversation}/search-users-after-creation-form', [GroupController::class, 'searchUsersAfterCreationForm'])->name('groups.search-users-after-creation-form');
+    Route::get('groups/{conversation}/search-users-after-creation', [GroupController::class, 'searchUsersAfterCreation'])->name('groups.search-users-after-creation');
 
 
 

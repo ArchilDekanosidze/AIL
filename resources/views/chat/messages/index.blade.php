@@ -299,7 +299,11 @@
         const messageHtml = `
             <div class="message-item" data-id="${msg.id}">
                 <div class="message-content">
-                    <strong>${msg.sender?.name || 'Unknown'}:</strong>
+                   <strong>
+                        <a href="/profile/student/${msg.sender?.id}" class="text-blue-600 hover:underline">
+                            ${msg.sender?.name || 'Unknown'}
+                        </a>:
+                    </strong>
                     <p class="message-text">${msg.content}</p>
                     ${attachmentsHtml} </div>
                 <div class="message-meta">
@@ -352,10 +356,6 @@
             });
         }
     }
-
-
-
-
 
 
     // Function to replace a message with a deleted placeholder

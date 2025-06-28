@@ -158,7 +158,37 @@ class GroupController extends Controller
         return redirect()->back()->with('success', 'اطلاعات ' .$conversation->persianType .' با موفقیت به‌روزرسانی شد.');
     }
 
-    public function searchUsersForm(Conversation $conversation)  
+
+
+    public function searchUsers(Request $request)
+    {
+        $query = $request->input('q');
+        $currentUserId = auth()->id();
+
+        // Step 1: Get all conversation IDs where current user is banned
+        $blockedConversationIds = \App\Models\Chat\ConversationParticipant::where('user_id', $currentUserId)
+            ->where('is_banned', true)
+            ->whereHas('conversation', fn($q) => $q->where('type', 'private'))
+            ->pluck('conversation_id');
+
+        // Step 2: Get the users who banned the current user (other participant)
+        $bannedByUserIds = \App\Models\Chat\ConversationParticipant::whereIn('conversation_id', $blockedConversationIds)
+            ->where('user_id', '!=', $currentUserId)
+            ->pluck('user_id');
+
+        // Step 3: Search users, excluding those who banned the current user
+        $users = User::query()
+            ->where('name', 'like', "%{$query}%")
+            ->where('id', '!=', $currentUserId)
+            ->whereNotIn('id', $bannedByUserIds)
+            ->limit(10)
+            ->get(['id', 'name', 'avatar']);
+
+        return response()->json($users);
+    }
+
+
+    public function searchUsersAfterCreationForm(Conversation $conversation)  
     {
         // $this->authorize('update', $conversation); // optional if using policies
 
@@ -167,7 +197,7 @@ class GroupController extends Controller
         ]);
     }
 
-    public function searchUsers(Request $request)
+    public function searchUsersAfterCreation(Request $request)
     {
         $query = $request->input('q');
         $conversationId = $request->input('conversation_id'); // Pass this from JS

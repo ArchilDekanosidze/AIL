@@ -181,6 +181,13 @@ class User extends Authenticatable
                     ->withPivot('role')
                     ->withTimestamps();
     }
+
+    public function chatConversations()
+    {
+        return $this->hasMany(ConversationParticipant::class, 'user_id', 'id');
+    }
+
+
     public function messages()
     {
         return $this->hasMany(Message::class);

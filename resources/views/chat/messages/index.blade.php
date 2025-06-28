@@ -10,11 +10,17 @@
     <div class="mainDivDirection">
         @if ($conversation->type !== 'private' && in_array($currentUserRole, ['admin', 'super_admin']))
             <a href="{{ route('chat.participants.manage', $conversation->id) }}" class="btn btn-secondary">
-                Manage Users
+                مدیریت اعضا
+            </a>
+        @endif
+        
+        @if ($conversation->type !== 'private')
+            <a href="{{ route('chat.groups.info', $conversation->id) }}" class="btn btn-info ml-2">
+                اطلاعات کانال
             </a>
         @endif
         {{-- Using $conversation->display_title as discussed previously --}}
-        <h2>Conversation: {{ $conversation->display_title ?? 'Private Chat' }}</h2>
+        <h2>{{ $conversation->display_title ?? 'Private Chat' }}</h2>
 
         <div class="messages-box" id="messagesBox"
             data-conversation-id="{{ $conversation->id }}"
@@ -186,7 +192,7 @@
         }
 
         // Determine if it's an edited message and get the formatted time
-        const editedDisplay = msg.edited_at ? `<small class="edited-timestamp">(Edited: ${msg.edited_at})</small>` : '';
+        const editedDisplay = msg.edited_at ? `<small class="edited-timestamp">(اصلاح شده: ${msg.edited_at})</small>` : '';
 
         // Determine if the current user is the sender to show edit/delete buttons
         const isSender = (currentUserId === msg.sender?.id);
@@ -308,22 +314,24 @@
 
 
         // --- CRITICAL CHANGE BLOCK START (for replacing/appending messages) ---
-        const $existingMessage = $(`.message-item[data-id="${msg.id}"]`);
-        const $messagesBox = $('#messagesBox'); // Ensure this is accessible or passed
         const $newMessage = $(messageHtml); // <-- wrap string in jQuery object
 
+       const $existingMessage = $(`.message-item[data-id="${msg.id}"]`);
+        const $messagesBox = $('#messagesBox');
+
         if ($existingMessage.length) {
-            // If the message already exists, replace its entire HTML content.
-            // This handles edits and initial loads where a message might be marked as deleted.
-            $existingMessage.replaceWith($newMessage);
+            // Replace the inside of the existing message element
+            const newContent = $newMessage.html(); // Extract inner HTML from generated message
+            $existingMessage.html(newContent);     // Replace content in place (no DOM position change)
         } else {
-            // If it's a new message, append or prepend based on the flag.
+            // Append new message normally
             if (prepend) {
                 $messagesBox.prepend($newMessage);
             } else {
                 $messagesBox.append($newMessage);
             }
         }
+
 
        disableReactionButtonsIfNeeded($newMessage[0]); // Pass DOM element
         // --- CRITICAL CHANGE BLOCK END ---
@@ -665,7 +673,7 @@
                         // Remove old message (to re-render with new content/status)
                         $existingMessage.remove();
                         // Render the updated message
-                        renderMessage(e.message, false); // Consider if you need to maintain order here
+                        renderMessage(e.message, true); // Consider if you need to maintain order here
                         $messagesBox.scrollTop($messagesBox[0].scrollHeight); // Keep scroll at bottom if new
                     }
                 })

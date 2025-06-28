@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Chat;
 
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Chat\Conversation;
@@ -17,8 +18,19 @@ class GroupController extends Controller
         if (!in_array($type, ['group', 'channel'])) {
             abort(404);
         }
+        
+        $persianType = "";
+        if($type =='channel' )
+        {
+            $persianType = "کانال";
+        }
 
-        return view('chat.groups.create', compact('type'));
+        if($type =='group' )
+        {
+            $persianType = "گروه";
+        }
+
+        return view('chat.groups.create', compact('type', 'persianType'));
     }
 
     // Step 1: Store group/channel and redirect to Step 2
@@ -35,7 +47,7 @@ class GroupController extends Controller
             'title' => $request->title,
             'type' => $request->type, // "group" or "channel"
             'is_private' => $request->is_private,
-            'slug' => $request->slug ?: Str::slug($request->title),
+            'slug' => $request->link ?: Str::slug($request->title),
             'owner_id' => auth()->user()->id
         ]);
 
@@ -111,4 +123,72 @@ class GroupController extends Controller
         return redirect()->route('chat.messages.index', $conversation->id)
                          ->with('success', 'Members added successfully!');
     }
+
+
+    public function info(Conversation $conversation)
+    {
+        // $this->authorize('view', $conversation); // Optional policy check
+
+        $participant = $conversation->participants()->where('user_id', auth()->id())->first();
+        $role = $participant?->role ?? 'guest';
+
+        return view('chat.conversations.info', compact('conversation', 'role'));
+    }
+
+    public function updateInfo(Request $request, Conversation $conversation)
+    {
+        $participant = $conversation->participants()->where('user_id', auth()->id())->first();
+        $role = $participant?->role ?? 'guest';
+
+        if (!in_array($role, ['admin', 'super_admin'])) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'link' => 'nullable|string|max:255',
+            'bio' => 'nullable|string|max:1000',
+            'is_private' => 'nullable|boolean', // ✅ validate is_private
+        ]);
+
+        $conversation->update([
+            'slug' => $validated['link'] ?? $conversation->slug,
+            'bio' => $validated['bio'] ?? $conversation->bio,
+            'is_private' => $validated['is_private'] ?? $conversation->is_private, // ✅ update is_private
+        ]);
+
+        return redirect()->back()->with('success', 'اطلاعات ' .$conversation->persianType .' با موفقیت به‌روزرسانی شد.');
+    }
+
+    public function searchUsersForm(Conversation $conversation)  
+    {
+        // $this->authorize('update', $conversation); // optional if using policies
+
+        return view('chat.groups.add-users_afterCreatedChannel', [
+            'conversation' => $conversation,
+        ]);
+    }
+
+    public function searchUsers(Request $request)
+    {
+        $query = $request->input('q');
+        $conversationId = $request->input('conversation_id'); // Pass this from JS
+
+        $alreadyParticipantIds = [];
+
+        if ($conversationId) {
+            $conversation = Conversation::findOrFail($conversationId);
+            $alreadyParticipantIds = $conversation->participants()->pluck('user_id')->toArray();
+        }
+
+        $users = User::query()
+            ->where('name', 'like', "%{$query}%")
+            ->whereNotIn('id', $alreadyParticipantIds)
+            ->limit(10)
+            ->get(['id', 'name', 'avatar']);
+
+        return response()->json($users);
+    }
+
+
+
 }

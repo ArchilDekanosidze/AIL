@@ -239,7 +239,13 @@ Route::prefix('chat')->name('chat.')->group(function () {
     Route::post('groups/create-group', [GroupController::class, 'store'])->name('groups.store');
     Route::get('groups/{conversation}/add-users', [GroupController::class, 'addUsersForm'])->name('groups.add-users');
     Route::post('groups/{conversation}/add-users', [GroupController::class, 'addUsers'])->name('groups.add-users.store');
+    Route::get('groups/{conversation}/search-users-form', [GroupController::class, 'searchUsersForm'])->name('groups.search-users-form');
+    Route::get('groups/{conversation}/search-users', [GroupController::class, 'searchUsers'])->name('groups.search-users');
 
+
+
+    Route::get('groups/{conversation}/info', [GroupController::class, 'info'])->name('groups.info');
+    Route::post('groups/{conversation}/update-info', [GroupController::class, 'updateInfo'])->name('groups.updateInfo');
 
     
     // Participants
@@ -248,7 +254,6 @@ Route::prefix('chat')->name('chat.')->group(function () {
     // Manage Participants Page
     Route::get('conversations/{conversation}/manage-users', [ParticipantController::class, 'manage'])->name('participants.manage');
     Route::get('conversations/{conversation}/search-participants', [ParticipantController::class, 'searchParticipants'])->name('participants.search');
-    Route::get('conversations/{conversation}/participants/search-user-row', [ParticipantController::class, 'searchUserRow'])->name('participants.searchUserRow');
     // Promote / Demote Admin
     Route::post('conversations/{conversation}/promote/{user}', [ParticipantController::class, 'promote'])->name('participants.promote');
     Route::post('conversations/{conversation}/demote/{user}', [ParticipantController::class, 'demote'])->name('participants.demote');

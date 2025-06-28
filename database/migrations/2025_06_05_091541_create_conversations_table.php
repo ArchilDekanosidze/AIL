@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('type', ['private', 'group', 'channel'])->default('simple');
             $table->boolean('is_private')->default(true); 
             $table->string('slug')->unique()->nullable();
+            $table->text('bio')->nullable();
             
             // Optional: owner/admin of conversation (nullable for simple)
             $table->foreignId('owner_id')->nullable()->constrained('users')->onDelete('set null');

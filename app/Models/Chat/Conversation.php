@@ -14,7 +14,7 @@ class Conversation extends Model
     
     protected $table = 'chat_conversations';
 
-    protected $fillable = ['type', 'title', 'created_by', 'is_private', 'slug', 'owner_id'];
+    protected $fillable = ['type', 'title', 'created_by', 'is_private', 'slug', 'owner_id', 'bio'];
 
     public function participants()
     {
@@ -101,5 +101,16 @@ class Conversation extends Model
         if (!$user) return false; // Guests are never admins
         $participant = $this->getParticipant($user);
         return $participant && in_array($participant->role, ['admin', 'super_admin']);
+    }
+
+
+    public function getPersianTypeAttribute()
+    {
+        return match ($this->type) {
+            'channel' => 'کانال',
+            'group'   => 'گروه',
+            'private' => 'خصوصی',
+            default   => 'نامشخص',
+        };
     }
 }

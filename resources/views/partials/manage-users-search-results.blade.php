@@ -1,6 +1,7 @@
 <table class="table table-bordered bg-white rounded">
     <thead class="thead-light">
         <tr>
+            <th>تصویر</th>
             <th>User</th>
             <th>Role</th>
             <th>Status</th>
@@ -10,6 +11,13 @@
     <tbody>
         @forelse($participants as $participant)
             <tr>
+                <td>
+                    <img src="{{ asset($participant->user->avatar ?? '/images/Site/default-avatar.png') }}" 
+                        alt="{{ $participant->user->name }} avatar" 
+                        class="rounded-circle" 
+                        width="40" 
+                        height="40">
+                </td>
                 <td>{{ $participant->user->name }}</td>
                 <td>{{ ucfirst($participant->role) }}</td>
                 <td>

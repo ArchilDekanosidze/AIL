@@ -85,16 +85,18 @@
                 return;
             }
 
-            $.get('/chat/search-users', { q: query }, function (users) {
+            $.get("{{ route('chat.groups.search-users', $conversation->id) }}", {
+                q: query,
+                conversation_id: {{ $conversation->id }}
+            }, function (users) {
                 let html = '';
                 users.forEach(user => {
-                    // Only display users not already selected
                     if (!selectedUsers.has(user.id)) {
                         html += `
                             <div class="user-result-item"
-                                 data-user-id="${user.id}"
-                                 data-user-name="${user.name}"
-                                 data-user-avatar="${user.avatar ?? '/images/Site/default-avatar.png'}">
+                                data-user-id="${user.id}"
+                                data-user-name="${user.name}"
+                                data-user-avatar="${user.avatar ?? '/images/Site/default-avatar.png'}">
                                 <img src="${user.avatar ?? '/images/Site/default-avatar.png'}" class="user-avatar" alt="${user.name} avatar" />
                                 <span>${user.name}</span>
                             </div>
@@ -103,6 +105,8 @@
                 });
                 $('#memberSearchResults').html(html);
             });
+
+
         });
 
         // --- Add User to Selected List ---

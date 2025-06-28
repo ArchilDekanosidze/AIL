@@ -1,0 +1,120 @@
+/* Main container for the chat creation box */
+.chat-create-box {
+    background-color: #fff;
+    padding: 2.5rem; /* Increased padding */
+    border-radius: 0.75rem; /* Rounded corners */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    max-width: 600px; /* Max width for better readability */
+    margin: 2rem auto; /* Center the box */
+}
+
+/* Input field styling */
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db; /* Light gray border */
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: #374151; /* Dark gray text */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.search-input:focus {
+    border-color: #4f46e5; /* Indigo on focus */
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); /* Focus ring */
+    outline: none;
+}
+
+/* Styling for search results container */
+#memberSearchResults {
+    max-height: 250px; /* Limit height for scrollability */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background-color: #fff;
+    border: 1px solid #e5e7eb; /* Lighter border */
+    border-top: none; /* No top border if it's connected to input */
+    border-radius: 0 0 0.5rem 0.5rem; /* Rounded bottom corners */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.user-result-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6; /* Very light border between items */
+    transition: background-color 0.15s ease-in-out;
+}
+.user-result-item:hover {
+    background-color: #f9fafb; /* Lighter background on hover */
+}
+.user-result-item:last-child {
+    border-bottom: none; /* No border for the last item */
+}
+.user-avatar {
+    width: 40px; /* Larger avatar */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0.75rem;
+    border: 1px solid #e5e7eb; /* Subtle border for avatars */
+}
+.user-result-item span {
+    font-weight: 500; /* Medium font weight for name */
+    color: #374151;
+}
+
+/* Selected members display */
+.selected-users-container {
+    margin-top: 1.5rem; /* More space from search */
+    padding: 1rem;
+    border: 1px dashed #d1d5db; /* Dashed border to signify selection area */
+    border-radius: 0.5rem;
+    background-color: #f9fafb; /* Light background */
+    min-height: 80px; /* Minimum height */
+}
+.selected-user-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #6366f1; /* Indigo background */
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 1.5rem; /* More rounded pill shape */
+    margin: 0.4rem; /* Spacing between tags */
+    font-size: 0.875rem; /* Smaller font size */
+    font-weight: 500;
+}
+.selected-user-tag .remove-btn {
+    background: none;
+    border: none;
+    color: white;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem; /* Larger 'x' */
+    line-height: 1; /* Align vertically */
+    padding: 0 0.2rem;
+    transition: color 0.2s ease-in-out;
+}
+.selected-user-tag .remove-btn:hover {
+    color: #ef4444; /* Red on hover */
+}
+
+/* Action buttons (submit) */
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+.btn-submit-users {
+    background-color: #22c55e; /* Green button */
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600; /* Semi-bold */
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.btn-submit-users:hover {
+    background-color: #16a34a; /* Darker green on hover */
+    box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.3), 0 2px 4px -1px rgba(34, 197, 94, 0.1);
+}

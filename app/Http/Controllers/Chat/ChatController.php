@@ -72,6 +72,7 @@ class ChatController extends Controller
 
     public function searchEntities(Request $request)
     {
+       
         $term = $request->get('q');
         $currentUserId = auth()->id();
 
@@ -120,7 +121,7 @@ class ChatController extends Controller
                 ];
             });
 
-        return response()->json($users->merge($conversations)->values());
+        return response()->json(collect($users)->merge(collect($conversations))->values());
     }
 
 
@@ -132,7 +133,8 @@ class ChatController extends Controller
         $targetUserId = $request->input('user_id');
 
         // Check if a conversation already exists between these two users
-        $conversation = Conversation::whereHas('participants', function ($q) use ($authUser) {
+        $conversation = Conversation::where('type', 'private')
+        ->whereHas('participants', function ($q) use ($authUser) {
             $q->where('user_id', $authUser->id);
         })
         ->whereHas('participants', function ($q) use ($targetUserId) {

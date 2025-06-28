@@ -12,7 +12,7 @@
         <a href="{{ route('chat.messages.index', $conversation->id) }}" class="btn btn-outline-secondary mb-3">
             بازگشت به کانال
         </a>
-        <a href="{{ route('chat.groups.search-users-form', $conversation->id) }}" class="btn btn-primary">
+        <a href="{{ route('chat.groups.search-users-after-creation-form', $conversation->id) }}" class="btn btn-primary">
             افزودن عضو جدید
         </a>
 

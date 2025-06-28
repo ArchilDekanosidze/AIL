@@ -41,14 +41,15 @@
         <form id="messageForm" action="{{ route('chat.messages.store', $conversation->id) }}" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
             @csrf
             <div>
-                <textarea name="content" class="form-control" placeholder="Type your message..." required></textarea>
+                <textarea name="content" class="form-control" placeholder="پیام خود را تایپ کنید..." required></textarea>
             </div>
 
             <div style="margin-top: 10px;">
-                <input type="file" name="attachments[]" multiple>
+                {{-- <label for="attachments" class="block mb-2">فایل‌ها را انتخاب کنید</label> --}}
+                <input type="file" name="attachments[]" id="attachments" multiple>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Send</button>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">ارسال</button>
         </form>
 
         @php
@@ -87,12 +88,12 @@
 {{-- Delete Confirmation Modal --}}
 <div id="deleteConfirmationModal" class="delete-modal-overlay" style="display: none;">
     <div class="delete-modal-content">
-        <h3>Delete Message?</h3>
-        <p>Choose how you want to delete this message:</p>
+        <h3>حدف  پیام؟</h3>
+        <p>انتخاب کنید که چگونه میخواهید این پیام را حذف کنید:</p>
         <div class="delete-modal-buttons">
-            <button class="btn btn-danger" id="deleteForEveryoneBtn" data-message-id="">Delete For Everyone</button>
-            <button class="btn btn-secondary" id="deleteForMyselfBtn" data-message-id="">Delete For Myself</button>
-            <button class="btn btn-light" id="cancelDeleteBtn">Cancel</button>
+            <button class="btn btn-danger" id="deleteForEveryoneBtn" data-message-id="">حذف برای همه</button>
+            <button class="btn btn-secondary" id="deleteForMyselfBtn" data-message-id="">حذف فقط برای خودم</button>
+            <button class="btn btn-light" id="cancelDeleteBtn">کنسل</button>
         </div>
     </div>
 </div>
@@ -363,7 +364,7 @@
         if ($existingMessage.length) {
             $existingMessage.replaceWith(`
                 <div class="message-item deleted-message-placeholder" data-id="${messageId}">
-                    <p><em>This message was deleted.</em></p>
+                    <p><em>این پیغام حذف شده است.</em></p>
                 </div>
             `);
         }
@@ -421,7 +422,7 @@
                 if (messages.length === 0) {
                     noMore = true;
                     if ($messagesBox.children().length === 0) {
-                         $messagesBox.append('<p class="no-messages-yet">No messages yet.</p>');
+                         $messagesBox.append('<p class="no-messages-yet">هنوز هیچ گفت و گویی وجود ندارد.</p>');
                     }
                     loading = false;
                     return;

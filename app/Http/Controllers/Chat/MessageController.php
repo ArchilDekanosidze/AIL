@@ -35,6 +35,13 @@ class MessageController extends Controller
         }
 
 
+        if ($conversation->type != 'private' && $conversation->is_private && !$isParticipant) {
+            if (!$participant) {
+                return view('chat.messages.access-denied');
+            }
+        }
+
+
         if (!empty($conversation->title) && $conversation->type !== 'private') {
             $conversation->display_title = $conversation->title;
         } else {
@@ -60,8 +67,11 @@ class MessageController extends Controller
             }
         }
         $participant = $conversation->participants()->where('user_id', auth()->id())->first();
-        if ($participant->is_banned) {
-            return view('chat.messages.banned', compact('conversation'));
+        if($participant)
+        {
+            if ($participant->is_banned) {
+                return view('chat.messages.banned', compact('conversation'));
+            }
         }
         return view('chat.messages.index', compact('conversation', 'currentUserRole'));
     }
@@ -362,4 +372,28 @@ class MessageController extends Controller
 
         return response()->json(['message' => 'Message deletion processed successfully.']);
     }
+
+    public function accessBySlug($slug)
+    {
+        $conversation = Conversation::where('slug', $slug)->firstOrFail();
+
+        $user = auth()->user();
+
+        // If the user is not yet a participant, auto-attach them for both public and private channels
+        if ($user) {
+            $alreadyJoined = $conversation->participants()->where('user_id', $user->id)->exists();
+
+            if (!$alreadyJoined) {
+                $conversation->participants()->create([
+                    'user_id' => $user->id,
+                    'role' => 'member',
+                    'joined_at' => now(),
+                ]);
+            }
+        }
+
+        return redirect()->route('chat.messages.index', $conversation->id);
+    }
+
+
 }

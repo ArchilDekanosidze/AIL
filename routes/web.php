@@ -230,9 +230,9 @@ Route::prefix('chat')->name('chat.')->group(function () {
 
     // General Chat Page
     Route::get('/', [ChatController::class, 'index'])->name('index'); 
-    Route::get('/create', [ChatController::class, 'create'])->name('create');  
-    Route::get('/search-users', [ChatController::class, 'searchUsers'])->name('search-users');  
-    Route::post('/start-conversation', [ChatController::class, 'startConversation'])->name('startConversation');
+    Route::get('create', [ChatController::class, 'create'])->name('create');  
+    Route::get('search-entities', [ChatController::class, 'searchEntities'])->name('search-entities');  
+    Route::post('start-conversation', [ChatController::class, 'startConversation'])->name('startConversation');
 
 
     Route::get('groups/create-group', [GroupController::class, 'create'])->name('groups.create');
@@ -269,6 +269,7 @@ Route::prefix('chat')->name('chat.')->group(function () {
     
 
     // Messages
+    Route::get('{slug}', [MessageController::class, 'accessBySlug'])->name('slug.slug.access');
     Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index'); 
     Route::get('conversations/{conversation}/getMessages', [MessageController::class, 'getMessages'])->name('messages.getMessages'); 
     Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');  

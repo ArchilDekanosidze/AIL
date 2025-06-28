@@ -70,15 +70,46 @@ class ChatController extends Controller
         return view('chat.home.create');
     }
 
-    public function searchUsers(Request $request)  
+    public function searchEntities(Request $request)
     {
         $term = $request->get('q');
-        $currentUserId = Auth::id(); // Get the ID of the currently authenticated user
-        return User::where('name', 'like', '%' . $term . '%')
-                ->where('id', '!=', $currentUserId) // Exclude the current user
-                ->take(10)
-                ->get(['id', 'name', 'avatar']); // assuming you have avatar
+        $currentUserId = auth()->id();
+
+
+        // Search users (excluding current user)
+        $users = User::where('name', 'like', "%$term%")
+            ->where('id', '!=', $currentUserId)
+            ->take(5)
+            ->get(['id', 'name', 'avatar'])
+            ->map(function ($user) {
+                return [
+                    'type' => 'user',
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'avatar' => $user->avatar ?? '/images/Site/default-avatar.png',
+                ];
+            });
+           
+        // Search public conversations (non-private groups/channels)
+        $conversations = Conversation::where('title', 'like', "%$term%")
+            ->where('is_private', false)
+            ->whereIn('type', ['group', 'channel']) // ensure it’s a group or channel
+            ->take(5)
+            ->get(['id', 'title', 'type', 'avatar']) // assuming conversation has avatar
+            ->map(function ($conv) {
+                return [
+                    'type' => 'conversation',
+                    'id' => $conv->id,
+                    'name' => $conv->title,
+                    'conversation_type' => $conv->type,
+                    'avatar' => $conv->avatar ?? '/images/Site/default-group.png',
+                ];
+            });
+
+        // Merge and return
+       return response()->json(collect($users)->merge(collect($conversations))->values());
     }
+
 
     public function startConversation(Request $request)  //done
     {

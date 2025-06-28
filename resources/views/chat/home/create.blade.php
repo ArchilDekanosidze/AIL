@@ -34,19 +34,41 @@
             return;
         }
 
-        $.get('/chat/search-users', { q: query }, function (users) {
+        $.get('/chat/search-entities', { q: query }, function (results) {
             let html = '';
-            users.forEach(user => {
-                html += `
-                    <div class="user-result" data-user-id="${user.id}">
-                        <img src="${user.avatar ?? '/images/Site/default-avatar.png'}" class="user-avatar" />
-                        <span>   ${user.name}</span>
-                    </div>
-                `;
+            results.forEach(item => {
+                if (item.type === 'user') {
+                    html += `
+                        <div class="user-result"
+                            data-user-id="${item.id}"
+                            data-user-name="${item.name}"
+                            data-user-avatar="${item.avatar}">
+                            <img src="${item.avatar}" class="user-avatar" />
+                            <span>${item.name}</span>
+                            <span class="badge">کاربر</span>
+                        </div>
+                    `;
+                    
+                } else if (item.type === 'conversation') {
+                    html += `
+                        <div class="conversation-result"
+                            data-conversation-id="${item.id}"
+                            data-conversation-type="${item.conversation_type}">
+                            <img src="${item.avatar}" class="user-avatar" />
+                            <span>${item.name}</span>
+                            <span class="badge">${item.conversation_type === 'group' ? 'گروه عمومی' : 'کانال عمومی'}</span>
+                        </div>
+                    `;
+                }
             });
+
             $('#userResults').html(html);
         });
+
     });
+
+
+    
 
    $(document).on('click', '.user-result', function () {
         const userId = $(this).data('user-id');
@@ -65,6 +87,12 @@
             }
         });
     });
+
+    $(document).on('click', '.conversation-result', function () {
+        const conversationId = $(this).data('conversation-id');
+        window.location.href = `/chat/conversations/${conversationId}/messages`;
+    });
+
 
     $('.action-buttons button').on('click', function () {
         const type = $(this).data('type');

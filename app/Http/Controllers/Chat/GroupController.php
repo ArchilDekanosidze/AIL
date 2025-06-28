@@ -64,7 +64,6 @@ class GroupController extends Controller
     public function addUsersForm(Conversation $conversation)  
     {
         // $this->authorize('update', $conversation); // optional if using policies
-
         return view('chat.groups.add-users', [
             'conversation' => $conversation,
         ]);

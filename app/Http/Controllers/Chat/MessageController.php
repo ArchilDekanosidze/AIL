@@ -101,7 +101,7 @@ class MessageController extends Controller
             $query->where('id', '<', $beforeId);
         }
 
-        $messages = $query->get()->reverse()->values();
+        $messages = $query->get()->values();
 
         $transformed = $messages->filter(function($message) use ($currentUserId) {
             // Filter out messages soft-deleted (deleted_at is not null) AND

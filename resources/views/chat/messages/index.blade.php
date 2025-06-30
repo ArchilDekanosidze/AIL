@@ -22,6 +22,13 @@
         {{-- Using $conversation->display_title as discussed previously --}}
         <h2>{{ $conversation->display_title ?? 'Private Chat' }}</h2>
 
+        <div id="loadMoreWrapper" class="text-center my-2">
+            <button id="loadMoreMessages" class="btn btn-sm btn-outline-secondary">
+                نمایش پیام‌های بیشتر
+            </button>
+        </div>
+
+
         <div class="messages-box" id="messagesBox"
             data-conversation-id="{{ $conversation->id }}"
             data-user-id="{{ Auth::id() }}"> {{-- Pass current user ID for client-side check --}}
@@ -423,6 +430,7 @@
             $.get(`{{ url('/chat/conversations') }}/${conversationId}/getMessages`, { before }, function (messages) {
                 if (messages.length === 0) {
                     noMore = true;
+                    $('#loadMoreWrapper').hide(); // 👈 hide the button if no more messages
                     if ($messagesBox.children().length === 0) {
                          $messagesBox.append('<p class="no-messages-yet">هنوز هیچ گفت و گویی وجود ندارد.</p>');
                     }
@@ -456,7 +464,11 @@
         }
 
         // Initial load
-        loadMessages();
+        loadMessages(earliestMessageId, true);
+
+        $('#loadMoreMessages').on('click', function () {
+            loadMessages(earliestMessageId, true);
+        });
 
         // Detect scroll to top for loading more messages
         $messagesBox.on('scroll', function () {
@@ -908,6 +920,7 @@
             alert('خطا در حذف سکوت کاربر');
         });
     });
+
 
 
 

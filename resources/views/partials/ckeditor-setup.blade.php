@@ -1,28 +1,9 @@
-<script src="{{ asset('assets/ckbox.js') }}"></script>
+<!-- ✅ Use the prebuilt CKEditor build (CDN or local copy) -->
+<script src="{{ asset('assets/ckeditor5_39.0.1_classic/ckeditor.js') }}"></script>
+{{-- <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script> --}}
+{{-- <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script> --}}
 
-<script type="importmap">
-    {
-        "imports": {
-            "ckeditor5": "{{ asset('assets/ckeditor5/ckeditor5.js') }}",
-            "ckeditor5/": "{{ asset('assets/ckeditor5/') }}"
-        }
-    }
-</script>
-
-<script type="module">
-    import {
-        ClassicEditor,
-        Essentials,
-        Paragraph,
-        Bold,
-        Italic,
-        Font,
-        // SimpleUploadAdapter,
-        Image,
-        ImageToolbar,
-        ImageUpload
-    } from 'ckeditor5';
-
+<script>
     class MyUploadAdapter {
         constructor(loader) {
             this.loader = loader;
@@ -43,7 +24,6 @@
                     })
                     .then(response => response.json())
                     .then(result => {
-                        // console.log(result.url);  // Log the URL to verify it's correct
                         resolve({ default: result.url });
                     })
                     .catch(error => {
@@ -52,9 +32,7 @@
                 }));
         }
 
-        abort() {
-            // Implement abort functionality if needed
-        }
+        abort() {}
     }
 
     function MyCustomUploadAdapterPlugin(editor) {
@@ -66,20 +44,17 @@
     window.initializeEditor = function(selector) {
         return ClassicEditor
             .create(document.querySelector(selector), {
-                licenseKey: 'GPL',
-                plugins: [
-                    Essentials, Paragraph, Bold, Italic, Font,
-                    Image, ImageToolbar, ImageUpload,
-                    // SimpleUploadAdapter
-                ],
+                extraPlugins: [MyCustomUploadAdapterPlugin],
                 toolbar: [
-                    'undo', 'redo', '|', 'bold', 'italic', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'imageUpload'
-                ],
-                extraPlugins: [MyCustomUploadAdapterPlugin]
+                    'undo', 'redo', '|',
+                    'bold', 'italic', 'underline', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                    'link', 'bulletedList', 'numberedList', '|',
+                    'codeBlock', 'imageUpload'
+                ]
             })
             .then(editor => {
-                window.editor = editor;  // Make the CKEditor instance globally accessible
+                window.editor = editor;
                 return editor;
             })
             .catch(error => {

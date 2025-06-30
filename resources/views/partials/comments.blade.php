@@ -29,13 +29,18 @@
 @include('partials.ckeditor-setup')
 
 <script type="module">
-            document.addEventListener('DOMContentLoaded', () => {
-        window.initializeEditor('#newComment').then(editor => {
-            window.editorInstance = editor;
-        });
-    
+    document.addEventListener('DOMContentLoaded', () => {
+        window.initializeEditor('#newComment')
+            .then(editor => {
+                window.editorInstance = editor;
+            })
+            .catch(error => {
+                console.error('Failed to initialize CKEditor:', error);
+            });
     });
 </script>
+
+
 
     <script>
         let lastCommentId = null; // Store last comment ID

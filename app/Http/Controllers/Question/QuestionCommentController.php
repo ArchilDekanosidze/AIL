@@ -14,7 +14,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Services\Comment\CommentService;
 
-class CommentController extends Controller
+class QuestionCommentController extends Controller
 {
 
     private $commentService;

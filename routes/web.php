@@ -39,6 +39,7 @@ use App\Http\Controllers\User\UserLearningNewController;
 use App\Http\Controllers\Category\CategoryBookController;
 use App\Http\Controllers\Category\CategoryExamController;
 use App\Http\Controllers\Category\CategoryFreeController;
+use App\Http\Controllers\Question\QuestionVoteController;
 use App\Http\Controllers\Auth\DesktopChangeNameController;
 use App\Http\Controllers\Category\CategoryJozveController;
 use App\Http\Controllers\Desktop\DesktopStudentController;
@@ -47,11 +48,13 @@ use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
 use App\Http\Controllers\Upload\CkEditorUploaderController;
 use App\Http\Controllers\Admin\Import\AdminImportController;
+use App\Http\Controllers\Question\QuestionCommentController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\Category\CategoryGambeGamController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionController;
 use App\Http\Controllers\Admin\Desktop\AdminDesktopController;
 use App\Http\Controllers\Auth\OTP\ForgotPasswordOTPController;
+use App\Http\Controllers\Question\QuestionBestReplyController;
 use App\Http\Controllers\Admin\Import\AdminImportNewController;
 use App\Http\Controllers\Admin\Import\DatabaseExportController;
 use App\Http\Controllers\Admin\Category\AdminCategoryController;
@@ -142,33 +145,33 @@ Route::prefix('auth')->name('auth.')->group(function () {
 //categoryQuestion
 Route::post('/category/categoryQuestion/user/randomFreeQuestion', [CategoryQuestionUserController::class, 'getRandomFreeQuestion'])->name('category.categoryQuestion.user.randomFreeQuestion.get');
 Route::get('/category/categoryQuestion/user/index/{currentCategory}', [CategoryQuestionUserController::class, 'index'])->name('category.categoryQuestion.user.index');
-Route::post('/category/categoryQuestion/user/add_category_to_user', [CategoryQuestionUserController::class, 'addCategoryToUser'])->name('category.categoryQuestion.user.add_category_to_user');
-Route::post('/category/categoryQuestion/user/remove_category_from_user', [CategoryQuestionUserController::class, 'removeCategoryFromUser'])->name('category.categoryQuestion.user.remove_category_from_user');
+Route::post('/category/categoryQuestion/user/add_category_to_user', [CategoryQuestionUserController::class, 'addCategoryToUser'])->middleware('auth')->name('category.categoryQuestion.user.add_category_to_user');
+Route::post('/category/categoryQuestion/user/remove_category_from_user', [CategoryQuestionUserController::class, 'removeCategoryFromUser'])->middleware('auth')->name('category.categoryQuestion.user.remove_category_from_user');
 
 
 //Quiz
-Route::get('/quiz/chooseCategories/student', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->name('quiz.chooseCategories.student');
-Route::post('/quiz/chooseCategories/getChildren', [QuizChooseCategoriesStudentController::class, 'getChildren'])->name('quiz.chooseCategories.getChildren');
-Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create'])->name('quiz.create.student');
-Route::get('/quiz/chooseCategories/student/clearCache', [QuizChooseCategoriesStudentController::class, 'clearCache'])->name('quiz.chooseCategories.student.clearCache');
-Route::get('/quiz/online/{quiz}', [OnlineQuizController::class, 'onlineQuizInProgress'])->name('quiz.online.onlineQuizInProgress');
-Route::post('/quiz/online/showAnswer', [OnlineQuizController::class, 'showAnswer'])->name('quiz.online.showAnswer');
-Route::post('/quiz/online/nextQuestion', [OnlineQuizController::class, 'nextQuestion'])->name('quiz.online.nextQuestion');
-Route::post('/quiz/online/prevQuestion', [OnlineQuizController::class, 'prevQuestion'])->name('quiz.online.prevQuestion');
-Route::get('/quiz/result/{quiz}', [OnlineQuizController::class, 'saveOnlineQuizDataAndShowResult'])->name('quiz.online.saveOnlineQuizDataAndShowResult');
+Route::get('/quiz/chooseCategories/student', [QuizChooseCategoriesStudentController::class, 'chooseCategories'])->middleware('auth')->name('quiz.chooseCategories.student');
+Route::post('/quiz/chooseCategories/getChildren', [QuizChooseCategoriesStudentController::class, 'getChildren'])->middleware('auth')->name('quiz.chooseCategories.getChildren');
+Route::post('/quiz/create/student', [CreateQuizStudentController::class, 'create'])->middleware('auth')->name('quiz.create.student');
+Route::get('/quiz/chooseCategories/student/clearCache', [QuizChooseCategoriesStudentController::class, 'clearCache'])->middleware('auth')->name('quiz.chooseCategories.student.clearCache');
+Route::get('/quiz/online/{quiz}', [OnlineQuizController::class, 'onlineQuizInProgress'])->middleware('auth')->name('quiz.online.onlineQuizInProgress');
+Route::post('/quiz/online/showAnswer', [OnlineQuizController::class, 'showAnswer'])->middleware('auth')->name('quiz.online.showAnswer');
+Route::post('/quiz/online/nextQuestion', [OnlineQuizController::class, 'nextQuestion'])->middleware('auth')->name('quiz.online.nextQuestion');
+Route::post('/quiz/online/prevQuestion', [OnlineQuizController::class, 'prevQuestion'])->middleware('auth')->name('quiz.online.prevQuestion');
+Route::get('/quiz/result/{quiz}', [OnlineQuizController::class, 'saveOnlineQuizDataAndShowResult'])->middleware('auth')->name('quiz.online.saveOnlineQuizDataAndShowResult');
 
 //desktop
-Route::get('/desktop/student', [DesktopStudentController::class, 'index'])->name('desktop.student.index');
-Route::get('/desktop/quizList/{user}', [QuizListController::class, 'quizList'])->name('desktop.quizList');
-Route::get('/desktop/myProgress/{user}', [myProgressController::class, 'myProgress'])->name('desktop.myProgress');
-Route::post('/desktop/getChartResult', [myProgressController::class, 'getChartResult'])->name('desktop.getChartResult');
-Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'setting'])->name('desktop.setting.setting');
+Route::get('/desktop/student', [DesktopStudentController::class, 'index'])->middleware('auth')->name('desktop.student.index');
+Route::get('/desktop/quizList/{user}', [QuizListController::class, 'quizList'])->middleware('auth')->name('desktop.quizList');
+Route::get('/desktop/myProgress/{user}', [myProgressController::class, 'myProgress'])->middleware('auth')->name('desktop.myProgress');
+Route::post('/desktop/getChartResult', [myProgressController::class, 'getChartResult'])->middleware('auth')->name('desktop.getChartResult');
+Route::get('/desktop/setting/setting', [DesktopStudentController::class, 'setting'])->middleware('auth')->name('desktop.setting.setting');
 
 //question comment            
-Route::post('/question/comment/newComments', [CommentController::class, 'newComments'])->name('question.comment.newComments');
-Route::post('/question/comment/vote', [VoteController::class, 'vote'])->name('question.comment.vote');
-Route::post('/question/comment/best-reply', [BestReplyController::class, 'setBestReply'])->name('question.comment.best-reply');
-Route::post('/question/comment/fetchComments', [CommentController::class, 'fetchComments'])->name('question.comment.fetchComments');
+Route::post('/question/comment/newComments', [QuestionCommentController::class, 'newComments'])->middleware('auth')->name('question.comment.newComments');
+Route::post('/question/comment/vote', [QuestionVoteController::class, 'vote'])->middleware('auth')->name('question.comment.vote');
+Route::post('/question/comment/best-reply', [QuestionBestReplyController::class, 'setBestReply'])->middleware('auth')->name('question.comment.best-reply');
+Route::post('/question/comment/fetchComments', [QuestionCommentController::class, 'fetchComments'])->name('question.comment.fetchComments');
 
 //freeQuestion
 Route::get('/freeQuestion/index', [FreeQuestionController::class, 'index'])->name('freeQuestion.index');

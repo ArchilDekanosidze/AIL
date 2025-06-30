@@ -10,13 +10,12 @@ use Faker\Factory as faker;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\CategoryQuestion;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Services\Comment\CommentService;
 
 
-class BestReplyController extends Controller
+class QuestionVoteController extends Controller
 {
     private $commentService;
 
@@ -26,9 +25,9 @@ class BestReplyController extends Controller
 
     }
     
-    public function setBestReply(Request $request)
-    {      
-      return $this->commentService->setBestReply();
+    public function vote()
+    {
+        return $this->commentService->vote();
     }
 
 }

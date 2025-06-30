@@ -119,7 +119,7 @@
                     $(".mainQuestionDiv .answerDiv").removeClass("show");
                 }
             })
-
+            
             $(".nextRandomQuestion").click(function(){
                 getNextQuestion();
             })
@@ -138,6 +138,11 @@
                 
                 
                 result = Ajax(url, data)
+
+                if(result.responseJSON.message == "CSRF token mismatch.")
+                {
+                    window.location.href = "{{ route('home') }}"
+                }
 
                 if(elm.text() =="افزودن به لیست یادگیری"){
                     elm.text("حذف از لیست یادگیری")

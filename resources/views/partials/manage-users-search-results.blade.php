@@ -2,10 +2,10 @@
     <thead class="thead-light">
         <tr>
             <th>تصویر</th>
-            <th>User</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th style="width: 300px;">Actions</th>
+            <th>کاربر</th>
+            <th>نقش</th>
+            <th>وضعیت</th>
+            <th style="width: 300px;">عمل</th>
         </tr>
     </thead>
     <tbody>
@@ -19,14 +19,14 @@
                         height="40">
                 </td>
                 <td>{{ $participant->user->name }}</td>
-                <td>{{ ucfirst($participant->role) }}</td>
+                <td>{{ ucfirst($participant->persianRole) }}</td>
                 <td>
                     @if ($participant->is_banned)
-                        <span class="badge badge-danger">Banned</span>
+                        <span class="badge badge-danger">مسدود</span>
                     @elseif ($participant->is_muted)
-                        <span class="badge badge-warning">Muted</span>
+                        <span class="badge badge-warning">ساکت</span>
                     @else
-                        <span class="badge badge-success">Active</span>
+                        <span class="badge badge-success">فعال</span>
                     @endif
                 </td>
                 <td>
@@ -34,12 +34,12 @@
                     @if ($canPromote && $participant->role === 'member')
                         <form method="POST" action="{{ route('chat.participants.promote', [$conversation->id, $participant->user_id]) }}" class="d-inline action-form">
                             @csrf
-                            <button class="btn btn-sm btn-success">Promote to Admin</button>
+                            <button class="btn btn-sm btn-success">ارتقا به ادمین</button>
                         </form>
                     @elseif ($canDemote && $participant->role === 'admin')
                         <form method="POST" action="{{ route('chat.participants.demote', [$conversation->id, $participant->user_id]) }}" class="d-inline action-form">
                             @csrf
-                            <button class="btn btn-sm btn-outline-secondary">Remove Admin</button>
+                            <button class="btn btn-sm btn-outline-secondary">حذف از ادمین ها</button>
                         </form>
                     @endif
 
@@ -47,12 +47,12 @@
                     @if (!$participant->is_banned)
                         <form method="POST" action="{{ route('chat.participants.ban', [$conversation->id, $participant->user_id]) }}" class="d-inline action-form">
                             @csrf
-                            <button class="btn btn-sm btn-danger">Ban</button>
+                            <button class="btn btn-sm btn-danger">مسدود سازی</button>
                         </form>
                     @else
                         <form method="POST" action="{{ route('chat.participants.unban', [$conversation->id, $participant->user_id]) }}" class="d-inline action-form">
                             @csrf
-                            <button class="btn btn-sm btn-outline-danger">Unban</button>
+                            <button class="btn btn-sm btn-outline-danger">حذف مسدودیت</button>
                         </form>
                     @endif
 
@@ -60,19 +60,19 @@
                     @if (!$participant->is_muted)
                         <form method="POST" action="{{ route('chat.participants.mute', [$conversation->id, $participant->user_id]) }}" class="d-inline action-form">
                             @csrf
-                            <button class="btn btn-sm btn-warning">Mute</button>
+                            <button class="btn btn-sm btn-warning">ساکت کردن</button>
                         </form>
                     @else
                         <form method="POST" action="{{ route('chat.participants.unmute', [$conversation->id, $participant->user_id]) }}" class="d-inline action-form">
                             @csrf
-                            <button class="btn btn-sm btn-outline-warning">Unmute</button>
+                            <button class="btn btn-sm btn-outline-warning">حذف سکوت</button>
                         </form>
                     @endif
                 </td>
             </tr>
         @empty
             <tr>
-                <td colspan="4" class="text-center text-muted">No users found.</td>
+                <td colspan="4" class="text-center text-muted">هیچ کاربری پیدا نشد</td>
             </tr>
         @endforelse
     </tbody>

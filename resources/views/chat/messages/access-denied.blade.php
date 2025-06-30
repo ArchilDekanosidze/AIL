@@ -8,7 +8,7 @@
             <p class="text-gray-700">این کانال خصوصی است و فقط اعضا می‌توانند آن را مشاهده کنند.</p>
             <p class="text-gray-600 mt-2">برای دسترسی به این کانال، لطفاً از طریق لینک اختصاصی وارد شوید یا با مدیر تماس بگیرید.</p>
         </div>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary mt-3">بازگشت</a>
+        <a href="{{ route('home') }}" class="btn btn-secondary mt-3">بازگشت به خانه</a>
     </div>
 </div>
 @endsection

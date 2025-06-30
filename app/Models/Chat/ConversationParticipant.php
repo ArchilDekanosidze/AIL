@@ -23,4 +23,14 @@ class ConversationParticipant extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getPersianRoleAttribute()
+    {
+        return match ($this->role) {
+            'member' => 'عضو ساده',
+            'admin'   => 'مدیر',
+            'super_admin' => 'مدیر کل',
+            default   => 'نامشخص',
+        };
+    }
 }

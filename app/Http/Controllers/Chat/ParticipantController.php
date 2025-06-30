@@ -31,7 +31,7 @@ class ParticipantController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'You joined the conversation!');
+        return redirect()->back()->with('success', 'شما عضو ' . $conversation->persianType . ' شدید.');
     }
 
 

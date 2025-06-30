@@ -16,7 +16,7 @@
         
         @if ($conversation->type !== 'private')
             <a href="{{ route('chat.groups.info', $conversation->id) }}" class="btn btn-info ml-2">
-                اطلاعات کانال
+                اطلاعات {{$conversation->persianType}}
             </a>
         @endif
         {{-- Using $conversation->display_title as discussed previously --}}
@@ -60,19 +60,19 @@
         <div id="message-access-info">
             @guest
                 <div class="alert alert-info text-center">
-                    Please <a href="{{ route('auth.login') }}">log in</a> to send messages.
+                    لطفا <a href="{{ route('auth.login') }}">وارد شوید</a> تا بتوانید پیام بفرستید.
                 </div>
             @else
                 @if ($conversation->type !== 'private' && !$participant)
                     <div class="text-center">
                         <form method="POST" action="{{ route('chat.conversation.participants.join', $conversation->id) }}">
                             @csrf
-                            <button type="submit" class="btn btn-primary">Join {{ ucfirst($conversation->type) }}</button>
+                            <button type="submit" class="btn btn-primary">عضو  {{ $conversation->persianType }} شوید</button>
                         </form>
                     </div>
-                @elseif ($conversation->type === 'channel' && !in_array($participant->role, ['admin', 'superadmin']))
+                @elseif ($conversation->type === 'channel' && !in_array($participant->role, ['admin', 'super_admin']))
                     <div class="alert alert-warning text-center">
-                        Only admins can send messages in this channel.
+                        فقط مدیران می توانند در اینجا پیام ارسال کنند.
                     </div>
                 @endif
             @endguest
@@ -108,7 +108,7 @@
     window.currentUserRole = @json($currentUserRole);
     window.conversationType = @json($conversation->type);
     window.isParticipant = @json($participant !== null);
-    window.userRole = @json($participant->role ?? null); // null, 'member', 'admin', 'superadmin'
+    window.userRole = @json($participant->role ?? null); // null, 'member', 'admin', 'super_admin'
     window.isMuted = {{ $participant && $participant->is_muted ? 'true' : 'false' }};
 </script>
 
@@ -129,13 +129,13 @@
             sendBox.style.display = 'none';
         } else if (!isParticipant && conversationType !== 'private') {
             sendBox.style.display = 'none'; // Not joined in public group
-        } else if (conversationType === 'channel' && !['admin', 'superadmin'].includes(role)) {
+        } else if (conversationType === 'channel' && !['admin', 'super_admin'].includes(role)) {
             sendBox.style.display = 'none'; // Channels: only admins can send
         } else if (isMuted) {
             sendBox.style.display = 'none'; // Muted users can't send
             const mutedNotice = document.createElement('div');
             mutedNotice.className = 'alert alert-warning mt-2';
-            mutedNotice.innerText = 'You are muted and cannot send messages.';
+            mutedNotice.innerText = 'شما ساکت شده اید و نمی توانید در این گروه پیامی ارسال کنید';
             sendBox.parentNode.insertBefore(mutedNotice, sendBox);
         } else {
             sendBox.style.display = 'block'; // Can send
@@ -215,7 +215,7 @@
                             <img src="${att.file_path}" alt="${fileName}" loading="lazy" class="attachment-image">
                         </a>
                         <div class="attachment-filename">${fileName}</div>
-                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">دانلود</a>
                     </div>
                 `;
             } else if (mimeType.startsWith('video/')) {
@@ -228,7 +228,7 @@
                             Your browser does not support the video tag.
                         </video>
                         <div class="attachment-filename">${fileName}</div>
-                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">دانلود</a>
                     </div>
                 `;
             }else if (mimeType.startsWith('audio/')) { // <--- NEW: Handle Audio Files
@@ -240,7 +240,7 @@
                             Your browser does not support the audio tag.
                         </audio>
                         <div class="attachment-filename">${fileName}</div>
-                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">دانلود</a>
                     </div>
                 `;
             } 
@@ -251,7 +251,7 @@
                         <a href="${downloadUrl}" target="_blank" class="message-attachment-link">
                             ${fileName}
                         </a>
-                        <a href="${downloadUrl}" target="_blank" class="download-link">Download</a>
+                        <a href="${downloadUrl}" target="_blank" class="download-link">دانلود</a>
                     </div>
                 `;
             }
@@ -274,25 +274,27 @@
             (currentRole === 'admin' && isTargetMember && senderId !== currentUserId)
         );
 
+        console.log(msg)
+
         if (isSender) {
-            messageActionsHtml += `<button class="btn btn-sm btn-info edit-message-btn" data-id="${msg.id}" data-content="${encodeURIComponent(msg.content)}">Edit</button>`;
-            messageActionsHtml += `<button class="btn btn-sm btn-danger delete-message-btn" data-id="${msg.id}">Delete</button>`;
+            messageActionsHtml += `<button class="btn btn-sm btn-info edit-message-btn" data-id="${msg.id}" data-content="${encodeURIComponent(msg.content)}">اصلاح</button>`;
+            messageActionsHtml += `<button class="btn btn-sm btn-danger delete-message-btn" data-id="${msg.id}">حذف</button>`;
         } else if (canManage) {
             // Only allow manage actions if NOT self
             if (msg.sender?.is_banned) {
-                messageActionsHtml += `<button class="btn btn-sm btn-outline-danger unban-user-btn" data-user-id="${senderId}">Unban</button>`;
+                messageActionsHtml += `<button class="btn btn-sm btn-outline-danger unban-user-btn" data-user-id="${senderId}">رفع مسدودیت</button>`;
             } else {
-                messageActionsHtml += `<button class="btn btn-sm btn-danger ban-user-btn" data-user-id="${senderId}">Ban</button>`;
+                messageActionsHtml += `<button class="btn btn-sm btn-danger ban-user-btn" data-user-id="${senderId}">مسدود سازی</button>`;
             }
 
             if (msg.sender?.is_muted) {
-                messageActionsHtml += `<button class="btn btn-sm btn-outline-warning unmute-user-btn" data-user-id="${senderId}">Unmute</button>`;
+                messageActionsHtml += `<button class="btn btn-sm btn-outline-warning unmute-user-btn" data-user-id="${senderId}">حذف سکوت</button>`;
             } else {
-                messageActionsHtml += `<button class="btn btn-sm btn-warning mute-user-btn" data-user-id="${senderId}">Mute</button>`;
+                messageActionsHtml += `<button class="btn btn-sm btn-warning mute-user-btn" data-user-id="${senderId}">سکوت</button>`;
             }
 
             // Delete option (e.g., global delete by admin)
-            messageActionsHtml += `<button class="btn btn-sm btn-outline-secondary delete-message-btn" data-id="${msg.id}">Delete</button>`;
+            messageActionsHtml += `<button class="btn btn-sm btn-outline-secondary delete-message-btn" data-id="${msg.id}">حذف</button>`;
         }
 
 
@@ -509,8 +511,8 @@
             $messageContentP.html(`
                 <textarea class="form-control editing-textarea" rows="3">${messageContent}</textarea>
                 <div class="edit-buttons">
-                    <button class="btn btn-sm btn-success save-edit-btn">Save</button>
-                    <button class="btn btn-sm btn-secondary cancel-edit-btn">Cancel</button>
+                    <button class="btn btn-sm btn-success save-edit-btn">ذخیره</button>
+                    <button class="btn btn-sm btn-secondary cancel-edit-btn">کنسل</button>
                 </div>
             `);
         });
@@ -821,6 +823,89 @@
                 activePicker.remove();
                 activePicker = null;
             }
+        });
+    });
+
+    // Set CSRF token for all AJAX requests (if not already done)
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // BAN USER (Fade Out → Change → Fade In)
+    $(document).on('click', '.ban-user-btn', function () {
+        const $btn = $(this);
+        const conversationId = $('#messagesBox').data('conversation-id');
+        const userId = $btn.data('user-id');
+
+        $.post(`/chat/conversations/${conversationId}/ban/${userId}`, function () {
+            $btn.fadeOut(200, function () {
+                $btn
+                    .removeClass('btn-danger ban-user-btn')
+                    .addClass('btn-outline-danger unban-user-btn')
+                    .text('رفع مسدودیت')
+                    .fadeIn(200);
+            });
+        }).fail(function () {
+            alert('خطا در مسدود سازی کاربر');
+        });
+    });
+
+    // UNBAN USER
+    $(document).on('click', '.unban-user-btn', function () {
+        const $btn = $(this);
+        const conversationId = $('#messagesBox').data('conversation-id');
+        const userId = $btn.data('user-id');
+
+        $.post(`/chat/conversations/${conversationId}/unban/${userId}`, function () {
+            $btn.fadeOut(200, function () {
+                $btn
+                    .removeClass('btn-outline-danger unban-user-btn')
+                    .addClass('btn-danger ban-user-btn')
+                    .text('مسدود سازی')
+                    .fadeIn(200);
+            });
+        }).fail(function () {
+            alert('خطا در حذف مسدود سازی کاربر');
+        });
+    });
+
+    // MUTE USER
+    $(document).on('click', '.mute-user-btn', function () {
+        const $btn = $(this);
+        const conversationId = $('#messagesBox').data('conversation-id');
+        const userId = $btn.data('user-id');
+
+        $.post(`/chat/conversations/${conversationId}/mute/${userId}`, function () {
+            $btn.fadeOut(200, function () {
+                $btn
+                    .removeClass('btn-warning mute-user-btn')
+                    .addClass('btn-outline-warning unmute-user-btn')
+                    .text('حذف سکوت')
+                    .fadeIn(200);
+            });
+        }).fail(function () {
+            alert('خطا در ساکت کردن کاربر');
+        });
+    });
+
+    // UNMUTE USER
+    $(document).on('click', '.unmute-user-btn', function () {
+        const $btn = $(this);
+        const conversationId = $('#messagesBox').data('conversation-id');
+        const userId = $btn.data('user-id');
+
+        $.post(`/chat/conversations/${conversationId}/unmute/${userId}`, function () {
+            $btn.fadeOut(200, function () {
+                $btn
+                    .removeClass('btn-outline-warning unmute-user-btn')
+                    .addClass('btn-warning mute-user-btn')
+                    .text('سکوت')
+                    .fadeIn(200);
+            });
+        }).fail(function () {
+            alert('خطا در حذف سکوت کاربر');
         });
     });
 

@@ -19,10 +19,10 @@
 
         {{-- Back to conversation --}}
         <a href="{{ route('chat.messages.index', $conversation->id) }}" class="btn btn-link mb-3">
-            ← Back to Conversation
+            ← بازگشت به {{ $conversation->persianType }}
         </a>
 
-        <h2 class="mb-4">Manage Users in: {{ $conversation->display_title ?? 'Group' }}</h2>
+        <h2 class="mb-4">مدیریت اعضا در: {{ $conversation->display_title ??  $conversation->persianType}}</h2>
 
         {{-- Search form --}}
         <form id="participantSearchForm" class="mb-3">
@@ -30,7 +30,7 @@
                 type="text"
                 id="participantSearchInput"
                 name="search"
-                placeholder="Search users..."
+                placeholder="جست و حوی اعضا..."
                 autocomplete="off"
                 class="form-control"
                 value="{{ request('search') ?? '' }}"
@@ -43,18 +43,18 @@
             {{-- Filter Banned --}}
             <button type="submit" name="filter" value="banned" class="btn btn-danger ml-2" 
                 @if(request('filter') === 'banned') disabled @endif>
-                Show Banned
+                نمایش مسدود شده ها
             </button>
 
             {{-- Filter Muted --}}
             <button type="submit" name="filter" value="muted" class="btn btn-warning ml-2"
                 @if(request('filter') === 'muted') disabled @endif>
-                Show Muted
+                نمایش ساکت شده ها
             </button>
 
             {{-- Show All --}}
             @if(request()->has('filter'))
-                <a href="{{ route('chat.participants.manage', $conversation->id) }}" class="btn btn-outline-primary ml-2">Show All</a>
+                <a href="{{ route('chat.participants.manage', $conversation->id) }}" class="btn btn-outline-primary ml-2">نمایش همه</a>
             @endif
 
         </form>

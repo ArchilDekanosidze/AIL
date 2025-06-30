@@ -109,8 +109,10 @@ class Conversation extends Model
         return match ($this->type) {
             'channel' => 'کانال',
             'group'   => 'گروه',
-            'private' => 'خصوصی',
+            'private' => 'چت خصوصی',
             default   => 'نامشخص',
         };
     }
+
+
 }

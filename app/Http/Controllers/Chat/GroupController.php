@@ -120,7 +120,7 @@ class GroupController extends Controller
 
         // Redirect to the conversation show page
         return redirect()->route('chat.messages.index', $conversation->id)
-                         ->with('success', 'Members added successfully!');
+                         ->with('success', 'اعضا با موفقیت اضافه شدند.');
     }
 
 

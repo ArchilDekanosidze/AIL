@@ -133,7 +133,7 @@ class MessageController extends Controller
                     'name' => $message->sender->name ?? 'Unknown',
                     'role' => optional($message->sender->participants->first())->role ?? 'member',
                     'is_banned' => (bool) optional($message->sender->participants->first())->is_banned,
-                    'is_muted' => (bool) optional($message->sender->participants->first())->is_mut
+                    'is_muted' => (bool) optional($message->sender->participants->first())->is_muted
                 ],
                 'content' => $message->content,
                 'created_at' => (new Verta($message->created_at))->formatDifference(),
@@ -216,12 +216,15 @@ class MessageController extends Controller
         $message->load('sender', 'attachments');
 
         // Prepare message data for broadcasting, ensuring it matches frontend renderMessage expectations
+        $senderParticipant = $conversation->participants->firstWhere('user_id', $message->sender_id);
+        $senderRole = $senderParticipant?->role ?? 'member';
         $messageData = [
             'id' => $message->id,
             'conversation_id' => $conversation->id, // <--- ENSURE THIS LINE IS PRESENT AND CORRECT
             'sender' => [
                 'id' => $message->sender->id ?? null,
                 'name' => $message->sender->name ?? 'Unknown',
+                'role' => $senderRole, 
             ],
             'content' => $message->content,
             'created_at' => (new Verta($message->created_at))->formatDifference(),
@@ -327,33 +330,52 @@ class MessageController extends Controller
      */
     public function destroy(Request $request, Message $message)
     {
-        $currentUserId = Auth::id();
+        $currentUser = Auth::user();
+        $currentUserId = $currentUser->id;
+        $conversation = $message->conversation;
 
-        if (Auth::user()->is_muted || Auth::user()->is_banned) {
+        if ($currentUser->is_muted || $currentUser->is_banned) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        // Authorization: Only the sender or an admin can initiate deletion
-        if ($message->sender_id !== $currentUserId /* || Auth::user()->hasRole('admin') */) {
-            return response()->json(['message' => 'You are not authorized to delete this message.'], 403);
+        // If user is sender, allow deletion
+        if ($message->sender_id === $currentUserId) {
+            // proceed with deletion
+        } else {
+            // Otherwise, check roles & permissions
+            $participant = $conversation->participants()->where('user_id', $currentUserId)->first();
+            $targetParticipant = $conversation->participants()->where('user_id', $message->sender_id)->first();
+
+            if (!$participant) {
+                return response()->json(['message' => 'You are not authorized to delete this message.'], 403);
+            }
+
+            if ($participant->role === 'super_admin') {
+                // super_admin can delete any message
+            } elseif ($participant->role === 'admin') {
+                // admin can delete only messages from members
+                if (!$targetParticipant || $targetParticipant->role !== 'member') {
+                    return response()->json(['message' => 'You are not authorized to delete this message.'], 403);
+                }
+            } else {
+                return response()->json(['message' => 'You are not authorized to delete this message.'], 403);
+            }
         }
 
+        // Proceed with deletion logic
+
         $deletionType = $request->input('deletion_type'); // 'for_everyone' or 'for_me'
-        $conversationId = $message->conversation_id;
+        $conversationId = $conversation->id;
 
         if ($deletionType === 'for_everyone') {
-            // Delete associated attachments from storage
             foreach ($message->attachments as $attachment) {
                 Storage::disk('private')->delete($attachment->file_path);
             }
-            // Soft delete the message globally
-            $message->delete(); // This sets deleted_at
+            $message->delete();
 
-            // Broadcast to all clients in the conversation
             broadcast(new MessageDeleted($message->id, $conversationId, 'for_everyone', $currentUserId))->toOthers();
 
         } elseif ($deletionType === 'for_me') {
-            // Add current user's ID to the deleted_for_user_ids array
             $deletedFor = $message->deleted_for_user_ids ?? [];
             if (!in_array($currentUserId, $deletedFor)) {
                 $deletedFor[] = $currentUserId;
@@ -361,17 +383,15 @@ class MessageController extends Controller
             $message->deleted_for_user_ids = $deletedFor;
             $message->save();
 
-            // Broadcast ONLY to the specific user who performed 'delete for myself'
-            // We need a specific listener for this if you want it to appear as deleted
-            // only on their screen without a full page refresh.
-            // For others, the message should remain visible as the database `deleted_at` is null.
             broadcast(new MessageDeleted($message->id, $conversationId, 'for_me', $currentUserId));
+
         } else {
             return response()->json(['message' => 'Invalid deletion type.'], 400);
         }
 
         return response()->json(['message' => 'Message deletion processed successfully.']);
     }
+
 
     public function accessBySlug($slug)
     {

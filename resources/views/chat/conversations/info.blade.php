@@ -7,19 +7,17 @@
 @section('content')
 <div class="CategoryBook main-body">
     <div class="mainDivDirection">
-        <h2 class="mb-4">اطلاعات کانال</h2>
+        <h2 class="mb-4">اطلاعات {{$conversation->persianType}}</h2>
 
         <a href="{{ route('chat.messages.index', $conversation->id) }}" class="btn btn-outline-secondary mb-3">
-            بازگشت به کانال
+            بازگشت به {{$conversation->persianType}}
         </a>
         <a href="{{ route('chat.groups.search-users-after-creation-form', $conversation->id) }}" class="btn btn-primary">
             افزودن عضو جدید
         </a>
 
 
-        @if(session('success'))
-            <div class="alert alert-success text-center">{{ session('success') }}</div>
-        @endif
+    
 
         @if(in_array($role, ['admin', 'super_admin']))
             <form method="POST" action="{{ route('chat.groups.updateInfo', $conversation->id) }}" id="channel-info-form">
@@ -27,7 +25,7 @@
 
                 {{-- LINK --}}
                 <div class="form-group mb-3">
-                    <label class="form-label">لینک کانال</label>
+                    <label class="form-label">لینک {{$conversation->persianType}}</label>
                     <div id="link-view">
                         <p class="form-control-plaintext d-inline">
                             <a href="{{ url('/chat/' . $conversation->slug) }}" target="_blank">
@@ -43,7 +41,7 @@
 
                 {{-- BIO --}}
                 <div class="form-group mb-3">
-                    <label class="form-label">بیوگرافی کانال</label>
+                    <label class="form-label">بیوگرافی {{$conversation->persianType}}</label>
                     <div id="bio-view">
                         <p class="form-control-plaintext d-inline">
                             {{ $conversation->bio ?? 'ثبت نشده' }}

@@ -20,7 +20,7 @@
     
 
         @if(in_array($role, ['admin', 'super_admin']))
-            <form method="POST" action="{{ route('chat.groups.updateInfo', $conversation->id) }}" id="channel-info-form">
+            <form method="POST" action="{{ route('chat.groups.updateInfo', $conversation->id) }}" id="channel-info-form" enctype="multipart/form-data">
                 @csrf
 
                 {{-- LINK --}}
@@ -69,6 +69,24 @@
                         </select>
                     </div>
                 </div>
+
+                {{-- AVATAR --}}
+                <div class="form-group mb-4">
+                    <label class="form-label">تصویر نمایه</label>
+                    <div id="avatar-view">
+                        @if($conversation->avatar)
+                            <img src="{{ asset('storage/' . $conversation->avatar) }}" alt="Avatar" class="rounded mb-2" style="width: 100px; height: 100px; object-fit: cover;">
+                        @else
+                            <p class="text-muted">ثبت نشده</p>
+                        @endif
+                        <button type="button" class="btn btn-sm btn-outline-secondary edit-toggle-btn" data-target="avatar">ویرایش تصویر</button>
+                    </div>
+                    <div id="avatar-edit" style="display: none;">
+                        <input type="file" name="avatar" id="avatar" accept="image/jpeg,image/png,image/webp" class="form-control mt-2">
+                        <small class="text-muted">فقط تصاویر (JPEG, PNG, WEBP) تا حداکثر 2MB</small>
+                    </div>
+                </div>
+
 
                 {{-- Save Button (initially hidden) --}}
                 <button type="submit" class="btn btn-primary" id="save-btn" style="display: none;">ذخیره تغییرات</button>

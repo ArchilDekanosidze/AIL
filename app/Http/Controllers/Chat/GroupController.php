@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Chat\Conversation;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
@@ -41,14 +42,41 @@ class GroupController extends Controller
             'type' => 'required|in:group,channel',
             'is_private' => 'required|boolean',
             'slug' => 'string|max:255|unique:chat_conversations,slug',
+            'avatar' => 'nullable|image|max:2048', // Max 2MB
         ]);
 
+
+        $avatarPath = null;
+
+        if ($request->hasFile('avatar')) {
+            $now = now(); // Uses Carbon, which is part of Laravel
+            $year = $now->format('Y');      // e.g., 2025
+            $month = $now->format('m');     // e.g., 06
+            $day = $now->format('d');       // e.g., 22
+            $hour = $now->format('H');      // e.g., 15 (24-hour format)
+            $minute = $now->format('i');    // e.g., 21
+            // Define the base directory structure within 'chat_attachments'
+            $baseDirectory = "{$year}/{$month}/{$day}/{$hour}/{$minute}";
+            // Generate a unique filename to prevent conflicts, preserving the original extension
+            // Using Str::uuid() is highly recommended for robust uniqueness.
+            $originalExtension = $request->avatar->getClientOriginalExtension();
+            $uniqueFileName = Str::uuid() . '.' . $originalExtension; // e.g., 'a1b2c3d4-e5f6-...f7g8.jpg'
+
+            // Construct the full path that will be stored in the database
+            $fullFilePathInStorage = 'chat_avatars/' . "{$baseDirectory}/{$uniqueFileName}";
+            $avatarPath = $fullFilePathInStorage;
+
+            // Store the file using putFileAs, specifying the directory and the new filename
+            // The 'private' disk means it will be saved in storage/app/
+            $avatarPath = $request->file('avatar')->store($avatarPath, 'public'); // stored in storage/app/public/chat_avatars
+        }
         $conversation = Conversation::create([
             'title' => $request->title,
             'type' => $request->type, // "group" or "channel"
             'is_private' => $request->is_private,
             'slug' => $request->link ?: Str::slug($request->title),
-            'owner_id' => auth()->user()->id
+            'owner_id' => auth()->user()->id,
+            'avatar' => $avatarPath,
         ]);
 
         // Add current user as participant
@@ -143,10 +171,12 @@ class GroupController extends Controller
             abort(403);
         }
 
+
         $validated = $request->validate([
             'link' => 'nullable|string|max:255',
             'bio' => 'nullable|string|max:1000',
             'is_private' => 'nullable|boolean', // ✅ validate is_private
+            'avatar' => 'nullable|image|max:2048', // Max 2MB
         ]);
 
         $conversation->update([
@@ -154,6 +184,35 @@ class GroupController extends Controller
             'bio' => $validated['bio'] ?? $conversation->bio,
             'is_private' => $validated['is_private'] ?? $conversation->is_private, // ✅ update is_private
         ]);
+
+        $avatarPath = null;
+
+        if ($request->hasFile('avatar')) {
+            $now = now(); // Uses Carbon, which is part of Laravel
+            $year = $now->format('Y');      // e.g., 2025
+            $month = $now->format('m');     // e.g., 06
+            $day = $now->format('d');       // e.g., 22
+            $hour = $now->format('H');      // e.g., 15 (24-hour format)
+            $minute = $now->format('i');    // e.g., 21
+            // Define the base directory structure within 'chat_attachments'
+            $baseDirectory = "{$year}/{$month}/{$day}/{$hour}/{$minute}";
+            // Generate a unique filename to prevent conflicts, preserving the original extension
+            // Using Str::uuid() is highly recommended for robust uniqueness.
+            $originalExtension = $request->avatar->getClientOriginalExtension();
+            $uniqueFileName = Str::uuid() . '.' . $originalExtension; // e.g., 'a1b2c3d4-e5f6-...f7g8.jpg'
+
+            // Construct the full path that will be stored in the database
+            $fullFilePathInStorage = 'chat_avatars/' . "{$baseDirectory}/{$uniqueFileName}";
+            $avatarPath = $fullFilePathInStorage;
+
+            // Store the file using putFileAs, specifying the directory and the new filename
+            // The 'private' disk means it will be saved in storage/app/
+            $avatarPath = $request->file('avatar')->store($avatarPath, 'public'); // stored in storage/app/public/chat_avatars
+        
+            $conversation->update([
+                'avatar' => $avatarPath,
+            ]);
+        }
 
         return redirect()->back()->with('success', 'اطلاعات ' .$conversation->persianType .' با موفقیت به‌روزرسانی شد.');
     }

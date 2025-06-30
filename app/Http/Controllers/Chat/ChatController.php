@@ -117,7 +117,7 @@ class ChatController extends Controller
                     'id' => $conv->id,
                     'name' => $conv->title,
                     'conversation_type' => $conv->type,
-                    'avatar' => $conv->avatar ?? '/images/Site/default-group.png',
+                    'avatar' => asset('storage/' . $conv->avatar)  ?? '/images/Site/default-group.png',
                 ];
             });
 

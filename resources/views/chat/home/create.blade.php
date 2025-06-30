@@ -67,7 +67,6 @@
 
     });
 
-
     
 
    $(document).on('click', '.user-result', function () {

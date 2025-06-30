@@ -438,6 +438,10 @@
                     return;
                 }
 
+                if (!prepend) {
+                    $('#loadMoreWrapper').show(); // 🔥 SHOW BUTTON FOR INITIAL LOAD
+                }
+
                 const scrollPosition = $messagesBox[0].scrollHeight - $messagesBox.scrollTop();
                 let initialScroll = !prepend && messages.length > 0;
 

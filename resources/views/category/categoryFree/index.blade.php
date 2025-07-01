@@ -25,14 +25,14 @@
         <div id="search-result" class="row flex-wrap"></div>
         <div id="pagination-wrapper" class="mt-4 text-center"></div>
         <div class="container" style="margin-top: 40px;">
-            <h3 class="text-center">افزودن جزوه جدید</h3>
+            <h3 class="text-center">افزودن فایل جدید</h3>
 
             @auth
                 <form action="{{ route('freeFile.store') }}" method="POST" enctype="multipart/form-data" class="sp-form">
                     @csrf
 
                     <div class="form-group">
-                        <label for="title">عنوان جزوه:</label>
+                        <label for="title">عنوان فایل:</label>
                         <input type="text" name="title" id="title" class="form-control" required>
                     </div>
 
@@ -42,20 +42,20 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="file_path">فایل جزوه:</label>
+                        <label for="file_path">فایل:</label>
                         <input type="file" name="file_path" id="file_path" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip" required>
                     </div>
 
                     <input type="hidden" name="category_free_id" id="category_free-id" value="">
 
 
-                    <button type="submit" class="btn btn-success mt-3">ارسال جزوه</button>
+                    <button type="submit" class="btn btn-success mt-3">ارسال فایل</button>
                 </form>
             @endauth
 
             @guest
                 <div class="alert alert-warning text-center mt-4">
-                    برای افزودن جزوه جدید، ابتدا وارد حساب کاربری خود شوید.
+                    برای افزودن فایل جدید، ابتدا وارد حساب کاربری خود شوید.
                     <br>
                     <a href="{{ route('auth.login.form') }}" class="btn btn-primary mt-2">ورود به حساب کاربری</a>
                 </div>

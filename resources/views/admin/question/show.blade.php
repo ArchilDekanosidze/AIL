@@ -22,6 +22,6 @@
             <a class="deleteLink" href="{{route('admin.question.delete', $question->id)}}">حذف</a>                        
         </div>                  
     </div>
-    @include('partials.comments')
+    @include('partials.questionComments')
 </div>
 @endsection

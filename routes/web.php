@@ -176,18 +176,18 @@ Route::post('/question/comment/fetchComments', [QuestionCommentController::class
 //freeQuestion
 Route::get('/freeQuestion/index', [FreeQuestionController::class, 'index'])->name('freeQuestion.index');
 Route::post('/freeQuestion/fetchFreeQuestions', [FreeQuestionController::class, 'fetchFreeQuestions'])->name('freeQuestion.fetchFreeQuestions');
-Route::post('/freeQuestion/newQuestion', [FreeQuestionNewController::class, 'newQuestion'])->name('freeQuestion.newQuestion');
-Route::post('/freeQuestion/freeQuestion/vote', [FreeQuestionVoteController::class, 'vote'])->name('freeQuestion.freeQuestion.vote');
+Route::post('/freeQuestion/newQuestion', [FreeQuestionNewController::class, 'newQuestion'])->middleware('auth')->name('freeQuestion.newQuestion');
+Route::post('/freeQuestion/freeQuestion/vote', [FreeQuestionVoteController::class, 'vote'])->middleware('auth')->name('freeQuestion.freeQuestion.vote');
 
 //freeQuestion comment            
 Route::get('/freeQuestion/show/{id}', [FreeQuestionCommentController::class, 'show'])->name('freeQuestion.show');
 Route::post('/freeQuestion/fetchComments', [FreeQuestionCommentController::class, 'fetchComments'])->name('freeQuestion.fetchComments');
-Route::post('/freeQuestion/comment/newComments', [FreeQuestionCommentNewController::class, 'newComment'])->name('freeQuestion.comment.newComment');
-Route::post('/freeQuestion/freeQuestion/comment/vote', [FreeQuestionCommentVoteController::class, 'vote'])->name('freeQuestion.freeQuestion.comment.vote');
-Route::post('/freeQuestion/best-reply', [FreeQuestionBestReplyController::class, 'setBestReply'])->name('freeQuestion.best-reply');
+Route::post('/freeQuestion/comment/newComments', [FreeQuestionCommentNewController::class, 'newComment'])->middleware('auth')->name('freeQuestion.comment.newComment');
+Route::post('/freeQuestion/freeQuestion/comment/vote', [FreeQuestionCommentVoteController::class, 'vote'])->middleware('auth')->name('freeQuestion.freeQuestion.comment.vote');
+Route::post('/freeQuestion/best-reply', [FreeQuestionBestReplyController::class, 'setBestReply'])->middleware('auth')->name('freeQuestion.best-reply');
 
 //upload Images
-Route::post('/upload-image', [CkEditorUploaderController::class, 'upload'])->name('ckeditor.upload');
+Route::post('/upload-image', [CkEditorUploaderController::class, 'upload'])->middleware('auth')->name('ckeditor.upload');
 Route::get('/ckeditor/file/{any}', [CkEditorUploaderController::class, 'urlMaker'])->where('any', '.*')->name('ckeditor.urlMaker');
 
 
@@ -213,7 +213,7 @@ Route::get('/categories/categoryExam/children/{parentId}', [CategoryExamControll
 Route::get('/categories/categoryJozve/index', [CategoryJozveController::class, 'index'])->name('category.categoryJozve.index');
 Route::match(['get', 'post'], '/categories/categoryJozve/jozves', [CategoryJozveController::class, 'getJozve'])->name('category.categoryJozve.getJozve');
 Route::get('/categories/categoryJozve/children/{parentId}', [CategoryJozveController::class, 'getChildren'])->name('category.categoryJozve.getChildren');
-Route::post('/jozves', [JozveController::class, 'store'])->name('jozves.store');
+Route::post('/jozves', [JozveController::class, 'store'])->middleware('auth')->name('jozves.store');
 Route::get('/jozve/download/{jozve}', [JozveController::class, 'download'])->name('jozve.download');
 
 //freeCat
@@ -221,7 +221,7 @@ Route::get('/jozve/download/{jozve}', [JozveController::class, 'download'])->nam
 Route::get('/categories/categoryFree/index', [CategoryFreeController::class, 'index'])->name('category.categoryFree.index');
 Route::match(['get', 'post'], '/categories/categoryFree/freeFile', [CategoryFreeController::class, 'getFreeFile'])->name('category.categoryFree.getFreeFile');
 Route::get('/categories/categoryFree/children/{parentId}', [CategoryFreeController::class, 'getChildren'])->name('category.categoryFree.getChildren');
-Route::post('/freeFile', [FreeFileController::class, 'store'])->name('freeFile.store');
+Route::post('/freeFile', [FreeFileController::class, 'store'])->middleware('auth')->name('freeFile.store');
 Route::get('/freeFile/download/{freeFile}', [FreeFileController::class, 'download'])->name('freeFile.download');
 
 
@@ -229,7 +229,7 @@ Route::get('/freeFile/download/{freeFile}', [FreeFileController::class, 'downloa
 //chat
 Broadcast::routes(['middleware' => ['auth']]);
 
-Route::prefix('chat')->name('chat.')->group(function () {
+Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
 
     // General Chat Page
     Route::get('/', [ChatController::class, 'index'])->name('index'); 
@@ -272,9 +272,7 @@ Route::prefix('chat')->name('chat.')->group(function () {
     // Ban / Unban
     Route::post('conversations/{conversation}/ban/{user}', [ParticipantController::class, 'ban'])->name('participants.ban');
     Route::post('conversations/{conversation}/unban/{user}', [ParticipantController::class, 'unban'])->name('participants.unban');
-
     
-
     // Messages
     Route::get('{slug}', [MessageController::class, 'accessBySlug'])->name('slug.slug.access');
     Route::get('conversations/{conversation}/messages', [MessageController::class, 'index'])->name('messages.index'); 
@@ -310,7 +308,7 @@ Route::prefix('chat')->name('chat.')->group(function () {
 
 
 
-Route::get('/profile/student/{user}', [ProfileStudentController::class, 'index'])->name('profile.student.index');
+Route::get('/profile/student/{user}', [ProfileStudentController::class, 'index'])->middleware('auth')->name('profile.student.index');
 
 
 
@@ -319,142 +317,139 @@ Route::get('/profile/student/{user}', [ProfileStudentController::class, 'index']
 
 
 
+Route::middleware('auth', 'only.user.one')->group(function () {
+
+
+    //admin Panel
+
+    Route::get('/admin', [AdminDesktopController::class, 'index'])->name('admin.home');
+
+
+    // admin category question`
+    // 
+    Route::get('/admin/category/categoryQuestion/list/{category}', [AdminCategoryQuestionController::class, 'index'])->name('admin.category.categoryQuestion.index');
+    Route::get('/admin/category/categoryQuestion/create', [AdminCategoryQuestionController::class, 'create'])->name('admin.category.categoryQuestion.create');
+    Route::post('/admin/category/categoryQuestion/create', [AdminCategoryQuestionController::class, 'store'])->name('admin.category.categoryQuestion.store');
+
+    Route::get('/admin/category/categoryQuestion/createSubCat/{categorySelect}', [AdminCategoryQuestionController::class, 'createSubCat'])->name('admin.category.categoryQuestion.createSubCat');
+
+    Route::get('/admin/category/categoryQuestion/edit/{currentCategory}', [AdminCategoryQuestionController::class, 'edit'])->name('admin.category.categoryQuestion.edit');
+    Route::post('/admin/category/categoryQuestion/update/{currentCategory}', [AdminCategoryQuestionController::class, 'update'])->name('admin.category.categoryQuestion.update');
+    Route::get('/admin/category/categoryQuestion/delete/{currentCategory}', [AdminCategoryQuestionController::class, 'delete'])->name('admin.category.categoryQuestion.delete');
+
+    // admin question test
+
+    Route::get('/admin/question/list/{category}', [AdminQuestionController::class, 'index'])->name('admin.question.index');
+    Route::get('/admin/question/show/{question}', [AdminQuestionController::class, 'show'])->name('admin.question.show');
+    Route::get('/admin/question/create', [AdminQuestionController::class, 'create'])->name('admin.question.create');
+    Route::post('/admin/question/create', [AdminQuestionController::class, 'store'])->name('admin.question.store');
+    Route::get('/admin/question/edit/{question}', [AdminQuestionController::class, 'edit'])->name('admin.question.edit');
+    Route::post('/admin/question/update/{question}', [AdminQuestionController::class, 'update'])->name('admin.question.update');
+    Route::get('/admin/question/delete/{question}', [AdminQuestionController::class, 'delete'])->name('admin.question.delete');
+
+    // admin question descriptive
+
+    Route::get('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'create'])->name('admin.question.descriptive.create');
+    Route::post('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'store'])->name('admin.question.descriptive.store');
+    Route::get('/admin/question/descriptive/edit/{question}', [AdminQuestionDescriptiveController::class, 'edit'])->name('admin.question.descriptive.edit');
+    Route::post('/admin/question/descriptive/update/{question}', [AdminQuestionDescriptiveController::class, 'update'])->name('admin.question.descriptive.update');
+
+
+
+    // admin category
+
+    Route::get('/admin/category/list/{category}', [AdminCategoryController::class, 'index'])->name('admin.category.category.index');
+    Route::get('/admin/category/create', [AdminCategoryController::class, 'create'])->name('admin.category.category.create');
+    Route::post('/admin/category/create', [AdminCategoryController::class, 'store'])->name('admin.category.category.store');
+    Route::get('/admin/category/category/createSubCat/{categorySelect}', [AdminCategoryController::class, 'createSubCat'])->name('admin.category.category.createSubCat');
+    Route::get('/admin/category/category/edit/{currentCategory}', [AdminCategoryController::class, 'edit'])->name('admin.category.category.edit');
+    Route::post('/admin/category/category/update/{currentCategory}', [AdminCategoryController::class, 'update'])->name('admin.category.category.update');
+    Route::get('/admin/category/category/delete/{currentCategory}', [AdminCategoryController::class, 'delete'])->name('admin.category.category.delete');
+
+
+
+    //Seeder
+    Route::get('/seeder/index', [SeedController::class, 'index']);
+    Route::get('/seeder/User', [SeedController::class, 'createUser']);
+    Route::get('/seeder/CategoryQuestion', [SeedController::class, 'createCategoryQuestion']);
+    Route::get('/seeder/Question', [SeedController::class, 'createQuestion']);
+    Route::get('/seeder/assignCategoryToUser', [SeedController::class, 'assignCategoryToUser']);
+    Route::get('/seeder/createComment', [SeedController::class, 'createComment']);
+
+
+    Route::get('/seeder/category', [SeedCategoryBookController::class, 'index']);
+    Route::get('/seeder/addThreecategory/{category}', [SeedCategoryBookController::class, 'addThreecategory']);
+
+
+    //Test
+    Route::get('/test/index', [TestController::class, 'index']);
+    Route::get('/learning/test/{userAnswer}/{questionId}', [UserLearningNewController::class, 'changeQuestionAndUserCategoryQuestion']);
+
+    Route::get('/test/emailTest', [TestController::class, 'emailTest']);
+    Route::get('/test/smsTest', [TestController::class, 'smsTest']);
+
+    Route::get('/test/logout', [TestController::class, 'logout']);
+
+    Route::get('/test/addCatToUserMinChange', [TestController::class, 'addCatToUserMinChange']);
+
+    Route::get('/test/catQuestionsCount', [TestController::class, 'catQuestionsCount']);
+
+    Route::get('/test/remoteDB', [TestController::class, 'remoteDB']);
+    Route::get('/test/myProgress', [TestController::class, 'myProgress']);
+    Route::get('/loginAs/{id}', [TestController::class, 'loginAs']);
+
+    Route::get('/test/findTheListId', [TestController::class, 'findTheListId']);
+    Route::get('/test/removeDuplicatedQuestions', [TestController::class, 'removeDuplicatedQuestions']);
+    Route::get('/test/transferImages', [TestController::class, 'transferImages']);
+
+    Route::get('/test/createJozveCategory', [TestController::class, 'createJozveCategory']);
+    Route::get('/test/createFreeCategory', [TestController::class, 'createFreeCategory']);
+
+    Route::get('/test-auth', function () {
+        return Auth::check() ? 'Logged in' : 'Not logged in';
+    });
 
 
 
 
+    Route::get('/test/updateUserBadge', [TestController::class, 'updateUserBadge']);
+    // Route::get('/test/upload1', [TestController::class, 'upload1']);
+    // Route::get('/test/upload2', [TestController::class, 'upload2']);
 
 
-//admin Panel
+    // Route::post('/ckeditor/upload', [TestController::class, 'upload'])->name('ckeditor.upload');
 
-Route::get('/admin', [AdminDesktopController::class, 'index'])->name('admin.home');
-
-
-// admin category question
-
-Route::get('/admin/category/categoryQuestion/list/{category}', [AdminCategoryQuestionController::class, 'index'])->name('admin.category.categoryQuestion.index');
-Route::get('/admin/category/categoryQuestion/create', [AdminCategoryQuestionController::class, 'create'])->name('admin.category.categoryQuestion.create');
-Route::post('/admin/category/categoryQuestion/create', [AdminCategoryQuestionController::class, 'store'])->name('admin.category.categoryQuestion.store');
-
-Route::get('/admin/category/categoryQuestion/createSubCat/{categorySelect}', [AdminCategoryQuestionController::class, 'createSubCat'])->name('admin.category.categoryQuestion.createSubCat');
-
-Route::get('/admin/category/categoryQuestion/edit/{currentCategory}', [AdminCategoryQuestionController::class, 'edit'])->name('admin.category.categoryQuestion.edit');
-Route::post('/admin/category/categoryQuestion/update/{currentCategory}', [AdminCategoryQuestionController::class, 'update'])->name('admin.category.categoryQuestion.update');
-Route::get('/admin/category/categoryQuestion/delete/{currentCategory}', [AdminCategoryQuestionController::class, 'delete'])->name('admin.category.categoryQuestion.delete');
-
-// admin question test
-
-Route::get('/admin/question/list/{category}', [AdminQuestionController::class, 'index'])->name('admin.question.index');
-Route::get('/admin/question/show/{question}', [AdminQuestionController::class, 'show'])->name('admin.question.show');
-Route::get('/admin/question/create', [AdminQuestionController::class, 'create'])->name('admin.question.create');
-Route::post('/admin/question/create', [AdminQuestionController::class, 'store'])->name('admin.question.store');
-Route::get('/admin/question/edit/{question}', [AdminQuestionController::class, 'edit'])->name('admin.question.edit');
-Route::post('/admin/question/update/{question}', [AdminQuestionController::class, 'update'])->name('admin.question.update');
-Route::get('/admin/question/delete/{question}', [AdminQuestionController::class, 'delete'])->name('admin.question.delete');
-
-// admin question descriptive
-
-Route::get('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'create'])->name('admin.question.descriptive.create');
-Route::post('/admin/question/descriptive/create', [AdminQuestionDescriptiveController::class, 'store'])->name('admin.question.descriptive.store');
-Route::get('/admin/question/descriptive/edit/{question}', [AdminQuestionDescriptiveController::class, 'edit'])->name('admin.question.descriptive.edit');
-Route::post('/admin/question/descriptive/update/{question}', [AdminQuestionDescriptiveController::class, 'update'])->name('admin.question.descriptive.update');
+    //Import
+    Route::get('/import', [AdminImportController::class, 'import']);
+    Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
+    Route::get('/import/downloadImages', [AdminImportController::class, 'downloadImages']);
+    Route::get('/import/saveQuestionsTextes', [AdminImportController::class, 'saveQuestionsTextes']);
+        
 
 
 
-// admin category
-
-Route::get('/admin/category/list/{category}', [AdminCategoryController::class, 'index'])->name('admin.category.category.index');
-Route::get('/admin/category/create', [AdminCategoryController::class, 'create'])->name('admin.category.category.create');
-Route::post('/admin/category/create', [AdminCategoryController::class, 'store'])->name('admin.category.category.store');
-Route::get('/admin/category/category/createSubCat/{categorySelect}', [AdminCategoryController::class, 'createSubCat'])->name('admin.category.category.createSubCat');
-Route::get('/admin/category/category/edit/{currentCategory}', [AdminCategoryController::class, 'edit'])->name('admin.category.category.edit');
-Route::post('/admin/category/category/update/{currentCategory}', [AdminCategoryController::class, 'update'])->name('admin.category.category.update');
-Route::get('/admin/category/category/delete/{currentCategory}', [AdminCategoryController::class, 'delete'])->name('admin.category.category.delete');
+    Route::get('/export/chunck', [DatabaseExportController::class, 'exportDatabase']);
 
 
-
-//Seeder
-Route::get('/seeder/index', [SeedController::class, 'index']);
-Route::get('/seeder/User', [SeedController::class, 'createUser']);
-Route::get('/seeder/CategoryQuestion', [SeedController::class, 'createCategoryQuestion']);
-Route::get('/seeder/Question', [SeedController::class, 'createQuestion']);
-Route::get('/seeder/assignCategoryToUser', [SeedController::class, 'assignCategoryToUser']);
-Route::get('/seeder/createComment', [SeedController::class, 'createComment']);
+    Route::get('/import/category', [AdminImportCategoryController::class, 'index']);
 
 
-Route::get('/seeder/category', [SeedCategoryBookController::class, 'index']);
-Route::get('/seeder/addThreecategory/{category}', [SeedCategoryBookController::class, 'addThreecategory']);
+    //Import new
+    Route::get('/import/beforeUpload', [AdminImportNewController::class, 'beforeUpload'])->name('category.categoryQuestion.beforeUpload');
+    Route::get('/import/addQuestionCategoryToTagTable', [AdminImportNewController::class, 'addQuestionCategoryToTagTable'])->name('category.categoryQuestion.addQuestionCategoryToTagTable');
+    Route::get('/import/addTagIdToQuestions', [AdminImportNewController::class, 'addTagIdToQuestions'])->name('category.categoryQuestion.addTagIdToQuestions');
+    Route::get('/import/createCoustionCountForTable', [AdminImportNewController::class, 'createCoustionCountForTable'])->name('category.categoryQuestion.createCoustionCountForTable');
 
+    // import book
+    Route::get('/import/book', [AdminImportBookController::class, 'import'])->name('category.book.import');
+    Route::get('/import/kanoon/nemooneSoal/category', [AdminImportKanoonCategoryController::class, 'categoryImport'])->name('kanoon.nemooneSoal.category.import');
+    Route::get('/import/kanoon/nemooneSoal/soal', [AdminImportKanoonSoalController::class, 'soalImport'])->name('kanoon.nemooneSoal.soal.import');
+    Route::get('/import/kanoon/nemooneSoal/saveHtml', [AdminImportKanoonSoalController::class, 'saveHtml'])->name('kanoon.nemooneSoal.soal.saveHtml');
 
-//Test
-Route::get('/test/index', [TestController::class, 'index']);
-Route::get('/learning/test/{userAnswer}/{questionId}', [UserLearningNewController::class, 'changeQuestionAndUserCategoryQuestion']);
+    // import GamBeGam
 
-Route::get('/test/emailTest', [TestController::class, 'emailTest']);
-Route::get('/test/smsTest', [TestController::class, 'smsTest']);
-
-Route::get('/test/logout', [TestController::class, 'logout']);
-
-Route::get('/test/addCatToUserMinChange', [TestController::class, 'addCatToUserMinChange']);
-
-Route::get('/test/catQuestionsCount', [TestController::class, 'catQuestionsCount']);
-
-Route::get('/test/remoteDB', [TestController::class, 'remoteDB']);
-Route::get('/test/myProgress', [TestController::class, 'myProgress']);
-Route::get('/loginAs/{id}', [TestController::class, 'loginAs']);
-
-Route::get('/test/findTheListId', [TestController::class, 'findTheListId']);
-Route::get('/test/removeDuplicatedQuestions', [TestController::class, 'removeDuplicatedQuestions']);
-Route::get('/test/transferImages', [TestController::class, 'transferImages']);
-
-Route::get('/test/createJozveCategory', [TestController::class, 'createJozveCategory']);
-Route::get('/test/createFreeCategory', [TestController::class, 'createFreeCategory']);
-
-Route::get('/test-auth', function () {
-    return Auth::check() ? 'Logged in' : 'Not logged in';
+    Route::get('/import/gambegam/padars/level1', [AdminImportGambeGamCategoryPadarsFirstLevelController::class, 'categoryImport'])->name('category.gambegam.padars.1.import');
+    Route::get('/import/gambegam/padars/level2', [AdminImportGambeGamCategoryPadarsSecondLevelController::class, 'categoryImport'])->name('category.gambegam.padars.2.import');
+    Route::get('/import/gambegam/padars/level3', [AdminImportGambeGamCategoryPadarsThirdLevelController::class, 'categoryImport'])->name('category.gambegam.padars.3.import');
+    Route::get('/import/gambegam/padars/level4', [AdminImportGambeGamCategoryPadarsForthLevelController::class, 'categoryImport'])->name('category.gambegam.padars.4.import');
 });
-
-
-
-
-Route::get('/test/updateUserBadge', [TestController::class, 'updateUserBadge']);
-// Route::get('/test/upload1', [TestController::class, 'upload1']);
-// Route::get('/test/upload2', [TestController::class, 'upload2']);
-
-
-// Route::post('/ckeditor/upload', [TestController::class, 'upload'])->name('ckeditor.upload');
-
-//Import
-Route::get('/import', [AdminImportController::class, 'import']);
-Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
-Route::get('/import/downloadImages', [AdminImportController::class, 'downloadImages']);
-Route::get('/import/saveQuestionsTextes', [AdminImportController::class, 'saveQuestionsTextes']);
-    
-
-
-
-Route::get('/export/chunck', [DatabaseExportController::class, 'exportDatabase']);
-
-
-Route::get('/import/category', [AdminImportCategoryController::class, 'index']);
-
-
-//Import new
-Route::get('/import/beforeUpload', [AdminImportNewController::class, 'beforeUpload'])->name('category.categoryQuestion.beforeUpload');
-Route::get('/import/addQuestionCategoryToTagTable', [AdminImportNewController::class, 'addQuestionCategoryToTagTable'])->name('category.categoryQuestion.addQuestionCategoryToTagTable');
-Route::get('/import/addTagIdToQuestions', [AdminImportNewController::class, 'addTagIdToQuestions'])->name('category.categoryQuestion.addTagIdToQuestions');
-Route::get('/import/createCoustionCountForTable', [AdminImportNewController::class, 'createCoustionCountForTable'])->name('category.categoryQuestion.createCoustionCountForTable');
-
-// import book
-Route::get('/import/book', [AdminImportBookController::class, 'import'])->name('category.book.import');
-Route::get('/import/kanoon/nemooneSoal/category', [AdminImportKanoonCategoryController::class, 'categoryImport'])->name('kanoon.nemooneSoal.category.import');
-Route::get('/import/kanoon/nemooneSoal/soal', [AdminImportKanoonSoalController::class, 'soalImport'])->name('kanoon.nemooneSoal.soal.import');
-Route::get('/import/kanoon/nemooneSoal/saveHtml', [AdminImportKanoonSoalController::class, 'saveHtml'])->name('kanoon.nemooneSoal.soal.saveHtml');
-
-// import GamBeGam
-
-Route::get('/import/gambegam/padars/level1', [AdminImportGambeGamCategoryPadarsFirstLevelController::class, 'categoryImport'])->name('category.gambegam.padars.1.import');
-Route::get('/import/gambegam/padars/level2', [AdminImportGambeGamCategoryPadarsSecondLevelController::class, 'categoryImport'])->name('category.gambegam.padars.2.import');
-Route::get('/import/gambegam/padars/level3', [AdminImportGambeGamCategoryPadarsThirdLevelController::class, 'categoryImport'])->name('category.gambegam.padars.3.import');
-Route::get('/import/gambegam/padars/level4', [AdminImportGambeGamCategoryPadarsForthLevelController::class, 'categoryImport'])->name('category.gambegam.padars.4.import');
-

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('body')->nullable();
             $table->foreignId('best_reply_id')->nullable()->constrained('free_questions')->onDelete('set null'); // Foreign key for best reply
             $table->integer('score')->default(0);
+            $table->timestamp('edited_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

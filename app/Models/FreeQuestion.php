@@ -8,10 +8,11 @@ use App\Models\FreeQuestionVote;
 use App\Models\FreeQuestionComment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FreeQuestion extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes; 
 
     public function user()
     {

@@ -61,6 +61,7 @@ use App\Http\Controllers\Admin\Category\AdminCategoryController;
 use App\Http\Controllers\Admin\Import\AdminImportBookController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionNewController;
 use App\Http\Controllers\Category\CategoryQuestionUserController;
+use App\Http\Controllers\FreeQuestion\FreeQuestionEditController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionVoteController;
 use App\Http\Controllers\Admin\AdminQuestionDescriptiveController;
 use App\Http\Controllers\Admin\Import\AdminImportCategoryController;
@@ -71,6 +72,7 @@ use App\Http\Controllers\FreeQuestion\FreeQuestionBestReplyController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionCommentNewController;
 use App\Http\Controllers\Admin\Category\AdminCategoryQuestionController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingEmailController;
+use App\Http\Controllers\FreeQuestion\FreeQuestionCommentEditController;
 use App\Http\Controllers\FreeQuestion\FreeQuestionCommentVoteController;
 use App\Http\Controllers\Auth\OTP\Desktop\DesktopSettingMobileController;
 use App\Http\Controllers\Admin\Import\AdminImportKanoonCategoryController;
@@ -178,6 +180,8 @@ Route::get('/freeQuestion/index', [FreeQuestionController::class, 'index'])->nam
 Route::post('/freeQuestion/fetchFreeQuestions', [FreeQuestionController::class, 'fetchFreeQuestions'])->name('freeQuestion.fetchFreeQuestions');
 Route::post('/freeQuestion/newQuestion', [FreeQuestionNewController::class, 'newQuestion'])->middleware('auth')->name('freeQuestion.newQuestion');
 Route::post('/freeQuestion/freeQuestion/vote', [FreeQuestionVoteController::class, 'vote'])->middleware('auth')->name('freeQuestion.freeQuestion.vote');
+Route::post('/freeQuestion/{question}/update', [FreeQuestionEditController::class, 'update'])->middleware('auth')->name('freeQuestion.edit.update');
+Route::delete('/free-question/{question}', [FreeQuestionEditController::class, 'destroy'])->middleware('only.user.one')->name('freeQuestion.edit.destroy');
 
 //freeQuestion comment            
 Route::get('/freeQuestion/show/{id}', [FreeQuestionCommentController::class, 'show'])->name('freeQuestion.show');
@@ -185,6 +189,9 @@ Route::post('/freeQuestion/fetchComments', [FreeQuestionCommentController::class
 Route::post('/freeQuestion/comment/newComments', [FreeQuestionCommentNewController::class, 'newComment'])->middleware('auth')->name('freeQuestion.comment.newComment');
 Route::post('/freeQuestion/freeQuestion/comment/vote', [FreeQuestionCommentVoteController::class, 'vote'])->middleware('auth')->name('freeQuestion.freeQuestion.comment.vote');
 Route::post('/freeQuestion/best-reply', [FreeQuestionBestReplyController::class, 'setBestReply'])->middleware('auth')->name('freeQuestion.best-reply');
+Route::post('/freeQuestion/comment/{comment}/update', [FreeQuestionCommentEditController::class, 'update'])->middleware('auth')->name('freeQuestion.comment.update');
+Route::delete('/freeQuestion/comment/{comment}', [FreeQuestionCommentEditController::class, 'destroy'])->middleware('only.user.one')->name('freeQuestion.comment.destroy');
+
 
 //upload Images
 Route::post('/upload-image', [CkEditorUploaderController::class, 'upload'])->middleware('auth')->name('ckeditor.upload');

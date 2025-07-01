@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('parent_id')->nullable()->constrained('free_question_comments')->onDelete('set null'); // Foreign key for parent comment (self-referencing)
             $table->text('body')->nullable();
             $table->integer('score')->default(0);
+            $table->timestamp('edited_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

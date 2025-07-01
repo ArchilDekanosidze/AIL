@@ -30,7 +30,9 @@ trait FreeQuestionTrait
         'body' => $freeQuestion->body,
         'voteCount' => count($freeQuestion->freeQuestionVotes),
         'commentCount' => count($freeQuestion->freeQuestionComments) ,
-        'showUrl' => route('freeQuestion.show', $freeQuestion->id) , 
+        'showUrl' => route('freeQuestion.show', $freeQuestion->id) ,
+        'can_edit' => auth()->check() && auth()->id() === $freeQuestion->user_id, 
+        'can_delete' => auth()->check() && auth()->id() === 1,
         'user' => [
             'id' => $freeQuestion->user->id,
             'name' => $freeQuestion->user->name,
@@ -160,7 +162,9 @@ trait FreeQuestionTrait
         'score' => $comment->score,
         'body' => $comment->body,
         'canMarkAsBest' => $canMarkAsBest , 
-        'best_reply_id' => $comment->freeQuestion->best_reply_id ,             
+        'best_reply_id' => $comment->freeQuestion->best_reply_id , 
+        'can_edit' => auth()->check() && auth()->id() === $comment->user_id, 
+        'can_delete' => auth()->check() && auth()->id() === 1,            
         'user' => [
             'id' => $comment->user->id,
             'name' => $comment->user->name,

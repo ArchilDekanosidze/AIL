@@ -44,6 +44,7 @@
             <label for="newComment">پاسخ جدید:</label>
             <textarea name="newComment" class="newComment" id="newComment" rows="4" cols="80"></textarea>
             <button class="saveNewComment btn btn-success">ذخیره</button>   
+            <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="display: none;">لغو ویرایش</button>
         </div>
     @endauth
     @guest
@@ -79,6 +80,7 @@
     
     
 <script>
+    let comments = [];
     let lastCommentId = null; // Store last comment ID
     function replyTo(commentId) {
 
@@ -118,6 +120,8 @@
                         }
                         string = string + `</button>`
                     }
+
+
                 @endauth
             string = string +  `</div>`
             string = string + `<div class="col2">` 
@@ -126,10 +130,16 @@
                     {
                         string = string + `<div class="comment_header" > ` ;
                         string = string +  `<p><small>پاسخ به <a href="${comment.parent.profile_url}">${comment.parent.user_name}</a> : <a class="reply-link" href="#comment-${comment.parent.id}">"${comment.parent.body}" </a></small></p> `
-                        string = string + `</div>`
+                        string = string + `</div>`                        
                     }
                     string = string + `<div class="comment_body" > ` ;
                         string = string + `<div><strong><a href="${comment.user.profile_url}">${ comment.user.name}</a></strong> :</div><div> ${comment.body}</div> `
+                        if(comment.can_edit) {
+                            string += `<button class="btn btn-sm btn-warning edit-comment-btn" data-id="${comment.id}">ویرایش</button>`;
+                        }
+                        if(comment.can_delete) {
+                            string += `<button class="btn btn-sm btn-danger delete-comment-btn" data-id="${comment.id}">حذف</button>`;
+                        }    
                     string = string +  `</div>`
                     string = string + `<a href="#newComment" onclick="replyTo(${comment.id })"> پاسخ </a>`
                 string = string +  `</div>`
@@ -175,7 +185,8 @@
             data =  { last_comment_id: lastCommentId ,
                 freeQuestionId: {{ $freeQuestion['id'] }},                         
                     } ;
-            comments = Ajax(url, data)  
+            const commentsData = Ajax(url, data);
+            comments = comments.concat(commentsData); // Keep track  
             console.log(comments)
 
             if (comments.length > 0) 
@@ -277,22 +288,70 @@
         }
         rebindReplayLink()
 
-        $(".saveNewComment").click(function () {
-            var url = "{{route('freeQuestion.comment.newComment')}}";        
-            data = {free_question_id : {{ $freeQuestion['id'] }}, 
-                    parent_comment_id : $(".parent_comment_id").val(),
-                    comment_body: window.editorInstance.getData(),                         
-                    } ;
-            result = Ajax(url, data)  
-            checkUnauthenticated(result, "لطفا برای ثبت نظر ابتدا وارد شوید")
 
-            $(".success-message").html(result.successMessages)   
-            $('.success-message').show().delay(5000).fadeOut('slow');
-            window.editorInstance.setData("");
-            $(".parent_comment_id").val("")
-            $("#comment-section").prepend(createCommentString(result.comment))
-            $("html, body").animate({scrollTop: $("#comment-section").offset().top },500,)}
-        )
+
+        $(".saveNewComment").click(function () {
+            const isEdit = $('#newCommentDiv').data('edit-id');
+            const url = isEdit 
+                ? `/freeQuestion/comment/${isEdit}/update`
+                : "{{ route('freeQuestion.comment.newComment') }}";
+
+            const data = {
+                free_question_id: {{ $freeQuestion['id'] }},
+                parent_comment_id: $(".parent_comment_id").val(),
+                comment_body: window.editorInstance.getData()
+            };
+
+            const result = Ajax(url, data);  
+            checkUnauthenticated(result, "لطفا برای ثبت نظر ابتدا وارد شوید");
+
+            if (result.error) {
+                $(".failed-message").html(result.error);   
+                $('.failed-message').show().delay(5000).fadeOut('slow');
+                return;
+            }
+
+            if (result.successMessages) {
+                $(".success-message").html(result.successMessages);   
+                $('.success-message').show().delay(5000).fadeOut('slow');
+
+                window.editorInstance.setData("");
+                $(".parent_comment_id").val("");
+                $(".saveNewComment").text("ذخیره");
+                $('#newCommentDiv').removeData('edit-id');
+
+                const commentId = result.comment.id;
+                const newHtml = createCommentString(result.comment);
+                const existingIndex = comments.findIndex(c => c.id === result.comment.id);
+                if (existingIndex !== -1) {
+                    comments[existingIndex] = result.comment; // Update
+                } else {
+                    comments.push(result.comment); // Add new
+                }
+                const $newElement = $(newHtml);
+
+                if (isEdit) {
+                    $(`#comment-${commentId}`).closest('.commentMainCol').replaceWith($newElement);
+                    $("html, body").animate({
+                        scrollTop: $(`#comment-${commentId}`).offset().top
+                    }, 500);
+                } else {
+                    $("#comment-section").prepend($newElement);
+                    $("html, body").animate({
+                        scrollTop: $("#comment-section").offset().top
+                    }, 500);
+                }
+
+                window.editorInstance.setData("");
+                $(".parent_comment_id").val("");
+                $(".saveNewComment").text("ذخیره");
+                $("#newCommentDiv").removeData("edit-id");
+                $("#cancelEditBtn").hide();
+            }
+        });
+
+
+
         function rebindVote() {
             
             $('.vote-btn').off("click").click(function() {
@@ -368,6 +427,48 @@
 
             })
         }
+
+
+        // Delete
+        $(document).on('click', '.delete-comment-btn', function () {
+            const commentId = $(this).data('id');
+            if (confirm('آیا مطمئن هستید که این نظر را حذف کنید؟')) {
+                $.ajax({
+                    url: `/freeQuestion/comment/${commentId}`,
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function () {
+                        $(`#comment-${commentId}`).parent().parent().remove();
+                    },
+                    error: function () {
+                        alert('خطایی در حذف نظر رخ داد');
+                    }
+                });
+            }
+        });
+
+        // Edit (fill form)
+        $(document).on('click', '.edit-comment-btn', function () {
+            const commentId = $(this).data('id');
+            const comment = comments.find(c => c.id === commentId); // You need to track `comments` array
+
+            window.editorInstance.setData(comment.body);
+            $(".parent_comment_id").val(""); // not replying
+            $("#newCommentDiv").data("edit-id", comment.id);
+            $(".saveNewComment").text("بروزرسانی");
+            $("#cancelEditBtn").show();
+        });
+
+        $("#cancelEditBtn").click(function () {
+            window.editorInstance.setData("");
+            $(".parent_comment_id").val("");
+            $(".saveNewComment").text("ذخیره");
+            $("#newCommentDiv").removeData("edit-id");
+            $(this).hide();
+        });
+
 
 
     });

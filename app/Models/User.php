@@ -202,4 +202,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(ConversationParticipant::class);
     }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar 
+            ? asset('storage/avatars/' . $this->avatar) 
+            : asset('images/Site/default-avatar.png');
+    }
+
 }

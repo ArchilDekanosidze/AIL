@@ -60,10 +60,10 @@ class MessageController extends Controller
                         $conversation->display_title = ucfirst($conversation->type) . ' Chat';
                     }
                 } else {
-                    $conversation->display_title = 'Chat Conversation';
+                    $conversation->display_title = 'گفت و گو';
                 }
             } else {
-                $conversation->display_title = 'My Chat';
+                $conversation->display_title = 'چت من';
             }
         }
         $participant = $conversation->participants()->where('user_id', auth()->id())->first();

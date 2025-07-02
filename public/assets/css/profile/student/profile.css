@@ -1,0 +1,63 @@
+.avatar-img
+{
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    -o-border-radius: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: flex-start;
+}
+
+.badge-card {
+    width: 140px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    text-align: center;
+    font-family: "Vazir", sans-serif;
+    padding: 10px 8px 15px;
+    cursor: default;
+    background: #fff;
+    user-select: none;
+}
+
+.badge-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 8px;
+}
+
+.badge-icon {
+    width: 64px;
+    height: 64px;
+    fill-opacity: 0.9;
+}
+
+.badge-label {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    color: #444;
+}
+
+.badge-score {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.badge-tag {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #222;
+}

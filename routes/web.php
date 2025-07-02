@@ -22,6 +22,7 @@ use App\Http\Controllers\Chat\AttachmentController;
 use App\Http\Controllers\Quiz\OnlineQuizController;
 use App\Http\Controllers\Category\FreeCatController;
 use App\Http\Controllers\Chat\ParticipantController;
+use App\Http\Controllers\Chat\PrivateChatController;
 use App\Http\Controllers\Desktop\QuizListController;
 use App\Http\Controllers\Question\CommentController;
 use App\Http\Controllers\SeedCategoryBookController;
@@ -244,6 +245,9 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
     Route::get('search-entities', [ChatController::class, 'searchEntities'])->name('search-entities');  
     Route::post('start-conversation', [ChatController::class, 'startConversation'])->name('startConversation');
     Route::post('toggle-ban-user', [ChatController::class, 'toggleBanUser'])->name('toggle-ban-user');
+    
+    Route::post('start-private-from-profile', [PrivateChatController::class, 'start'])->name('start-private-from-profile');
+    Route::get('saved-messages', [PrivateChatController::class, 'savedMessages'])->name('saved-messages');
 
 
 
@@ -316,6 +320,7 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
 
 
 Route::get('/profile/student/{user}', [ProfileStudentController::class, 'index'])->middleware('auth')->name('profile.student.index');
+Route::post('/profile/avatar', [ProfileStudentController::class, 'uploadAvatar'])->name('profile.avatar.upload');
 
 
 

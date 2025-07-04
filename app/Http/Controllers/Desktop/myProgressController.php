@@ -24,9 +24,24 @@ class myProgressController extends Controller
 
     public function myProgress(User $user)
     {
-        $userId = $user->id;
-        return view('desktop.myProgress.index', compact("userId"));
+        $authUser = auth()->user();
+
+        $isOwner = $authUser->id === $user->id;
+
+        $isSupervisor = \App\Models\Profile\UserRelationship::where('supervisor_id', $authUser->id)
+            ->where('student_id', $user->id)
+            ->exists();
+
+        if (! $isOwner && ! $isSupervisor) {
+            abort(403, 'شما مجاز به مشاهده پیشرفت این کاربر نیستید.');
+        }
+
+        return view('desktop.myProgress.index', [
+            'userId' => $user->id,
+            'isSupervisor' => $isSupervisor,
+        ]);
     }
+
 
     public function getChartResult()
     {

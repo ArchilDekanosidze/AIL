@@ -49,6 +49,7 @@ use App\Http\Controllers\Quiz\CreateQuizStudentController;
 use App\Http\Controllers\Auth\OTP\LoginTwoFactorController;
 use App\Http\Controllers\Upload\CkEditorUploaderController;
 use App\Http\Controllers\Admin\Import\AdminImportController;
+use App\Http\Controllers\Profile\UserRelationshipController;
 use App\Http\Controllers\Question\QuestionCommentController;
 use App\Http\Controllers\Auth\OTP\ResetPasswordOTPController;
 use App\Http\Controllers\Category\CategoryGambeGamController;
@@ -322,6 +323,13 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
 Route::get('/profile/student/{user}', [ProfileStudentController::class, 'index'])->middleware('auth')->name('profile.student.index');
 Route::post('/profile/avatar', [ProfileStudentController::class, 'uploadAvatar'])->name('profile.avatar.upload');
 
+Route::middleware('auth')->prefix('supervising/')->name('supervising.')->group(function () {
+    Route::post('send', [UserRelationshipController::class, 'sendRequest'])->name('send');
+    Route::post('accept/{id}', [UserRelationshipController::class, 'accept'])->name('accept');
+    Route::post('decline/{id}', [UserRelationshipController::class, 'decline'])->name('decline');
+    Route::delete('cancel/{id}', [UserRelationshipController::class, 'cancel'])->name('cancel');
+    Route::delete('remove/{id}', [UserRelationshipController::class, 'removeRelationship'])->name('remove');
+});
 
 
 

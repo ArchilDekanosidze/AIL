@@ -61,6 +61,125 @@
 
 
 
+
+
+
+    @if(auth()->id() !== $user->id)
+        <div class="relationship-actions mt-4">
+            @if($relationshipStatus['isSupervisor'] || $relationshipStatus['isStudent'])
+                <form action="{{ route('supervising.remove', ['id' => $relationshipStatus['relationshipId']]) }}" method="POST">
+                    @csrf @method('DELETE')
+                    <button class="btn btn-warning">
+                        {{ $relationshipStatus['isSupervisor'] ? 'لغو شاگردی این کاربر' : 'لغو استادی این کاربر' }}
+                    </button>
+                </form>
+
+            @elseif($relationshipStatus['existingRequest'])
+                @php
+                    $request = $relationshipStatus['existingRequest'];
+                    $isIncoming = $request->target_id === auth()->id(); // You received the request
+                @endphp
+
+                @if($isIncoming)
+                    <form action="{{ route('supervising.accept', ['id' => $request->id]) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button class="btn btn-success">پذیرفتن درخواست</button>
+                    </form>
+
+                    <form action="{{ route('supervising.decline', ['id' => $request->id]) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button class="btn btn-danger">رد درخواست</button>
+                    </form>
+                @else
+                    <form action="{{ route('supervising.cancel', ['id' => $request->id]) }}" method="POST">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-secondary">لغو درخواست</button>
+                    </form>
+                @endif
+
+            @else
+                <form action="{{ route('supervising.send') }}" method="POST" class="d-inline-flex align-items-center gap-2">
+                    @csrf
+                    <input type="hidden" name="target_user_id" value="{{ $user->id }}">
+                    <select name="type" class="form-select w-auto">
+                        <option value="supervisor">درخواست استاد شدن</option>
+                        <option value="student">درخواست شاگرد شدن</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">ارسال درخواست</button>
+                </form>
+            @endif
+        </div>
+    @endif
+
+
+    @if(auth()->id() === $user->id && $incomingRequests && $incomingRequests->isNotEmpty())
+        <div class="mt-4">
+            <h4>درخواست‌های دریافتی</h4>
+            @foreach($incomingRequests as $request)
+                <div class="card p-2 my-2">
+                    <p>
+                        {{ $request->requester->name }} 
+                        درخواست داده تا 
+                        {{ $request->type === 'supervisor' ? 'استاد' : 'شاگرد' }}
+                        شما شود.
+                    </p>
+                    <form action="{{ route('supervising.accept', $request->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button class="btn btn-success btn-sm">پذیرفتن</button>
+                    </form>
+                    <form action="{{ route('supervising.decline', $request->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button class="btn btn-danger btn-sm">رد</button>
+                    </form>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
+
+
+    @if(auth()->id() === $user->id)
+
+        @if($mySupervisors && $mySupervisors->count())
+            <h4 class="mt-4">اساتید من</h4>
+            <ul>
+                @foreach($mySupervisors as $relation)
+                    <li>
+                        <a href="{{ route('profile.student.index', $relation->supervisor->id) }}">
+                            {{ $relation->supervisor->name }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+
+        @if($myStudents && $myStudents->count())
+            <h4 class="mt-4">شاگردان من</h4>
+            <ul>
+                @foreach($myStudents as $relation)
+                    <li>
+                        <a href="{{ route('profile.student.index', $relation->student->id) }}">
+                            {{ $relation->student->name }}
+                        </a>
+                        <div class="mt-3">
+                            <a href="{{ route('desktop.quizList', $relation->student->id) }}" class="btn btn-info">
+                                📊 مشاهده آزمون‌های این شاگرد
+                            </a>
+                        </div>
+                        <a href="{{ route('desktop.myProgress', $relation->student->id) }}" class="btn btn-info mt-2">📊 مشاهده پیشرفت شاگرد</a>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+
+    @endif
+
+
+
+
+
+
+
     <h3 class="mt-4 mb-2">🏅 نشان‌ها</h3>
     @php
         $badgeIcons = [

@@ -22,7 +22,21 @@
                 <td>{{$quiz->createdAt}}</td>
                 <td>{{$quiz->persian_status}}</td>
                 <td>{{$quiz->finalPercentage}}</td>
-                <td><a href="{{route('quiz.online.onlineQuizInProgress', $quiz->id)}}">رفتن</a></td>
+                @php
+                    $isOwner = $quiz->user_id === auth()->id();
+                    $quizEnded = $quiz->status == 'ended';
+                @endphp
+
+                <td>
+                    @if ($isOwner)
+                        <a href="{{ route('quiz.online.onlineQuizInProgress', $quiz->id) }}">رفتن</a>
+                    @elseif ($isSupervisor && $quizEnded)
+                        <a href="{{ route('quiz.online.onlineQuizInProgress', $quiz->id) }}">رفتن</a>
+                    @else
+                        <span class="text-muted">غیرفعال</span>
+                    @endif
+                </td>
+
                 <td><a class="@if($quiz->status != "ended") disabled @endif" href="{{route('quiz.online.saveOnlineQuizDataAndShowResult', $quiz->id)}}">مشاهده</a></td>
             </tr>
         @endforeach

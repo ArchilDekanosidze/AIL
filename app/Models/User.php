@@ -20,10 +20,11 @@ use App\Models\Chat\Conversation;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use App\Jobs\Notification\Email\SendEmail;
-use App\Models\Chat\ConversationParticipant;
 use App\Services\Auth\Traits\HasTwoFactor;
+use App\Models\Chat\ConversationParticipant;
 use App\Services\Auth\Traits\MustVerifyEmail;
 use App\Services\Auth\Traits\MustVerifyMobile;
+use App\Models\Profile\UserRelationshipRequest;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -209,5 +210,28 @@ class User extends Authenticatable
             ? asset('storage/avatars/' . $this->avatar) 
             : asset('images/Site/default-avatar.png');
     }
+
+    // Users that this user supervises
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'user_relationships', 'supervisor_id', 'student_id')->withTimestamps();
+    }
+
+    // Users that supervise this user
+    public function supervisors()
+    {
+        return $this->belongsToMany(User::class, 'user_relationships', 'student_id', 'supervisor_id')->withTimestamps();
+    }
+
+    public function sentRelationshipRequests()
+    {
+        return $this->hasMany(UserRelationshipRequest::class, 'requester_id');
+    }
+
+    public function receivedRelationshipRequests()
+    {
+        return $this->hasMany(UserRelationshipRequest::class, 'target_id');
+    }
+
 
 }

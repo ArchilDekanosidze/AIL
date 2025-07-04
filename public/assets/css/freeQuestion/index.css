@@ -42,6 +42,7 @@
 .freeQuestionMainCol .row1
 {
     display: flex;
+    flex-wrap: wrap;
 }
 
 

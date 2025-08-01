@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('free_tags', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->unique();    
-            $table->text('slug')->unique();    
+            $table->string('name')->unique();    
+            $table->string('slug')->unique();    
             $table->text('description')->nullable(); 
             $table->timestamps();
             $table->softDeletes();

@@ -36,7 +36,7 @@ return new class extends Migration
             $table->timestamp('edited_at')->nullable();
 
             $table->softDeletes(); // This adds a 'deleted_at' timestamp column
-            $table->json('deleted_for_user_ids')->default('[]');
+            $table->json('deleted_for_user_ids')->nullable();
             $table->timestamps();
         });
     }

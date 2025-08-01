@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->unique();    
-            $table->text('slug')->unique();    
+            $table->string('name')->unique();    
+            $table->string('slug')->unique();    
             $table->text('description')->nullable(); 
             $table->bigInteger('bronz1');
             $table->bigInteger('bronz2');

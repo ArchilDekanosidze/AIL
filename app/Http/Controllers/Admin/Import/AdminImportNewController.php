@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Response;
 use App\Services\CategoryQuestion\CategoriesQuestionService;
 
 class AdminImportNewController extends Controller
-{
+{ 
     private $categoriesQuestionService;
-    private $payeId = "16";  
+    private $payeId = "5";  
 
 
 
@@ -61,7 +61,8 @@ class AdminImportNewController extends Controller
         foreach ($firstLevelDirectCats as $firstLevelDirectCat) {
             $secondtLevelDirectCats = $this->categoriesQuestionService->getDirectcats($firstLevelDirectCat);
             foreach ($secondtLevelDirectCats as $category) {
-                $ancestorString = $firstLevelDirectCat->name . '-' . $category->name ;                          
+                $ancestorString = $firstLevelDirectCat->name . '-' . $category->name ;       
+                              
                 $tag  = new Tag();
                 $tag->id = $category->id;
                 $tag->name = $ancestorString;

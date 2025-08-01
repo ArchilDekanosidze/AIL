@@ -27,9 +27,11 @@ class AdminImportController extends Controller
     private $level;
     private $category_question_id;
     private $correctAnswer;
-    private $payeId = "16";
+    private $payeId = "5";
     private  $folderPath ;
     private $questionId  ;
+
+    private $qIds = [];
 
 
     public function import()
@@ -46,7 +48,7 @@ class AdminImportController extends Controller
             $this->sweepDivs();
         }    
 
-        $this->downloadImages();
+        // $this->downloadImages();
     }
 
 
@@ -235,6 +237,8 @@ class AdminImportController extends Controller
             $catArrayParentId = [];
 
             $cat = CategoryQuestion::where("name", "$catArray[0]")->where("parent_id", $this->payeId)->first();
+            // dd($cat);
+            // $cat = CategoryQuestion::where('id', 6571)->first(); // in vase zamani hast a id dars ro bedoonam va bar asase id dars bekham soalha ro be in darse khas ezafe konam
             $catArrayId[] = $cat->id;
             $catArrayParentId[] = $cat->parent_id;
             
@@ -322,6 +326,7 @@ class AdminImportController extends Controller
 
     public function transfer()
     {
+        
         $questions = QuestionsTemp::all();
         foreach ($questions as $question) {
             $newQuestion = new Question();
@@ -336,7 +341,8 @@ class AdminImportController extends Controller
 
             if(($question->id % 100) == 0)
             {
-                dump($question->id);
+                // dump($question->id);
+                dump(QuestionsTemp::count());
             }
 
             $saveFilePath = $this->getQuestionFilePath($newQuestion);
@@ -355,9 +361,9 @@ class AdminImportController extends Controller
 
             // dd($newQuestion);
 
-
+            $question->delete();
         }
-        QuestionsTemp::truncate();
+        // QuestionsTemp::truncate();
     }
 
 
@@ -413,25 +419,90 @@ class AdminImportController extends Controller
 
 
 
+    public function downloadImagesFromJson()
+    {
+        $start = 42;
+        $space = 10000;
+        $mode = "fil";
+        if($mode == "Json")
+        {
+            $questions = Question::where('id', '>=', $start*$space)->where('id', '<=', ($start+1)*$space)->get();
+        }
+        else
+        {
+            $json = file_get_contents(getcwd() . '/mydata.json');
+            $data = json_decode($json, true);
+            dump(count($data));
+            $questions = Question::whereIn('id', $data)->get();
+        }
+        // $questions = Question::all();
+        foreach ($questions as $question) {
+            if(($question->id % 1000) == 0)
+            {
+                // dump($question->id);
+                dump($question->id);
+            }
+
+            $this->setFolderPath($question);
+
+            $saveFilePath = $this->getQuestionFilePath($question);
+            $content = [
+                "front" => $this->checkForImage($question->front, $question->id) ,
+                "back" => $this->checkForImage($question->back, $question->id) , 
+                "p1" => $this->checkForImage($question->p1, $question->id) , 
+                "p2" => $this->checkForImage($question->p2, $question->id), 
+                "p3" => $this->checkForImage($question->p3, $question->id), 
+                "p4" => $this->checkForImage($question->p4, $question->id)
+            ];
+            $disk =Storage::disk('questions') ;                                  
+            $disk->put($saveFilePath,json_encode($content));            
+        }
+
+        $jsonData = json_encode($this->qIds);
+        file_put_contents(getcwd() . '/mydata.json', $jsonData);
+    }
+
+
+
 
 
     public function downloadImages()
     {
         // limit 100
       // $questions = QuestionsTemp::skip(0)->take(100)->get();
-      $questions = DB::select(
-        <<<SQL
-          SELECT * FROM `questions_temps` 
-          WHERE front LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
-          OR  back LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
-          OR  p1 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
-          OR  p2 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
-          OR  p3 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
-          OR  p4 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
-          
-         SQL);
-        $questions = QuestionsTemp::hydrate($questions);
+      $mode = 'DB';
+      if($mode == 'DB')
+      {
+        $questions = DB::select(
+            <<<SQL
+            SELECT * FROM `questions_temps` 
+            WHERE front LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+            OR  back LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+            OR  p1 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+            OR  p2 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+            OR  p3 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+            OR  p4 LIKE '%<span><img class="unique" src="https://tx.quiz24.ir%' 
+            
+            SQL);
+            $questions = QuestionsTemp::hydrate($questions);
+        $jsonData = json_encode($questions->pluck('id'));
+        file_put_contents(getcwd() . '/mydata.json', $jsonData);
+
+      } 
+      else
+      {
+        $json = file_get_contents(getcwd() . '/mydata.json');
+        $data = json_decode($json, true);
+        $questions = QuestionsTemp::whereIn('id', $data)->get();
+      }
+
+
+
         dump($questions->count());
+
+
+
+
       foreach ($questions as $question) {
 
         $this->questionId = $question->id;
@@ -440,12 +511,12 @@ class AdminImportController extends Controller
 
 
 
-        $question->front = $this->checkForImage($question->front);   
-        $question->back = $this->checkForImage($question->back);        
-        $question->p1 = $this->checkForImage($question->p1);        
-        $question->p2 = $this->checkForImage($question->p2);        
-        $question->p3 = $this->checkForImage($question->p3);        
-        $question->p4 = $this->checkForImage($question->p4);   
+        $question->front = $this->checkForImage($question->front, $question->id);   
+        $question->back = $this->checkForImage($question->back, $question->id);        
+        $question->p1 = $this->checkForImage($question->p1, $question->id);        
+        $question->p2 = $this->checkForImage($question->p2, $question->id);        
+        $question->p3 = $this->checkForImage($question->p3, $question->id);        
+        $question->p4 = $this->checkForImage($question->p4, $question->id);   
         $question->save();        
       }
     }
@@ -465,7 +536,7 @@ class AdminImportController extends Controller
     }
 
    
-    public function checkForImage($html)
+    public function checkForImage($html, $qId)
     {
         $pos1 = mb_strpos($html, '<span><img class="unique" src="https://tx.quiz24.ir');
         if($pos1  !== false)
@@ -475,6 +546,8 @@ class AdminImportController extends Controller
             $imageUrl = mb_substr($html, $pos1, $pos2- $pos1-1);
             $newAddress = $this->saveImageFromWeb($imageUrl);
             $html =str_replace($imageUrl, $newAddress, $html);
+            dump("still-" . $qId);
+            $this->qIds[] = $qId;
         }
         return $html;
     }

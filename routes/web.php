@@ -430,38 +430,49 @@ Route::middleware('auth', 'only.user.one')->group(function () {
     });
 
 
+    Route::get('/test/removeQuestionsFromCatAndSetQuestionTableIdForIncreament', [TestController::class, 'removeQuestionsFromCatAndSetQuestionTableIdForIncreament']);
+
+
+
 
 
     Route::get('/test/updateUserBadge', [TestController::class, 'updateUserBadge']);
     // Route::get('/test/upload1', [TestController::class, 'upload1']);
     // Route::get('/test/upload2', [TestController::class, 'upload2']);
 
+        Route::get('/test/dinvazendegi', [TestController::class, 'dinvazendegi']);
+
 
     // Route::post('/ckeditor/upload', [TestController::class, 'upload'])->name('ckeditor.upload');
-
+    
     //Import
-    Route::get('/import', [AdminImportController::class, 'import']);
-    Route::get('/import/transfer', [AdminImportController::class, 'transfer']);
-    Route::get('/import/downloadImages', [AdminImportController::class, 'downloadImages']);
-    Route::get('/import/saveQuestionsTextes', [AdminImportController::class, 'saveQuestionsTextes']);
+
+    Route::get('/import/category', [AdminImportCategoryController::class, 'index']); // in moheme marhale 1
+
+    Route::get('/import/fromText', [AdminImportController::class, 'import']);  // in moheme   // marhale 2
+    Route::get('/import/downloadImages', [AdminImportController::class, 'downloadImages']);  // in ham moheme marhale 3
+    Route::get('/import/transfer', [AdminImportController::class, 'transfer']); // in ham moheme marhale 4
+    Route::get('/import/saveQuestionsTextes', [AdminImportController::class, 'saveQuestionsTextes']); // in vase gozashte hast
         
 
+    Route::get('/import/downloadImagesFromJson', [AdminImportController::class, 'downloadImagesFromJson']);  // in vase gozashte hast
 
 
-    Route::get('/export/chunck', [DatabaseExportController::class, 'exportDatabase']);
+    Route::get('/export/chunck', [DatabaseExportController::class, 'exportDatabase']); // in vase gozashte hast
 
 
-    Route::get('/import/category', [AdminImportCategoryController::class, 'index']);
 
 
     //Import new
-    Route::get('/import/beforeUpload', [AdminImportNewController::class, 'beforeUpload'])->name('category.categoryQuestion.beforeUpload');
-    Route::get('/import/addQuestionCategoryToTagTable', [AdminImportNewController::class, 'addQuestionCategoryToTagTable'])->name('category.categoryQuestion.addQuestionCategoryToTagTable');
-    Route::get('/import/addTagIdToQuestions', [AdminImportNewController::class, 'addTagIdToQuestions'])->name('category.categoryQuestion.addTagIdToQuestions');
-    Route::get('/import/createCoustionCountForTable', [AdminImportNewController::class, 'createCoustionCountForTable'])->name('category.categoryQuestion.createCoustionCountForTable');
+    Route::get('/import/beforeUpload', [AdminImportNewController::class, 'beforeUpload'])->name('category.categoryQuestion.beforeUpload');  // in moheme marhale 5
+    Route::get('/import/addQuestionCategoryToTagTable', [AdminImportNewController::class, 'addQuestionCategoryToTagTable'])->name('category.categoryQuestion.addQuestionCategoryToTagTable'); // in vase gozashte hast
+    Route::get('/import/addTagIdToQuestions', [AdminImportNewController::class, 'addTagIdToQuestions'])->name('category.categoryQuestion.addTagIdToQuestions'); // in vase gozashte hast
+    Route::get('/import/createCoustionCountForTable', [AdminImportNewController::class, 'createCoustionCountForTable'])->name('category.categoryQuestion.createCoustionCountForTable'); // in vase gozashte hast
 
     // import book
     Route::get('/import/book', [AdminImportBookController::class, 'import'])->name('category.book.import');
+    
+    // import kanoon
     Route::get('/import/kanoon/nemooneSoal/category', [AdminImportKanoonCategoryController::class, 'categoryImport'])->name('kanoon.nemooneSoal.category.import');
     Route::get('/import/kanoon/nemooneSoal/soal', [AdminImportKanoonSoalController::class, 'soalImport'])->name('kanoon.nemooneSoal.soal.import');
     Route::get('/import/kanoon/nemooneSoal/saveHtml', [AdminImportKanoonSoalController::class, 'saveHtml'])->name('kanoon.nemooneSoal.soal.saveHtml');

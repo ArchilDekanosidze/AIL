@@ -291,5 +291,22 @@ class TestController extends Controller
     }
   }
 
+  public function dinvazendegi() {
+    $tempQuestions = QuestionsTemp::all();
+    $tempQuestionsCatIds = $tempQuestions->pluck('category_question_id')->unique();
+    dd($tempQuestionsCatIds);
+    foreach ($tempQuestionsCatIds as $id) {
+      
+    }
+  }
+
+  public function removeQuestionsFromCatAndSetQuestionTableIdForIncreament()
+  {
+    $questions = CategoryQuestion::find(3)->allQuestion()->each->delete();
+    // foreach ($questions as $question) {
+    //   $question->delete();
+    // }
+    dd($questions);
+  }
 
 }

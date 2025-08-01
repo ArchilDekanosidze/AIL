@@ -19,51 +19,43 @@ class ChatController extends Controller
     {
         $user = Auth::user();
 
-        // Eager load lastMessage and participants.user for performance
         $conversations = $user->conversations()
-            ->with(['lastMessage', 'participants.user']) // Keep your eager loads
-            ->latest('updated_at') // Add sorting to show recent conversations first
-            ->get();
+            ->with([
+                'lastMessage',
+                'participants.user' // we will use this to get names and roles
+            ])
+            ->get()
+            ->map(function ($conversation) use ($user) {
+                // Generate display title
+                $otherParticipants = $conversation->participants->filter(fn($p) => $p->user_id !== $user->id);
 
-        // Process each conversation to determine its display title
-        foreach ($conversations as $conversation) {
-            // Default to the conversation's title if it has one and is not a private chat,
-            // or if it's a group/channel that has a specific title set.
-            if (!empty($conversation->title) && $conversation->type !== 'private') {
-                $conversation->display_title = $conversation->title;
-            } else {
-                // For private chats or groups/channels without an explicit title, generate one.
-                $otherParticipants = $conversation->participants->filter(function ($participant) use ($user) {
-                    return $participant->user_id !== $user->id;
-                });
-
-                if ($otherParticipants->count() > 0) {
-                    if ($conversation->type === 'private') {
-                        // For 1-to-1 private chats, show the other participant's name
-                        $conversation->display_title = $otherParticipants->first()->user->name ?? 'Unknown User';
-                    } else if ($conversation->type === 'group' || $conversation->type === 'channel') {
-                        // For groups/channels without a title, list a few participant names
-                        $names = $otherParticipants->take(3)->pluck('user.name')->toArray();
-                        if (!empty($names)) {
-                            $conversation->display_title = implode(', ', $names) . ($otherParticipants->count() > 3 ? '...' : '');
-                        } else {
-                            // Fallback if no other participants (e.g., self-chat in a group/channel context)
-                            $conversation->display_title = ucfirst($conversation->type) . ' Chat';
-                        }
-                    } else {
-                        // General fallback for unhandled types or edge cases
-                        $conversation->display_title = 'Chat Conversation';
-                    }
+                if (!empty($conversation->title) && $conversation->type !== 'private') {
+                    $conversation->display_title = $conversation->title;
+                } elseif ($conversation->type === 'private' && $otherParticipants->count()) {
+                    $conversation->display_title = $otherParticipants->first()->user->name ?? 'Unknown';
+                } elseif (in_array($conversation->type, ['group', 'channel'])) {
+                    $names = $otherParticipants->take(3)->pluck('user.name')->toArray();
+                    $conversation->display_title = implode(', ', $names) . ($otherParticipants->count() > 3 ? '...' : '');
                 } else {
-                    // This case handles a conversation where the current user is the only participant
-                    // (e.g., a self-chat, or a group/channel not yet joined by others)
                     $conversation->display_title = 'My Chat';
                 }
-            }
-        }
+
+                // Add unread message count
+                $participant = $conversation->participants->firstWhere('user_id', $user->id);
+                $lastReadId = $participant?->last_read_message_id ?? 0;
+
+                $conversation->unread_messages_count = $conversation->messages()
+                    ->where('id', '>', $lastReadId)
+                    ->count();
+
+                return $conversation;
+            })
+            ->sortByDesc('updated_at') // newest at top like Telegram
+            ->values(); // reindex collection
 
         return view('chat.home.index', compact('conversations'));
     }
+
 
     public function create() 
     {

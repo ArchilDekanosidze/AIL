@@ -14,6 +14,7 @@ use App\Models\Chat\MessageAttachment;
 use Illuminate\Support\Facades\Storage;
 use App\Events\Chat\MessageDeleted; // <-- Keep this import
 use App\Events\Chat\MessageEdited; // <-- NEW: Import MessageEdited event
+use App\Models\Chat\ConversationParticipant;
 use Illuminate\Database\Eloquent\SoftDeletes; // You need this trait for soft deletes in models
 
 class MessageController extends Controller
@@ -414,6 +415,23 @@ class MessageController extends Controller
 
         return redirect()->route('chat.messages.index', $conversation->id);
     }
+
+
+    public function markAsRead(Request $request, $conversationId)
+    {
+        $participant = ConversationParticipant::where([
+            'conversation_id' => $conversationId,
+            'user_id' => auth()->id(),
+        ])->firstOrFail();
+
+        if ($request->last_read_message_id > $participant->last_read_message_id) {
+            $participant->last_read_message_id = $request->last_read_message_id;
+            $participant->save();
+        }
+
+        return response()->json(['status' => 'ok']);
+    }
+
 
 
 }

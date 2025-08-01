@@ -927,6 +927,77 @@
 
 
 
+</script>
+
+
+<script>
+let highestSeenMessageId = 0;
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = parseInt(entry.target.dataset.id);
+            if (id > highestSeenMessageId) {
+                highestSeenMessageId = id;
+            }
+        }
+    });
+}, {
+    root: null, // viewport
+    threshold: 0.5 // 50% visible
+});
+
+const mutationObserver = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+            if (node.nodeType === 1 && node.classList.contains('message-item')) {
+                observer.observe(node);
+                node.dataset.observed = "true";
+            }
+        });
+    });
+});
+
+mutationObserver.observe(document.querySelector('#messagesBox'), {
+    childList: true,
+    subtree: true,
+});
 
 </script>
+<script>
+function markMessagesAsRead() {
+    // alert(highestSeenMessageId);
+    if (!highestSeenMessageId) return;
+
+    fetch(`/chat/conversations/{{ $conversation->id }}/read`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        },
+        body: JSON.stringify({
+            last_read_message_id: highestSeenMessageId
+        })
+    }).then(res => res.json())
+      .then(data => {
+          console.log('Marked as read:', data);
+      }).catch(err => {
+          console.error('Error marking messages as read:', err);
+      });
+}
+</script>
+<script>
+window.addEventListener('beforeunload', markMessagesAsRead);
+
+// Optional: debounce if user stops scrolling
+let scrollTimeout;
+window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(markMessagesAsRead, 1000); // after 1s no scroll
+});
+</script>
+
+
+
+
 @endsection

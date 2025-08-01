@@ -8,3 +8,10 @@
     text-align: left;
     cursor: pointer;
 }
+
+.unreadmessagesCount
+{
+    padding :6px 11px;
+    font-size: 20px;
+    font-weight: bold;
+}

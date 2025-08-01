@@ -292,7 +292,11 @@ Route::prefix('chat')->name('chat.')->middleware('auth')->group(function () {
     Route::post('conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');  
     Route::put('messages/{message}', [MessageController::class, 'update'])->name('messages.update');
     Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');  
-    
+    Route::post('/conversations/{conversation}/read', [MessageController::class, 'markAsRead']);
+
+
+
+
     // Attachments
     // Route::post('messages/{message}/attachments', [AttachmentController::class, 'store'])->name('attachments.store');
     Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download'); 

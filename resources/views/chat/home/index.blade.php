@@ -17,6 +17,11 @@
                 <a href="{{ route('chat.messages.index', $conversation->id) }}">
                     {{ $conversation->display_title }} {{-- Use the new display_title --}}
                 </a>
+                @if($conversation->unread_messages_count > 0)
+                    <span class="badge bg-danger rounded-pill unreadmessagesCount">
+                        {{ $conversation->unread_messages_count }}
+                    </span>
+                @endif
                     {{-- <span class="badge bg-secondary">{{ $conversation->type }}</span> --}}
                 </li>
             @empty

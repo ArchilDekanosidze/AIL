@@ -83,3 +83,10 @@ a.downloadfile {
 a.downloadfile:hover {
     text-decoration: none;
 }
+
+
+@media (max-width: 576px) {
+  #search-result {
+    grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+  }
+}

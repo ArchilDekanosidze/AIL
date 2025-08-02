@@ -77,5 +77,12 @@ class AdminQuestionController extends Controller
         $question->delete();
         return back();
     }
+
+    public function updatelevel(Question $question, $percentage)
+    {
+        $question->percentage = $percentage;
+        $question->save();
+        dd($question, $percentage);
+    }
 }
 

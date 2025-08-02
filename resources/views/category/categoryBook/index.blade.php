@@ -104,6 +104,7 @@
 
             $('#search-result').html(result.html);
             $('#pagination-wrapper').html(result.pagination);
+            updatePagination();
         }
 
         // Handle pagination clicks
@@ -143,6 +144,7 @@
             // Render response
             $('#search-result').html(result.html);
             $('#pagination-wrapper').html(result.pagination);
+            updatePagination();
         });
 
 

@@ -41,7 +41,6 @@ class CategoryExamController extends Controller
         }
 
         $exams = $query->paginate(20);
-
         $html = view('partials.exams', compact('exams'))->render();
 
         return response()->json([

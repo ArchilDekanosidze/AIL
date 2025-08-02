@@ -83,6 +83,7 @@
 
             $('#search-result').html(result.html);
             $('#pagination-wrapper').html(result.pagination);
+            updatePagination();
         }
 
         // Handle pagination
@@ -108,10 +109,16 @@
 
             $('#search-result').html(result.html);
             $('#pagination-wrapper').html(result.pagination);
+            updatePagination();
         });
 
         // Load initial data
         $('#search-button').click();
     });
 </script>
+
+
+
+
+
 @endsection

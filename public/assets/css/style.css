@@ -442,6 +442,12 @@ body {
 #pagination-wrapper {
   overflow-x: auto;
   max-width: 100%;
-  display: inline-block;
   white-space: nowrap;
+  padding-bottom: 10px;
+}
+
+#pagination-wrapper .pagination {
+  display: inline-flex;
+  flex-wrap: wrap; /* Allows wrapping instead of scroll if you prefer */
+  justify-content: center;
 }

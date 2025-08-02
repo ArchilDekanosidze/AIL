@@ -67,5 +67,56 @@
 </script>
 
 
+<script>
+function updatePagination() {
+    const paginations = document.querySelectorAll('.pagination');
+
+    paginations.forEach(ul => {
+        const pageItems = ul.querySelectorAll('li.page-item');
+        const width = window.innerWidth;
+        const isMobile = width < 576;
+
+        // Find the active page index (excluding prev/next)
+        let activeIndex = -1;
+
+        pageItems.forEach((item, i) => {
+            if (item.classList.contains('active')) {
+                activeIndex = i;
+            }
+        });
+
+        pageItems.forEach((item, i) => {
+            const isPrev = item.innerText.includes('قبلی') || item.querySelector('a')?.innerText.includes('قبلی');
+            const isNext = item.innerText.includes('بعدی') || item.querySelector('a')?.innerText.includes('بعدی');
+
+            if (!isMobile) {
+                // Show everything on large screens
+                item.style.display = '';
+                return;
+            }
+
+            // Always show prev/next
+            if (isPrev || isNext) {
+                item.style.display = '';
+                return;
+            }
+
+            // Show only current page, and its neighbors
+            if (Math.abs(i - activeIndex) <= 1) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+}
+
+
+    document.addEventListener('DOMContentLoaded', updatePagination);
+    window.addEventListener('resize', updatePagination);
+</script>
+
+
+
 
 

@@ -82,7 +82,7 @@ class AdminQuestionController extends Controller
     {
         $question->percentage = $percentage;
         $question->save();
-        dd($question, $percentage);
+        dd($question, $percentage, 'changed');
     }
 }
 

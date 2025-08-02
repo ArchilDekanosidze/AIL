@@ -35,6 +35,7 @@ class CategoryQuestionUserController extends Controller
         // $question = Question::find(123);
         // dd($question->front);
 
+
         return view('category.categoryQuestion.user.index', compact('currentCategory', 'directCats', 'ancestor'));
     }
 

@@ -141,7 +141,7 @@
                 }
 
                 changeColorBaseOnAnswer()
-                MathBreak()
+                // MathBreak()
 
             }
 

@@ -432,3 +432,16 @@ mrow, msqrt,msup, msub, mo, mmultiscripts , mn, mi, mtext
   direction: ltr !important;
 }
 
+
+
+
+body {
+  overflow-x: hidden;
+}
+
+#pagination-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+  display: inline-block;
+  white-space: nowrap;
+}

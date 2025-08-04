@@ -371,6 +371,7 @@ Route::middleware('auth', 'only.user.one')->group(function () {
     Route::post('/admin/question/update/{question}', [AdminQuestionController::class, 'update'])->name('admin.question.update');
     Route::get('/admin/question/delete/{question}', [AdminQuestionController::class, 'delete'])->name('admin.question.delete');
     Route::get('/admin/question/updatelevel/{question}/{percentage}', [AdminQuestionController::class, 'updatelevel'])->name('admin.question.updatelevel');
+    Route::post('/admin/question/updatelevel', [AdminQuestionController::class, 'updatelevelPost'])->name('admin.question.updatelevel.post');
 
 
     // admin question descriptive

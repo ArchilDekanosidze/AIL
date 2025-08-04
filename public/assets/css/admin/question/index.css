@@ -70,3 +70,16 @@
     width: 100%;
     margin-bottom: 20px;
 }
+
+.changeToSimple
+{
+    border: 1px solid rgb(182, 175, 175);
+    padding: 10px;
+    background-color: #aae014;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+    margin-right: 20px; 
+}

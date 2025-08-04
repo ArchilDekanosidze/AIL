@@ -84,5 +84,16 @@ class AdminQuestionController extends Controller
         $question->save();
         dd($question, $percentage, 'changed');
     }
+
+    public function updatelevelPost(Request $request)
+    {
+        $questionId = $request->questionId;
+        $question = Question::find($questionId);
+        $question->percentage = 10;
+        $question->save();
+        return 'success';
+    }
+
+
 }
 

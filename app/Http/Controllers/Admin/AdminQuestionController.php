@@ -15,7 +15,7 @@ class AdminQuestionController extends Controller
     public function index(CategoryQuestion $category)
     {      
         $path = $category->path();
-        $questions = Question::test()->where("category_question_id", $category->id)->get();
+        $questions = $category->allQuestion()->where('percentage', '<', '21')->where('type', 'test');
         return view('admin.question.index', compact('questions', 'path'));
     }
     public function show(Question $question)

@@ -10,7 +10,7 @@
         {{$i = 1;}}
         @foreach($questions as $question)
             <div class="questioCard">
-                <div>سوال شماره : {{$i++}} ({{$question->id}})</div>
+                <div>سوال شماره : {{$i++}} ({{$question->id}})({{ $question->percentage }})</div>
                 <div class="questionFront">{!! $question->front !!}</div>
                 <div class="questionFront">{!! $question->p1 !!}</div>
                 <div class="questionFront">{!! $question->p2 !!}</div>

@@ -82,6 +82,8 @@ class CategoriesQuestionService
             {
                 // $number_to_change_level = max(50, $cat->question_count);
                  $number_to_change_level = 10;
+                //  $cat = $allCategories->find($id);
+                //  dd($cat);
             }
             else
             {

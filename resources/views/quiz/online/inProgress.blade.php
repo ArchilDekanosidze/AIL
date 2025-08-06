@@ -17,7 +17,8 @@
 
 
     <div class="questionDataDiv">
-        <div class="questionFront">{!! $question->front !!}</div>
+        <span class="questionIdForUser">(سوال شماره: {{$question->id}})</span>
+        <div class="questionFront">{!! $question->front !!} </div>
         <div class="pdiv p1">
             <input type="checkbox" class="pCheckBox p1CheckBox">
             <span class="p1Text">{!! $question->p1 !!}</span>
@@ -96,6 +97,7 @@
                 $(".answerDiv").hide();
                 $(".questionDataDiv .pdiv").removeClass('disabled');
                 
+                $(".questionIdForUser").html("(سوال شماره: " + result.question.id + ")")
                 $(".questionFront").html(result.question.front)
                 $(".p1Text").html(result.question.p1)
                 $(".p2Text").html(result.question.p2)

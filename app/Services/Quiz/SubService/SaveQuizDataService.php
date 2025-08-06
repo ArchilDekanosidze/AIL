@@ -16,6 +16,7 @@ class SaveQuizDataService
     use QuizTrait, ActorTrait, HistoryFileTrait;
     public $data;
     private $allcategoryQuestions;
+    private $userCategoryQuestions;
 
 
     public function __construct()
@@ -24,6 +25,8 @@ class SaveQuizDataService
 
     public function saveQuizData(Quiz $quiz)
     {
+
+        
         if($quiz->status == "ended")
         {
             return;
@@ -32,6 +35,7 @@ class SaveQuizDataService
         $wrongAnswers = 0;
         $notAnswers = 0;
         $quizQuestions = $quiz->quizQuestions;
+        $this->userCategoryQuestions = $this->getUser()->categoryQuestions;
         foreach ($quizQuestions as $quizQuestion) 
         {
             if($quizQuestion->user_answer == 0 || $quizQuestion->user_answer == null)
@@ -56,7 +60,12 @@ class SaveQuizDataService
         // dd($this->data);
         if($this->data)
         {
-            $this->updateParentCatLevel();
+            // $this->updateParentCatLevel(); توی کد جدیدی که نوشتم اومدم پرنت رو بر اساس هر سوال آپدیت کردم. در این صورت دیگه نیازی نیست کد جدایی برای والدین بنویسیم که اگر بنویسیم هم اعدادش متفاوت میشه
+            // dd($this->data);
+            foreach ($this->data as $key => $value) {
+                $history = $this->getHistory($key);
+                // dd($history);
+            }
             $this->getUser()->categoryQuestions()->syncWithoutDetaching($this->data);
         }
 
@@ -76,7 +85,10 @@ class SaveQuizDataService
         $this->changeQuestion($isCorrect, $question);
 
         $categoriesId = $this->questionAncestorsAndSelfId($question);
-        $categoriesQuestion = $this->getUser()->categoryQuestions->whereIn("id", $categoriesId);
+        $categoriesQuestion = $this->getUser()->categoryQuestions()->with('directChildren')->whereIn("category_questions.id", $categoriesId)->get();
+
+        // dd($categoriesQuestion);
+                // ->withCount('children') // This will load the number of direct children for each category
 
 
         $this->updatecategoriesQuestion($categoriesQuestion, $isCorrect, $question);  
@@ -100,6 +112,8 @@ class SaveQuizDataService
 
     public function updatecategoriesQuestion($categoriesQuestion, $isCorrect, $question)
     {
+       
+
         foreach ($categoriesQuestion as $categoryQuestion)
         {                                    
             $newLevel = $this->newHistory($categoryQuestion, $isCorrect);
@@ -129,7 +143,7 @@ class SaveQuizDataService
         // $result["level"] = $newLevel;
         // $result["history"] = $history;
         $this->saveHistory($bridgeId, $history);
-
+        // dump($newLevel);
         return $newLevel;
     }
 
@@ -143,21 +157,58 @@ class SaveQuizDataService
             dd($history);
             //throw $th;
         }
-        $newerAnswerHistory = array_slice($answerHistory, -$categoryQuestion->pivot->number_to_change_level);
-        $sumAnswerForLevel = 0;
-        foreach ($newerAnswerHistory as $answer) {
-            if($answer == 1)
-            {
-                $sumAnswerForLevel = $sumAnswerForLevel + 3;
+        if(count($categoryQuestion->directChildren) > 0)
+        {
+
+            $totla_question_count = 0;
+            $sumLevelCount = 0;
+
+            $subCats = $categoryQuestion->directChildren;
+            foreach ($subCats as $subCat) {
+                $question_count = $subCat->question_count;
+
+                $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
+                if($level)
+                {
+                    if(isset($this->data[$subCat->id]))
+                    {
+                        $level = $this->data[$subCat->id]['level'];
+                    }
+                    else
+                    {
+                        $level = $level->pivot->level;
+                    }
+                }
+                else
+                {
+                    $level = 1;
+                }
+                $totla_question_count += $question_count;
+                $sumLevelCount += $level * $question_count;
             }
-            else if($answer == 0)
-            {
-                $sumAnswerForLevel = $sumAnswerForLevel -1;
-            }
+
+            
+            $newLevel =  $sumLevelCount / $totla_question_count;
+
         }
-        $newLevel =(int) ($sumAnswerForLevel / ($categoryQuestion->pivot->number_to_change_level*3) * 100);
-        $newLevel = min(100, $newLevel);
-        $newLevel = max(1, $newLevel);
+        else
+        {
+            $newerAnswerHistory = array_slice($answerHistory, -$categoryQuestion->pivot->number_to_change_level);
+            $sumAnswerForLevel = 0;
+            foreach ($newerAnswerHistory as $answer) {
+                if($answer == 1)
+                {
+                    $sumAnswerForLevel = $sumAnswerForLevel + 3;
+                }
+                else if($answer == 0)
+                {
+                    $sumAnswerForLevel = $sumAnswerForLevel -1;
+                }
+            }
+            $newLevel =(int) ($sumAnswerForLevel / ($categoryQuestion->pivot->number_to_change_level*3) * 100);
+            $newLevel = min(100, $newLevel);
+            $newLevel = max(1, $newLevel);
+        }
         return $newLevel;
     }
 
@@ -205,7 +256,6 @@ class SaveQuizDataService
     public function updateParentsLevel($categoryQuestion)
     {
 
-        $userCategoryQuestions = $this->getUser()->categoryQuestions;
         $parentsId = $categoryQuestion->ancestors()->select('id', 'parent_id')->get()->pluck('id')->toArray();
         array_shift($parentsId);
         $parentsId = array_reverse($parentsId);
@@ -216,7 +266,7 @@ class SaveQuizDataService
             $subCats = CategoryQuestion::where('parent_id', $parentId)->get();
             foreach ($subCats as $subCat) {
                 $question_count = $subCat->question_count;
-                $level = $userCategoryQuestions->where('id', $subCat->id)->first();
+                $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
                 if($level)
                 {
                     if(isset($this->data[$subCat->id]))

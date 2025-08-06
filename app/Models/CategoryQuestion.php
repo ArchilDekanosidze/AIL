@@ -104,6 +104,10 @@ class CategoryQuestion extends Model
         Cache::forget('allCategoryIdsWithSubcategories');
     }
 
+    public function directChildren()
+{
+    return $this->hasMany(CategoryQuestion::class, 'parent_id');
+}
 
 
 

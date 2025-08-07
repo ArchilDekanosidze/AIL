@@ -34,6 +34,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Desktop\myProgressController;
 use App\Http\Controllers\Question\BestReplyController;
 use App\Http\Controllers\Admin\AdminQuestionController;
+use App\Http\Controllers\Admin\AdminSiteInfoController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\OTP\RegisterOTPController;
 use App\Http\Controllers\User\UserLearningNewController;
@@ -394,6 +395,10 @@ Route::middleware('auth', 'only.user.one')->group(function () {
     Route::get('/admin/category/category/delete/{currentCategory}', [AdminCategoryController::class, 'delete'])->name('admin.category.category.delete');
 
 
+
+    // admin site Info
+
+    Route::get('/admin/site/users', [AdminSiteInfoController::class, 'users'])->name('admin.site.users');
 
     //Seeder
     Route::get('/seeder/index', [SeedController::class, 'index']);

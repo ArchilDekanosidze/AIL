@@ -23,7 +23,7 @@
                 <td>{{$quiz->persian_status}}</td>
                 <td>{{$quiz->finalPercentage}}</td>
                 @php
-                    $isOwner = $quiz->user_id === auth()->id();
+                    $isOwner = $quiz->users->pluck('id')->contains(auth()->id());
                     $quizEnded = $quiz->status == 'ended';
                 @endphp
 

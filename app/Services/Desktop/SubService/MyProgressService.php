@@ -63,6 +63,7 @@ class MyProgressService
         {
             $data = $this->createDataSingle();
         }
+        // dd($data);
         return $data;
     }
 
@@ -87,17 +88,20 @@ class MyProgressService
             $bridgeId = $userCategory->pivot->id;
 
             $oldHistory = $this->getHistory($bridgeId);
+            // dd($oldHistory);
             if($oldHistory == null)
             {
                 $oldHistory[] = ["level" => 1, "time" => now()->timestamp, "isCorrect" => 0];
                 $this->saveHistory($bridgeId, $oldHistory);
             }
+            $newHistory = [];
             foreach ($oldHistory as $old) {
                 $newHistory[] = $old;
             }
             $this->histories[]  = $newHistory;
 
         }
+        // dd($this->histories);
         // dd($this->target_levels, $this->histories);
         // $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
     }

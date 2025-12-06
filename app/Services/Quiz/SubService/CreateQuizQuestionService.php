@@ -67,11 +67,11 @@ class CreateQuizQuestionService
             ->unique()
             ->values()
             ->toArray();
-    
         // Keep only those leaf categories the user has in the pivot table
         return DB::table('user_category_question')
             ->where('user_id', $userId)
             ->whereIn('category_question_id', $leafCategoryIds)
+            ->where('is_active', 1)
             ->pluck('category_question_id')
             ->toArray();
     }
@@ -161,6 +161,7 @@ class CreateQuizQuestionService
 
             $questions = $category->questions()
                 ->test()
+                ->active()
                 ->orderByRaw('ABS(percentage - ? + (RAND() * 10))', [$currentLevel])
                 ->limit($numQuestions)
                 ->inRandomOrder()
@@ -175,6 +176,7 @@ class CreateQuizQuestionService
             $avgLevel = $sumLevels / count($this->categoryWeights);
             $backupQuestions = Question::whereIn("category_question_id", $this->categoriesId)
                 ->test()
+                ->active()
                 ->whereNotIn("id", $this->selectedQuestions->pluck("id"))
                 ->orderByRaw('ABS(percentage - ?)', [$avgLevel])
                 ->limit($remaining)

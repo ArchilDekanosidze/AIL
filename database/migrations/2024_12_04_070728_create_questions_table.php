@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('count')->default(100);
             $table->string('type')->default('test');
             $table->boolean('isfree')->default(0);
+            $table->boolean('isdeactive')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

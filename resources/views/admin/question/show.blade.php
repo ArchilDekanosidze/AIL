@@ -24,4 +24,11 @@
     </div>
     @include('partials.questionComments')
 </div>
+
+
+<form action="{{ route('admin.question.deActiveQuestion', $question->id) }}" method="GET">
+
+
+    <button type="submit" class="deActiveQuestion">غیر فعال کردن سوال</button>
+</form>
 @endsection

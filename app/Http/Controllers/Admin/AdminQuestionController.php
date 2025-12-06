@@ -94,6 +94,13 @@ class AdminQuestionController extends Controller
         return 'success';
     }
 
+    public function deActiveQuestion(Question $question)
+    {
+        $question->isdeactive = 1;
+        $question->save();
+        return back()->with('success');
+    }
+
 
 }
 

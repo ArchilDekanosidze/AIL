@@ -451,3 +451,16 @@ body {
   flex-wrap: wrap; /* Allows wrapping instead of scroll if you prefer */
   justify-content: center;
 }
+
+.deActiveQuestion
+{
+    margin-bottom: 30px;
+    margin-right: 30px;
+    background-color: rgb(231, 110, 110);
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    -o-border-radius: 20px;
+    padding: 5px 10px;
+}

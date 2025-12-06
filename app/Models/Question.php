@@ -50,6 +50,11 @@ class Question extends Model
         return $query->where('type', 'lesson');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('isdeactive', '0');
+    }
+
 
 
     public function getFilePath()

@@ -62,9 +62,20 @@
             <a href="{{route('quiz.online.saveOnlineQuizDataAndShowResult', $quiz->id)}}" class="endQuiz">ثبت و مشاهده نتیجه آزمون</a>
         </div>
     </div>
+    
 
 
 </div>
+
+@if(auth()->user()->id == 1)
+<form action="{{ route('admin.question.deActiveQuestion', $question->id) }}" method="GET">
+
+
+    <button type="submit" class="deActiveQuestion">غیر فعال کردن سوال</button>
+</form>
+@endif
+
+
 @endsection
 
 

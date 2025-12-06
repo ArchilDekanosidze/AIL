@@ -165,9 +165,13 @@ class SaveQuizDataService
 
             $subCats = $categoryQuestion->directChildren;
             foreach ($subCats as $subCat) {
+                $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
+                if(!$level)
+                {
+                       continue;
+                }               
                 $question_count = $subCat->question_count;
 
-                $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
                 if($level)
                 {
                     if(isset($this->data[$subCat->id]))

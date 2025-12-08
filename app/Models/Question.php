@@ -14,16 +14,15 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = [
-        "category_question_id",
-        "front",
-        "back",
-        "p1",
-        "p2",
-        "p3",
-        "p4",
-        "answer",
-        "percentage",
-        "count"];
+        'tag_id',
+        'category_question_id',
+        'answer',
+        'percentage',
+        'count',
+        'type',
+        'isfree',
+        'isdeactive',
+    ];
 
     protected $appends = ['front', 'back', 'p1', 'p2', 'p3', 'p4'];    
 

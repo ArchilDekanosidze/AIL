@@ -96,6 +96,7 @@ class AdminQuestionController extends Controller
 
     public function deActiveQuestion(Question $question)
     {
+        dd($question);
         $question->isdeactive = 1;
         $question->save();
         return back()->with('success');

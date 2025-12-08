@@ -68,10 +68,9 @@
 </div>
 
 @if(auth()->user()->id == 1)
-<form action="{{ route('admin.question.deActiveQuestion', $question->id) }}" method="GET">
-
-
+<form action="{{ route('admin.question.deActiveQuestion')}}" method="GET" >
     <button type="submit" class="deActiveQuestion">غیر فعال کردن سوال</button>
+    <input type="hidden" name="deActiveQuestionInput" class="deActiveQuestionInput"  value="{{ $question->id }}">
 </form>
 @endif
 
@@ -109,6 +108,8 @@
                 $(".questionDataDiv .pdiv").removeClass('disabled');
                 
                 $(".questionIdForUser").html("(سوال شماره: " + result.question.id + ")")
+                $(".deActiveQuestionInput").val(result.question.id)
+                
                 $(".questionFront").html(result.question.front)
                 $(".p1Text").html(result.question.p1)
                 $(".p2Text").html(result.question.p2)

@@ -94,9 +94,10 @@ class AdminQuestionController extends Controller
         return 'success';
     }
 
-    public function deActiveQuestion(Question $question)
+    public function deActiveQuestion(Request $request)
     {
-        dd($question);
+        $questionId = $request->deActiveQuestionInput;
+        $question = Question::find($questionId);
         $question->isdeactive = 1;
         $question->save();
         return back()->with('success');

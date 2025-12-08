@@ -366,7 +366,7 @@ Route::middleware('auth', 'only.user.one')->group(function () {
 
     Route::get('/admin/question/list/{category}', [AdminQuestionController::class, 'index'])->name('admin.question.index');
     Route::get('/admin/question/show/{question}', [AdminQuestionController::class, 'show'])->name('admin.question.show');
-    Route::get('/admin/question/deActiveQuestion/{question}', [AdminQuestionController::class, 'deActiveQuestion'])->name('admin.question.deActiveQuestion');
+    Route::get('/admin/question/deActiveQuestion', [AdminQuestionController::class, 'deActiveQuestion'])->name('admin.question.deActiveQuestion');
     Route::get('/admin/question/create', [AdminQuestionController::class, 'create'])->name('admin.question.create');
     Route::post('/admin/question/create', [AdminQuestionController::class, 'store'])->name('admin.question.store');
     Route::get('/admin/question/edit/{question}', [AdminQuestionController::class, 'edit'])->name('admin.question.edit');

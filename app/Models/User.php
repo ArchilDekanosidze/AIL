@@ -95,7 +95,7 @@ class User extends Authenticatable
     public function categoryQuestions()
     {
         return $this->belongsToMany(CategoryQuestion::class, "user_category_question")
-        ->withPivot('id', 'is_active','level','target_level',  'number_to_change_level')
+        ->withPivot('id', 'is_active','level','target_level',  'number_to_change_level', 'decay',  'decay_at')
         ->where('user_category_question.is_active', true)
         ->withTimestamps();
     }

@@ -66,6 +66,7 @@ class SaveQuizDataService
                 $history = $this->getHistory($key);
                 // dd($history);
             }
+            // dd($this->data);
             $this->getUser()->categoryQuestions()->syncWithoutDetaching($this->data);
         }
 
@@ -166,6 +167,8 @@ class SaveQuizDataService
             $subCats = $categoryQuestion->directChildren;
             foreach ($subCats as $subCat) {
                 $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
+
+                // in code ro ezafe kardam ke onhai ke to zir majmoe nist to miangiri hazf beshan
                 if(!$level)
                 {
                        continue;
@@ -295,8 +298,9 @@ class SaveQuizDataService
             {
                 // dd($totla_question_count, $sumLevelCount,  $sumLevelCount / $totla_question_count);
             }
-        }
-       
+        }       
     }
+
+
     
 }

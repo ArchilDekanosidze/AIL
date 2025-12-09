@@ -12,18 +12,20 @@ use App\Services\Desktop\DesktopService;
 class myProgressController extends Controller
 {
     private $desktopService;
+    private $quizService;
     private $request;
 
-    public function __construct(DesktopService $desktopService, Request $request)
+    public function __construct(DesktopService $desktopService,QuizService $quizService, Request $request)
     {
         $this->desktopService = $desktopService;
         $this->request = $request;
-
+        $this->quizService = $quizService;
     }
 
 
     public function myProgress(User $user)
     {
+        $this->quizService->decayPercentage();
         $authUser = auth()->user();
 
         $isOwner = $authUser->id === $user->id;

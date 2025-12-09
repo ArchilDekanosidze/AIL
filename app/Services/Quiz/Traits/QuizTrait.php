@@ -3,9 +3,11 @@ namespace App\Services\Quiz\Traits;
 
 use App\Models\Quiz;
 use App\Models\CategoryQuestion;
+use App\Services\Traits\HistoryFileTrait;
 
 trait QuizTrait
 {
+    use HistoryFileTrait;
     public function questionAncestorsAndSelfId($question)
     {
         $categoriesId = CategoryQuestion::with('ancestors')->find($question->category_question_id)->ancestors->pluck('id');
@@ -30,5 +32,35 @@ trait QuizTrait
     public function saveQuizData(Quiz $quiz)
     {
         $this->saveQuizDataService->saveQuizData($quiz);  
+    }
+
+    public function decayPercentage()
+    {
+        $categoryQuestions = $this->getUser()
+            ->categoryQuestions()
+            ->wherePivot('is_active', 1)
+            ->wherePivot('decay_at', '<=', now()->subDay())
+            ->get();
+        // dd($categoryQuestions);
+        $data =[];
+        foreach ($categoryQuestions as $categoryQuestion) {            
+            $bridgeId = $categoryQuestion->pivot->id;
+            $history = [];
+            if($this->getHistory($bridgeId) != null)
+            {
+                $oldHistory = $this->getHistory($bridgeId);
+                foreach ($oldHistory as $old) {
+                    $history[] = $old;
+                }
+            }            
+            $decay = $categoryQuestion->pivot->decay;
+            $lastLevel = $old['level'];
+            $newLevel = max( $lastLevel-$decay,   1);
+            $history[] = ["level" => $newLevel, "time" => now()->timestamp, "isCorrect" => 'decay'];
+            $this->saveHistory($bridgeId, $history);
+            $data[$categoryQuestion->id] = ['level' => $newLevel];
+        }
+        $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+        // dd($categoryQuestion);
     }
 }

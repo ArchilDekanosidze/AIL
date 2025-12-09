@@ -19,6 +19,9 @@ return new class extends Migration
             $table->float('level')->default(1);
             $table->float('target_level')->default(100);
             $table->integer('number_to_change_level')->default(10);
+            $table->float('decay')->default(0.3);
+            $table->dateTime('decay_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            
             $table->timestamps();
             
             $table->unique(['user_id', 'category_question_id']);            

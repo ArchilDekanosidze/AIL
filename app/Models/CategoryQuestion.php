@@ -42,7 +42,7 @@ class CategoryQuestion extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, "user_category_question")
-        ->withPivot('is_active','level','target_level', 'history', 'number_to_change_level')
+        ->withPivot('is_active','level','target_level', 'history', 'number_to_change_level', 'decay', 'decay_at')
         // ->where('user_category_question.is_active', true)
         ->withTimestamps();
     }

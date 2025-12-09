@@ -54,13 +54,21 @@ trait QuizTrait
                 }
             }            
             $decay = $categoryQuestion->pivot->decay;
-            $lastLevel = $old['level'];
-            $newLevel = max( $lastLevel-$decay,   1);
-            $history[] = ["level" => $newLevel, "time" => now()->timestamp, "isCorrect" => 'decay'];
-            $this->saveHistory($bridgeId, $history);
-            $data[$categoryQuestion->id] = ['level' => $newLevel];
+            try 
+            {
+                $lastIndex = count($history) - 1;
+                $daysPassed = now()->diffInDays($categoryQuestion->pivot->decay_at);
+                $levelDecay = $daysPassed*$decay;
+                $newLevel = $history[$lastIndex]['level'] - $levelDecay;
+                $newLevel = max( $newLevel,   1);
+                $history[$lastIndex]['level'] = $newLevel;
+                $this->saveHistory($bridgeId, $history);
+                $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+
         }
         $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
-        // dd($categoryQuestion);
     }
 }

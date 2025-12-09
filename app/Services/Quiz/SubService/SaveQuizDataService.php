@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Quiz\SubService;
 
+use Carbon\Carbon;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\CategoryQuestion;
@@ -213,9 +214,24 @@ class SaveQuizDataService
                 }
             }
             $newLevel =(int) ($sumAnswerForLevel / ($categoryQuestion->pivot->number_to_change_level*3) * 100);
+
+            try {
+                $newerFullHistory = array_slice($history, -$categoryQuestion->pivot->number_to_change_level);                             
+                $firstTime = $newerFullHistory[0]['time'];
+                $firstTime = Carbon::createFromTimestamp($firstTime);
+                $daysPassed = now()->diffInDays($firstTime);
+                $decay = $categoryQuestion->pivot->decay;
+                $levelDecay = $daysPassed*$decay;
+                $newLevel = $newLevel - $levelDecay;
+            }
+            catch (\Throwable $th) {
+                //throw $th;
+            }
+
             $newLevel = min(100, $newLevel);
             $newLevel = max(1, $newLevel);
         }
+        // dd(2);
         return $newLevel;
     }
 

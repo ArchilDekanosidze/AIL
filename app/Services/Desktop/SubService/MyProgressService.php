@@ -63,7 +63,7 @@ class MyProgressService
         {
             $data = $this->createDataSingle();
         }
-        // dd($data);
+        dd($data);
         return $data;
     }
 

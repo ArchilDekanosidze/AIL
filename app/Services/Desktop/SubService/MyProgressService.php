@@ -153,13 +153,13 @@ class MyProgressService
             $tempLevel =[];
             foreach ($history as $cell) {
                 $time =$this->convertTime($cell['time']);
-                $index = array_search($time, $this->allTimes);
-                if($i == 2 )
-                {
-                    dd($index);
-                }
+                $index = array_search($time, $this->allTimes);               
                 if($index>=0)
                 {
+                    if($i == 2 )
+                    {
+                        dd($index);
+                    }
                     if($flag)
                     {
                         $prevIndex = $index;

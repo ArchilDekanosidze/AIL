@@ -102,7 +102,7 @@ class MyProgressService
 
         }
         
-        // dd($newHistory);
+        dd($newHistory);
         // dd($this->target_levels, $this->histories);
         // $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
     }

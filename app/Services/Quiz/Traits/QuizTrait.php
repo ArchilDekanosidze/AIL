@@ -64,8 +64,12 @@ trait QuizTrait
                     $newLevel = max( $newLevel,   1);
                     $history[$lastIndex]['level'] = $newLevel;
                     $this->saveHistory($bridgeId, $history);
+                    $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];
                 }
-                $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];
+                else
+                {
+                    $data[$categoryQuestion->id] = ['level' => 1, 'decay_at' => now()];
+                }
             } catch (\Throwable $th) {
                 dump($categoryQuestion);
             }

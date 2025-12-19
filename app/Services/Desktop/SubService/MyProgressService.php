@@ -155,17 +155,17 @@ class MyProgressService
                 $time =$this->convertTime($cell['time']);
                 $index = array_search($time, $this->allTimes);               
                 if($index>=0)
-                {
-                    if($i == 2 )
-                    {
-                        dd($index, $i, $cell);
-                    }
+                {                   
                     if($flag)
                     {
                         $prevIndex = $index;
                         $flag = false;
                     }
                     $this->level_histories[$i][$index] = $cell['level'];
+                    if($i == 2 )
+                    {
+                        dd($index, $i, $cell, $this->level_histories[$i]);
+                    }
                     if($prevIndex != $index)
                     {
                         if(count($tempLevel)>0)

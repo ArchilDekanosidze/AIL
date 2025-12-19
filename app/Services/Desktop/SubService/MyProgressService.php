@@ -158,7 +158,7 @@ class MyProgressService
                 {
                     if($i == 2 )
                     {
-                        dd($index);
+                        dd($index, $i);
                     }
                     if($flag)
                     {

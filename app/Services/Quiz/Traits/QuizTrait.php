@@ -41,7 +41,6 @@ trait QuizTrait
             ->wherePivot('is_active', 1)
             ->wherePivot('decay_at', '<=', now()->subDay())
             ->get();
-        dd($categoryQuestions);
         $data =[];
         foreach ($categoryQuestions as $categoryQuestion) {            
             $bridgeId = $categoryQuestion->pivot->id;
@@ -69,6 +68,8 @@ trait QuizTrait
             }
 
         }
+        dd($data);
+
         $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
     }
 }

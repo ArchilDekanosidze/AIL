@@ -63,7 +63,7 @@ class MyProgressService
         {
             $data = $this->createDataSingle();
         }
-        dd($data);
+        // dd($data);
         return $data;
     }
 
@@ -102,7 +102,7 @@ class MyProgressService
 
         }
         
-        dd($newHistory);
+        // dd($newHistory);
         // dd($this->target_levels, $this->histories);
         // $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
     }

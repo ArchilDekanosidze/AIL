@@ -64,7 +64,7 @@ trait QuizTrait
                 $this->saveHistory($bridgeId, $history);
                 $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];
             } catch (\Throwable $th) {
-                dd($th);
+                dump($categoryQuestion);
             }
 
         }

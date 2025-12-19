@@ -25,7 +25,7 @@ class myProgressController extends Controller
 
     public function myProgress(User $user)
     {
-        //$this->quizService->decayPercentage();
+        $this->quizService->decayPercentage();
         $authUser = auth()->user();
 
         $isOwner = $authUser->id === $user->id;

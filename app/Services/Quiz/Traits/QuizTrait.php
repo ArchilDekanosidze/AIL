@@ -41,7 +41,7 @@ trait QuizTrait
             ->wherePivot('is_active', 1)
             ->wherePivot('decay_at', '<=', now()->subDay())
             ->get();
-        // dd($categoryQuestions);
+        dd($categoryQuestions);
         $data =[];
         foreach ($categoryQuestions as $categoryQuestion) {            
             $bridgeId = $categoryQuestion->pivot->id;

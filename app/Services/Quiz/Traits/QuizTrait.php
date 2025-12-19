@@ -75,8 +75,8 @@ trait QuizTrait
             }
 
         }
-        dd($data);
-
+        
         $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+        dd(vars: $data);
     }
 }

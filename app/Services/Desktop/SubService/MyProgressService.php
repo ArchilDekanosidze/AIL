@@ -154,6 +154,10 @@ class MyProgressService
             foreach ($history as $cell) {
                 $time =$this->convertTime($cell['time']);
                 $index = array_search($time, $this->allTimes);
+                if($i == 2 )
+                {
+                    dd($index);
+                }
                 if($index>=0)
                 {
                     if($flag)

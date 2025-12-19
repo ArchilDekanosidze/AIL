@@ -56,12 +56,15 @@ trait QuizTrait
             try 
             {
                 $lastIndex = count($history) - 1;
-                $daysPassed = now()->diffInDays($categoryQuestion->pivot->decay_at);
-                $levelDecay = $daysPassed*$decay;
-                $newLevel = $history[$lastIndex]['level'] - $levelDecay;
-                $newLevel = max( $newLevel,   1);
-                $history[$lastIndex]['level'] = $newLevel;
-                $this->saveHistory($bridgeId, $history);
+                if($lastIndex>=0)
+                {
+                    $daysPassed = now()->diffInDays($categoryQuestion->pivot->decay_at);
+                    $levelDecay = $daysPassed*$decay;
+                    $newLevel = $history[$lastIndex]['level'] - $levelDecay;
+                    $newLevel = max( $newLevel,   1);
+                    $history[$lastIndex]['level'] = $newLevel;
+                    $this->saveHistory($bridgeId, $history);
+                }
                 $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];
             } catch (\Throwable $th) {
                 dump($categoryQuestion);

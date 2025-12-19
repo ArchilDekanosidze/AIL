@@ -185,7 +185,7 @@ class MyProgressService
                 }
             }
         }
-        dd($this->level_histories[2]);
+        // dd($this->level_histories[2]);
     }
 
     public function fillNullValueInLevelHistory()

@@ -161,11 +161,7 @@ class MyProgressService
                         $prevIndex = $index;
                         $flag = false;
                     }
-                    $this->level_histories[$i][$index] = $cell['level'];
-                    if($i == 2 )
-                    {
-                        dd($index, $i, $cell, $this->level_histories[$i], $prevIndex, $index);
-                    }
+                    $this->level_histories[$i][$index] = $cell['level'];                
                     if($prevIndex != $index)
                     {
                         if(count($tempLevel)>0)

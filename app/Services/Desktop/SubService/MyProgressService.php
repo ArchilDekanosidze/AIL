@@ -102,7 +102,7 @@ class MyProgressService
 
         }
         
-        dd($newHistory);
+        // dd($newHistory);
         // dd($this->target_levels, $this->histories);
         // $this->histories = $this->userCategories->pluck('pivot.history')->toArray();
     }
@@ -185,6 +185,7 @@ class MyProgressService
                 }
             }
         }
+        dd($this->level_histories[2]);
     }
 
     public function fillNullValueInLevelHistory()

@@ -49,7 +49,7 @@ class Test2Controller extends Controller
       $categories = $categories->sortBy('id');
       $lines = [];
       foreach ($categories as $category) {
-          $lines[] =$category->id . ':' . $category->path() . ':' . $category->pivot->level;
+          $lines[] =$category->id . '$' . $category->path() . '$' . $category->pivot->level;
       }
         $content = implode(PHP_EOL, $lines);
           $fileName = 'categories_level_' . $user->id . '.txt';

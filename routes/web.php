@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SeedController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\Test2Controller;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Auth\LoginController;
@@ -438,6 +439,8 @@ Route::middleware('auth', 'only.user.one')->group(function () {
     Route::get('/test/createJozveCategory', [TestController::class, 'createJozveCategory']);
     Route::get('/test/createFreeCategory', [TestController::class, 'createFreeCategory']);
 
+
+
     Route::get('/test-auth', function () {
         return Auth::check() ? 'Logged in' : 'Not logged in';
     });
@@ -453,7 +456,33 @@ Route::middleware('auth', 'only.user.one')->group(function () {
     // Route::get('/test/upload1', [TestController::class, 'upload1']);
     // Route::get('/test/upload2', [TestController::class, 'upload2']);
 
-        Route::get('/test/dinvazendegi', [TestController::class, 'dinvazendegi']);
+    Route::get('/test/dinvazendegi', [TestController::class, 'dinvazendegi']);
+
+
+
+
+    Route::get('/test/getCategoriesLevel', [Test2Controller::class, 'getCategoriesLevel']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // Route::post('/ckeditor/upload', [TestController::class, 'upload'])->name('ckeditor.upload');

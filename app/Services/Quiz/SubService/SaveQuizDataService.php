@@ -124,8 +124,7 @@ class SaveQuizDataService
         }
     }
 
-
-
+    // new newlevel
     public function newHistory($categoryQuestion, $isCorrect)
     {
         $this->setInitialData($categoryQuestion);
@@ -138,102 +137,128 @@ class SaveQuizDataService
                 $history[] = $old;
             }
         }
-        
-        $history[] = ["level" => null, "time" => now()->timestamp, "isCorrect" => $isCorrect ? 1 : 0];
-        $newLevel = $this->newlevel($categoryQuestion, $history);
-        $history[count($history) - 1]['level'] = $newLevel;        
-        // $result["level"] = $newLevel;
-        // $result["history"] = $history;
-        $this->saveHistory($bridgeId, $history);
-        // dump($newLevel);
-        return $newLevel;
-    }
-
-
-    public function newlevel($categoryQuestion, $history)
-    {
-        try {
-            $answerHistory =array_map(fn($item) => $item['isCorrect'], $history);
-            //code...
-        } catch (\Throwable $th) {
-            dd($history);
-            //throw $th;
-        }
-        if(count($categoryQuestion->directChildren) > 0)
+        if($isCorrect)
         {
-
-            $totla_question_count = 0;
-            $sumLevelCount = 0;
-
-            $subCats = $categoryQuestion->directChildren;
-            foreach ($subCats as $subCat) {
-                $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
-
-                // in code ro ezafe kardam ke onhai ke to zir majmoe nist to miangiri hazf beshan
-                if(!$level)
-                {
-                       continue;
-                }               
-                $question_count = $subCat->question_count;
-
-                if($level)
-                {
-                    if(isset($this->data[$subCat->id]))
-                    {
-                        $level = $this->data[$subCat->id]['level'];
-                    }
-                    else
-                    {
-                        $level = $level->pivot->level;
-                    }
-                }
-                else
-                {
-                    $level = 1;
-                }
-                $totla_question_count += $question_count;
-                $sumLevelCount += $level * $question_count;
-            }
-
-            
-            $newLevel =  $sumLevelCount / $totla_question_count;
-
-        }
+            $newLevel = $categoryQuestion->pivot->level + 3 * 100/$categoryQuestion->pivot->number_to_change_level ;
+        }    
         else
         {
-            $newerAnswerHistory = array_slice($answerHistory, -$categoryQuestion->pivot->number_to_change_level);
-            $sumAnswerForLevel = 0;
-            foreach ($newerAnswerHistory as $answer) {
-                if($answer == 1)
-                {
-                    $sumAnswerForLevel = $sumAnswerForLevel + 3;
-                }
-                else if($answer == 0)
-                {
-                    $sumAnswerForLevel = $sumAnswerForLevel -1;
-                }
-            }
-            $newLevel =(int) ($sumAnswerForLevel / ($categoryQuestion->pivot->number_to_change_level*3) * 100);
-
-            try {
-                $newerFullHistory = array_slice($history, -$categoryQuestion->pivot->number_to_change_level);                             
-                $firstTime = $newerFullHistory[0]['time'];
-                $firstTime = Carbon::createFromTimestamp($firstTime);
-                $daysPassed = now()->diffInDays($firstTime);
-                $decay = $categoryQuestion->pivot->decay;
-                $levelDecay = $daysPassed*$decay;
-                $newLevel = $newLevel - $levelDecay;
-            }
-            catch (\Throwable $th) {
-                //throw $th;
-            }
-
-            $newLevel = min(100, $newLevel);
-            $newLevel = max(1, $newLevel);
+            $newLevel = $categoryQuestion->pivot->level  - 1*  100/$categoryQuestion->pivot->number_to_change_level ;
         }
-        // dd(2);
+        $history[] = ["level" => $newLevel, "time" => now()->timestamp, "isCorrect" => $isCorrect ? 1 : 0];
+        $this->saveHistory($bridgeId, $history);
         return $newLevel;
     }
+    // old new level
+
+    // public function newHistory($categoryQuestion, $isCorrect)
+    // {
+    //     $this->setInitialData($categoryQuestion);
+
+    //     $bridgeId = $categoryQuestion->pivot->id;
+    //     if($this->getHistory($bridgeId) != null)
+    //     {
+    //         $oldHistory = $this->getHistory($bridgeId);
+    //         foreach ($oldHistory as $old) {
+    //             $history[] = $old;
+    //         }
+    //     }
+        
+    //     $history[] = ["level" => null, "time" => now()->timestamp, "isCorrect" => $isCorrect ? 1 : 0];
+    //     $newLevel = $this->newlevel($categoryQuestion, $history);
+    //     $history[count($history) - 1]['level'] = $newLevel;        
+    //     // $result["level"] = $newLevel;
+    //     // $result["history"] = $history;
+    //     $this->saveHistory($bridgeId, $history);
+    //     // dump($newLevel);
+    //     return $newLevel;
+    // }
+
+    // old new level
+    // public function newlevel($categoryQuestion, $history)
+    // {
+    //     try {
+    //         $answerHistory =array_map(fn($item) => $item['isCorrect'], $history);
+    //         //code...
+    //     } catch (\Throwable $th) {
+    //         dd($history);
+    //         //throw $th;
+    //     }
+    //     if(count($categoryQuestion->directChildren) > 0)
+    //     {
+
+    //         $totla_question_count = 0;
+    //         $sumLevelCount = 0;
+
+    //         $subCats = $categoryQuestion->directChildren;
+    //         foreach ($subCats as $subCat) {
+    //             $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
+
+    //             // in code ro ezafe kardam ke onhai ke to zir majmoe nist to miangiri hazf beshan
+    //             if(!$level)
+    //             {
+    //                    continue;
+    //             }               
+    //             $question_count = $subCat->question_count;
+
+    //             if($level)
+    //             {
+    //                 if(isset($this->data[$subCat->id]))
+    //                 {
+    //                     $level = $this->data[$subCat->id]['level'];
+    //                 }
+    //                 else
+    //                 {
+    //                     $level = $level->pivot->level;
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 $level = 1;
+    //             }
+    //             $totla_question_count += $question_count;
+    //             $sumLevelCount += $level * $question_count;
+    //         }
+
+            
+    //         $newLevel =  $sumLevelCount / $totla_question_count;
+
+    //     }
+    //     else
+    //     {
+    //         $newerAnswerHistory = array_slice($answerHistory, -$categoryQuestion->pivot->number_to_change_level);
+    //         $sumAnswerForLevel = 0;
+    //         foreach ($newerAnswerHistory as $answer) {
+    //             if($answer == 1)
+    //             {
+    //                 $sumAnswerForLevel = $sumAnswerForLevel + 3;
+    //             }
+    //             else if($answer == 0)
+    //             {
+    //                 $sumAnswerForLevel = $sumAnswerForLevel -1;
+    //             }
+    //         }
+    //         $newLevel =(int) ($sumAnswerForLevel / ($categoryQuestion->pivot->number_to_change_level*3) * 100);
+
+    //         try {
+    //             $newerFullHistory = array_slice($history, -$categoryQuestion->pivot->number_to_change_level);                             
+    //             $firstTime = $newerFullHistory[0]['time'];
+    //             $firstTime = Carbon::createFromTimestamp($firstTime);
+    //             $daysPassed = now()->diffInDays($firstTime);
+    //             $decay = $categoryQuestion->pivot->decay;
+    //             $levelDecay = $daysPassed*$decay;
+    //             $newLevel = $newLevel - $levelDecay;
+    //         }
+    //         catch (\Throwable $th) {
+    //             //throw $th;
+    //         }
+
+    //         $newLevel = min(100, $newLevel);
+    //         $newLevel = max(1, $newLevel);
+    //     }
+    //     // dd(2);
+    //     return $newLevel;
+    // }
 
     public function setInitialData($categoryQuestion)
     {

@@ -32,8 +32,56 @@ trait QuizTrait
     public function saveQuizData(Quiz $quiz)
     {
         $this->saveQuizDataService->saveQuizData($quiz);  
-    }
+    } 
 
+    // // old decayPercentage
+    // public function decayPercentage()
+    // {
+    //     $categoryQuestions = $this->getUser()
+    //         ->categoryQuestions()
+    //         ->wherePivot('is_active', 1)
+    //         ->wherePivot('decay_at', '<=', now()->subDay())
+    //         ->get();
+    //     $data =[];
+    //     foreach ($categoryQuestions as $categoryQuestion) {            
+    //         $bridgeId = $categoryQuestion->pivot->id;
+    //         $history = [];
+    //         if($this->getHistory($bridgeId) != null)
+    //         {
+    //             $oldHistory = $this->getHistory($bridgeId);
+    //             foreach ($oldHistory as $old) {
+    //                 $history[] = $old;
+    //             }
+    //         }            
+    //         $decay = $categoryQuestion->pivot->decay;
+    //         try 
+    //         {
+    //             $lastIndex = count($history) - 1;
+    //             if($lastIndex>=0)
+    //             {
+    //                 $daysPassed = now()->diffInDays($categoryQuestion->pivot->decay_at);
+    //                 $levelDecay = $daysPassed*$decay;
+    //                 $newLevel = $history[$lastIndex]['level'] - $levelDecay;
+    //                 $newLevel = max( $newLevel,   1);
+    //                 $history[$lastIndex]['level'] = $newLevel;
+    //                 $this->saveHistory($bridgeId, $history);
+    //                 $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];
+    //             }
+    //             else
+    //             {
+    //                 $data[$categoryQuestion->id] = ['level' => 1, 'decay_at' => now()];
+    //             }
+    //         } catch (\Throwable $th) {
+    //             dump($categoryQuestion);
+    //         }
+
+    //     }
+        
+    //     $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);
+    //     // dd(vars: $data);
+    // }
+
+    // new decayPercentage
     public function decayPercentage()
     {
         $categoryQuestions = $this->getUser()
@@ -53,27 +101,13 @@ trait QuizTrait
                 }
             }            
             $decay = $categoryQuestion->pivot->decay;
-            try 
-            {
-                $lastIndex = count($history) - 1;
-                if($lastIndex>=0)
-                {
-                    $daysPassed = now()->diffInDays($categoryQuestion->pivot->decay_at);
-                    $levelDecay = $daysPassed*$decay;
-                    $newLevel = $history[$lastIndex]['level'] - $levelDecay;
-                    $newLevel = max( $newLevel,   1);
-                    $history[$lastIndex]['level'] = $newLevel;
-                    $this->saveHistory($bridgeId, $history);
-                    $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];
-                }
-                else
-                {
-                    $data[$categoryQuestion->id] = ['level' => 1, 'decay_at' => now()];
-                }
-            } catch (\Throwable $th) {
-                dump($categoryQuestion);
-            }
-
+            $daysPassed = now()->diffInDays($categoryQuestion->pivot->decay_at);
+            $levelDecay = $daysPassed*$decay;
+            $newLevel = $categoryQuestion->pivot->level - $levelDecay;
+            $newLevel = max( $newLevel,   1);
+            $history[] = ["level" => $newLevel, "time" => now()->timestamp, "isCorrect" => 'decay_at'];
+            $this->saveHistory($bridgeId, $history);
+            $data[$categoryQuestion->id] = ['level' => $newLevel, 'decay_at' => now()];                          
         }
         
         $this->getUser()->categoryQuestions()->syncWithoutDetaching($data);

@@ -230,6 +230,8 @@ class SaveQuizDataService
             }
         }
         // dd(2);
+        $newLevel = min(100, $newLevel);
+        $newLevel = max(1, $newLevel);
         return $newLevel;
     }
 

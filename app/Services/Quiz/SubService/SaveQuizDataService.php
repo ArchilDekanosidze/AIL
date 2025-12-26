@@ -137,14 +137,7 @@ class SaveQuizDataService
                 $history[] = $old;
             }
         }
-        if($isCorrect)
-        {
-            $newLevel = $categoryQuestion->pivot->level + 3 * 100/$categoryQuestion->pivot->number_to_change_level ;
-        }    
-        else
-        {
-            $newLevel = $categoryQuestion->pivot->level  - 1*  100/$categoryQuestion->pivot->number_to_change_level ;
-        }
+        $newLevel = $this->newlevel($categoryQuestion, $history, $isCorrect);
         $history[] = ["level" => $newLevel, "time" => now()->timestamp, "isCorrect" => $isCorrect ? 1 : 0];
         $this->saveHistory($bridgeId, $history);
         return $newLevel;
@@ -173,6 +166,72 @@ class SaveQuizDataService
     //     // dump($newLevel);
     //     return $newLevel;
     // }
+
+
+    // new newLevel
+    public function newlevel($categoryQuestion, $history, $isCorrect)
+    {
+        try {
+            $answerHistory =array_map(fn($item) => $item['isCorrect'], $history);
+            //code...
+        } catch (\Throwable $th) {
+            dd($history);
+            //throw $th;
+        }
+        if(count($categoryQuestion->directChildren) > 0)
+        {
+
+            $totla_question_count = 0;
+            $sumLevelCount = 0;
+
+            $subCats = $categoryQuestion->directChildren;
+            foreach ($subCats as $subCat) {
+                $level = $this->userCategoryQuestions->where('id', $subCat->id)->first();
+
+                // in code ro ezafe kardam ke onhai ke to zir majmoe nist to miangiri hazf beshan
+                if(!$level)
+                {
+                       continue;
+                }               
+                $question_count = $subCat->question_count;
+
+                if($level)
+                {
+                    if(isset($this->data[$subCat->id]))
+                    {
+                        $level = $this->data[$subCat->id]['level'];
+                    }
+                    else
+                    {
+                        $level = $level->pivot->level;
+                    }
+                }
+                else
+                {
+                    $level = 1;
+                }
+                $totla_question_count += $question_count;
+                $sumLevelCount += $level * $question_count;
+            }
+
+            
+            $newLevel =  $sumLevelCount / $totla_question_count;
+
+        }
+        else
+        {
+            if($isCorrect)
+            {
+                $newLevel = $categoryQuestion->pivot->level + 3 * 100/$categoryQuestion->pivot->number_to_change_level ;
+            }    
+            else
+            {
+                $newLevel = $categoryQuestion->pivot->level  - 1*  100/$categoryQuestion->pivot->number_to_change_level ;
+            }
+        }
+        // dd(2);
+        return $newLevel;
+    }
 
     // old new level
     // public function newlevel($categoryQuestion, $history)

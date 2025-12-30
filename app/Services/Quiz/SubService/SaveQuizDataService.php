@@ -220,7 +220,11 @@ class SaveQuizDataService
         }
         else
         {
-            $reduceFactor = 3;
+            $reduceFactor = 10;
+            if($this->getUser()->id == 1)
+            {
+                $reduceFactor = 1;
+            }
             $currentLevel = $this->getCurrentLevel($categoryQuestion);
             if($isCorrect)
             {

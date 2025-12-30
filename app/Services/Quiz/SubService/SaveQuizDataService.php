@@ -220,14 +220,15 @@ class SaveQuizDataService
         }
         else
         {
+            $reduceFactor = 3;
             $currentLevel = $this->getCurrentLevel($categoryQuestion);
             if($isCorrect)
             {
-                $newLevel = $currentLevel + 3 /10 * 100/$categoryQuestion->pivot->number_to_change_level ;
+                $newLevel = $currentLevel + 3 /$reduceFactor * 100/$categoryQuestion->pivot->number_to_change_level ;
             }    
             else
             {
-                $newLevel = $currentLevel  - 1 / 10 *  100/$categoryQuestion->pivot->number_to_change_level ;
+                $newLevel = $currentLevel  - 1 / $reduceFactor *  100/$categoryQuestion->pivot->number_to_change_level ;
             }
         }
         // dd(2);

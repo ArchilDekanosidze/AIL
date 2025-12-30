@@ -220,13 +220,14 @@ class SaveQuizDataService
         }
         else
         {
+            $currentLevel = $this->getCurrentLevel($categoryQuestion);
             if($isCorrect)
             {
-                $newLevel = $categoryQuestion->pivot->level + 3 * 100/$categoryQuestion->pivot->number_to_change_level ;
+                $newLevel = $currentLevel + 3 /10 * 100/$categoryQuestion->pivot->number_to_change_level ;
             }    
             else
             {
-                $newLevel = $categoryQuestion->pivot->level  - 1*  100/$categoryQuestion->pivot->number_to_change_level ;
+                $newLevel = $currentLevel  - 1 / 10 *  100/$categoryQuestion->pivot->number_to_change_level ;
             }
         }
         // dd(2);
@@ -234,6 +235,14 @@ class SaveQuizDataService
         $newLevel = max(1, $newLevel);
         return $newLevel;
     }
+
+
+    private function getCurrentLevel($categoryQuestion)
+    {
+        return $this->data[$categoryQuestion->id]['level']
+            ?? $categoryQuestion->pivot->level;
+    }
+
 
     // old new level
     // public function newlevel($categoryQuestion, $history)
